@@ -49,21 +49,18 @@ Application::~Application()
 
 void Application::run()
 {
+	printf("Running app\n");
     pipeline->setState(GST_STATE_PLAYING);
     pipeline->getVideoSize(&videoWidth, &videoHeight);
     autofocusControl->setVideoSize(videoWidth, videoHeight);
     photoTaker->setImageSize(videoWidth, videoHeight);
-
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
     while (!window->shouldClose())
     {
         glfwPollEvents();
-
         createFrame();
-
         populateFrame();
-
         renderFrame();
     }
 }
@@ -71,7 +68,6 @@ void Application::run()
 void Application::createFrame()
 {
     GstSample *videosample = pipeline->getSample();
-
     /**
      * Load the frame into an openGL texture if a new one is available
      */
@@ -80,12 +76,12 @@ void Application::createFrame()
         GstBuffer *videobuf = gst_sample_get_buffer(videosample);
 
         gst_buffer_map(videobuf, &map, GST_MAP_READ);
-
+	gst_sample_unref(videosample);
         glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
                      GL_UNSIGNED_BYTE, map.data);
 
         gst_buffer_unmap(videobuf, &map);
-        gst_sample_unref(videosample);
+        
     }
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -119,6 +115,7 @@ void Application::populateFrame()
 
         ImGui::SetNextWindowClass(&gstWindowClass);
         ImGui::Begin("Gstreamer stream", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove);
+	
 
         if (ImGui::Button((frozen) ? "Resume" : "Freeze"))
         {
@@ -146,7 +143,7 @@ void Application::populateFrame()
             streamSize.x = (windowSize.y * videoWidth) / videoHeight;
             streamSize.y = windowSize.y - 10;
         }
-
+	
         ImVec2 streamPosition = ImVec2((windowSize.x - streamSize.x) * 0.5f, (windowSize.y - streamSize.y) * 0.5f);
         streamPosition.y += ImGui::GetCursorPosY();
         windowSize.y += windowSizeYOffset;
@@ -158,17 +155,18 @@ void Application::populateFrame()
 
         autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
 
-        autofocusConfig->showWindow = true;
+
+	autofocusConfig->showWindow = true;
+	
         autofocusConfig->security();
         autofocusConfig->render();
-
         moduleControlConfig->showWindow = true;
         moduleControlConfig->render();
-
+	
         barcodeReaderConfig->render(drawList, streamSize, streamPosition + windowPosition);
         barcodeDisplayer->render();
+	
         autofocusDebug->render(autofocusControl->isAutofocusDone);
-
         ImGui::End();
     }
 

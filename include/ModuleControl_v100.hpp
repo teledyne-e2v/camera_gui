@@ -1,7 +1,10 @@
 #pragma once
 #include "i2c.hpp"
-#include "writetp.hpp"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdint.h>
 /**
  * @brief 
  * 
@@ -18,8 +21,7 @@ int enable_VdacPda(I2CDevice device, int bus);
  * @param bus 
  * @return int 
  */
-int desable_VdacPda(I2CDevice device, int bus);
-
+int disable_VdacPda(I2CDevice device, int bus);
 
 /**
  * @brief This class is used to communicate with the camera module
@@ -54,10 +56,16 @@ private:
      */
     I2CDevice device;
 
+    /**
+     * @brief 
+     * IC2 Device (temperature sensor)
+     */
+    I2CDevice devicetemp;
+
 public:
     /**
      * @brief 
-     * Initialise IC2 connection and load drivers
+     * Initialise IC2 connection
      */
     void ModuleControlInit();
 
@@ -75,7 +83,7 @@ public:
      * 
      * @return int The sensor state value
      */
-    int read_sensor_state();
+    int read_sensor_state(int *state);
 
     /**
      * @brief Set the exposition time
@@ -91,7 +99,7 @@ public:
      * @param b 
      * @return int 
      */
-    int setAnalogGain(float b);
+    int setAnalogGain(float again);
 
     /**
      * @brief Set the Digital Gain
@@ -99,7 +107,7 @@ public:
      * @param b1 
      * @return int 
      */
-    int setDigitalGain(float b1);
+    int setDigitalGain(float dgain);
 
     /**
      * @brief 
@@ -117,7 +125,7 @@ public:
      * @param value 
      * @return int 
      */
-    int writeReg(int registre, int value);
+    int writeReg(int regAddr, int value);
 
     /**
      * @brief 
@@ -127,10 +135,13 @@ public:
      * @param value 
      * @return int 
      */
-    int readReg(int registre, int *value);
+    int readReg(int regAddr, int *value);
 
     int read_VdacPda( int *PdaRegValue, double *PdaVoltageValue);
 
+    int read_Temp(double *LocalTempValue, double *RemoteTempValue, int TempMode);
+    int get_TempMode(int *tempMode);
+    int set_TempMode(int tempMode);
 };
 
 struct solution

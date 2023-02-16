@@ -86,8 +86,10 @@ private:
      * 
      */
     GstElement *nvvidconv       = nullptr;
+    GstElement *videoconvert    = nullptr;
     GstElement *barcodereader   = nullptr;
-    GstElement *queue           = nullptr;
+    GstElement *queue1          = nullptr;
+    GstElement *queue2          = nullptr;
     GstElement *autofocus       = nullptr;
     GstElement *appsink         = nullptr;
 };

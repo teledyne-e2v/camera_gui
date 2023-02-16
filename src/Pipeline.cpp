@@ -20,7 +20,10 @@ Pipeline::~Pipeline()
 void Pipeline::createElements()
 {
     pipeline = gst_pipeline_new("pipeline");
-    queue = gst_element_factory_make("queue", "queue0");
+    queue1 = gst_element_factory_make("queue", "queue0");
+    queue2 = gst_element_factory_make("queue", "queue1");
+    videoconvert = gst_element_factory_make("videoconvert", "videoconvert0");
+
     appsink = gst_element_factory_make("appsink", "videosink0");
     imageFreeze = gst_element_factory_make("freeze", "freeze0");
 
@@ -28,7 +31,7 @@ void Pipeline::createElements()
     videosrc = gst_element_factory_make("videotestsrc", "videosrc0");
     nvvidconv = gst_element_factory_make("videoconvert", "nvvidconv0");
 #else
-    videosrc = gst_element_factory_make("nvarguscamerasrc", "videosrc0");
+    videosrc = gst_element_factory_make("v4l2src", "videosrc0");
     nvvidconv = gst_element_factory_make("nvvidconv", "nvvidconv0");
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
     barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
@@ -37,51 +40,57 @@ void Pipeline::createElements()
 
 void Pipeline::linkElements()
 {
-    GstCaps *caps = gst_caps_new_simple("video/x-raw",
-                                        "format", G_TYPE_STRING, "NV12",
-                                        NULL);
-
+    GstCaps *caps = caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "GRAY8", NULL);
+    GstElement *filter = gst_element_factory_make("capsfilter","filter");
 #ifdef DEBUG_MODE
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, queue, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc, autofocus, appsink, NULL);
 
-    if (!nvvidconv || !videosrc || !imageFreeze || !pipeline || !appsink || !nvvidconv || !queue)
+    if (!videosrc || !autofocus || !appsink || !barcodereader || !pipeline)
     {
         printf("not initialized\n");
         exit(0);
     }
 
-    g_assert(gst_element_link_many(videosrc, imageFreeze, nvvidconv, queue, NULL));
-    g_assert(gst_element_link_filtered(queue, appsink, caps));
+    g_assert(gst_element_link_many(videosrc, barcodereader ,autofocus,  NULL));
+    g_assert(gst_element_link_filtered(autofocus, appsink, caps));
 #else
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
+    //gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc, barcodereader, autofocus, appsink, NULL);
 
-    if (!nvvidconv || !videosrc || !pipeline || !imageFreeze || !appsink || !nvvidconv || !autofocus || !queue || !barcodereader)
+    if (!videosrc || !barcodereader || !appsink || !pipeline)
     {
         printf("not initialized\n");
         exit(0);
     }
 
-    g_assert(gst_element_link_many(videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, NULL));
-    g_assert(gst_element_link_filtered(queue, appsink, caps));
+    //g_assert(gst_element_link_many(videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, NULL));
 
-    g_object_set(G_OBJECT(videosrc), "aelock", true, "sensor-mode", 0, "saturation", 0, NULL);
+    g_assert(gst_element_link_many(videosrc,barcodereader, autofocus, appsink, NULL));
+
+    //g_assert(gst_element_link_filtered(videosrc, queue1, caps));
+
 
     g_object_set(G_OBJECT(autofocus), "listen", false, "debug_level", 2, NULL);
 
     g_object_set(G_OBJECT(barcodereader), "framing", false, NULL);
-
-    g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);
+	/*
+    g_object_set(G_OBJECT(appsink), "sync", 0, NULL);
+	g_object_set(G_OBJECT(appsink), "drop", 1, NULL);
+    g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);*/
+    g_object_set(G_OBJECT(filter), "caps", caps, NULL);
+  gst_element_set_state(pipeline,GST_STATE_PLAYING);
 
 #endif
 
-    g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
+    //g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
 
-    gst_caps_unref(caps);
+    //gst_caps_unref(caps);
 }
 
 GstSample *Pipeline::getSample()
 {
-    return gst_app_sink_try_pull_sample(GST_APP_SINK(appsink), 5 * GST_MSECOND);
+	gst_app_sink_set_wait_on_eos(GST_APP_SINK(appsink),true);
+    return gst_app_sink_try_pull_sample(GST_APP_SINK(appsink), GST_MSECOND*5);
 }
 
 void Pipeline::setState(GstState state)
@@ -89,9 +98,11 @@ void Pipeline::setState(GstState state)
     gst_element_set_state(pipeline, state);
 }
 
+
 GstElement *Pipeline::getAutofocus()
 {
     return autofocus;
+
 }
 GstElement *Pipeline::getBarcodeReader()
 {
@@ -120,4 +131,5 @@ void Pipeline::getVideoSize(int *width, int *height)
         g_print("Could not get snapshot dimension\n");
         exit(-1);
     }
+gst_sample_unref(sample);
 }

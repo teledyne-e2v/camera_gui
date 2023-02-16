@@ -74,7 +74,6 @@ sources = [
 	'src/moduleControl.cpp',
 	'src/ModuleControl_v100.cpp',
 	'src/i2c.cpp',
-	'src/writetp.cpp',
 	'src/config.cpp',
      'src/Autofocus.cpp',
      'src/takePhotos.cpp',
