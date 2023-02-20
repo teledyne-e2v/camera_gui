@@ -2,7 +2,8 @@
 
 #include "imgui.h"
 #include "ModuleControl_v100.hpp"
-
+#include "api.h"
+#include <sys/time.h>
 /**
  * @brief Interface between application and module control
  * 
@@ -117,6 +118,7 @@ private:
 
     void formatHex(char *value);
     void apply();
+    void auto_controls();
 
 public:
     /**

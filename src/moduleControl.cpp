@@ -57,6 +57,24 @@ void ModuleControl::render()
     }
 }
 
+void ModuleControl::auto_controls()
+{
+    struct Control_list *control_list=get_list_controls();
+    for(int i=0;i<control_list->number_of_controls;i++)
+    {
+        if(strcmp(control.control_list[i].type,"bool")==0)
+        {
+            ImGui::Text(control.control_list[i].name);
+            ImGui::SameLine(elementOffset);
+            bool tmp;
+            if (ImGui::Checkbox("##tmp", &tmp))
+            {
+
+            }
+        }
+    }
+}
+
 void ModuleControl::PDAConf()
 {
     ImGui::Text("PDA (-91 to 750):");
