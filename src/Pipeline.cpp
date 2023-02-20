@@ -29,10 +29,8 @@ void Pipeline::createElements()
 
 #ifdef DEBUG_MODE
     videosrc = gst_element_factory_make("videotestsrc", "videosrc0");
-    nvvidconv = gst_element_factory_make("videoconvert", "nvvidconv0");
 #else
     videosrc = gst_element_factory_make("v4l2src", "videosrc0");
-    nvvidconv = gst_element_factory_make("nvvidconv", "nvvidconv0");
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
     barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
 #endif
@@ -43,29 +41,28 @@ void Pipeline::linkElements()
     GstCaps *caps = caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "GRAY8", NULL);
     GstElement *filter = gst_element_factory_make("capsfilter","filter");
 #ifdef DEBUG_MODE
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, autofocus, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze , appsink, NULL);
 
-    if (!videosrc || !autofocus || !appsink || !barcodereader || !pipeline)
+    if (!videosrc || !appsink || !pipeline || !imageFreeze)
     {
         printf("not initialized\n");
         exit(0);
     }
 
-    g_assert(gst_element_link_many(videosrc, barcodereader ,autofocus,  NULL));
-    g_assert(gst_element_link_filtered(autofocus, appsink, caps));
+    g_assert(gst_element_link_many(videosrc,imageFreeze,  NULL));
+    g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
 #else
     //gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, barcodereader, autofocus, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze, barcodereader, autofocus, appsink, NULL);
 
-    if (!videosrc || !barcodereader || !appsink || !pipeline)
+    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus)
     {
         printf("not initialized\n");
         exit(0);
     }
 
-    //g_assert(gst_element_link_many(videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, NULL));
 
-    g_assert(gst_element_link_many(videosrc,barcodereader, autofocus, appsink, NULL));
+    g_assert(gst_element_link_many(videosrc,imageFreeze,barcodereader, autofocus, appsink, NULL));
 
     //g_assert(gst_element_link_filtered(videosrc, queue1, caps));
 
@@ -82,9 +79,9 @@ void Pipeline::linkElements()
 
 #endif
 
-    //g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
+    g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
 
-    //gst_caps_unref(caps);
+    gst_caps_unref(caps);
 }
 
 GstSample *Pipeline::getSample()
