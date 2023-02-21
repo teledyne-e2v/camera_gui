@@ -4,6 +4,7 @@ ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
     : moduleCtrl(moduleCtrl)
 {
 
+    auto_controls();
 #ifndef DEBUG_MODE
     int PdaRegValue;
     double PdaVoltageValue;
@@ -16,13 +17,27 @@ ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
 void ModuleControl::apply()
 {
     if (expositionTime != expositionTimeVariation)
-            moduleCtrl->setTint(expositionTime);
-        if (analogicGainVariation != analogicGain)
-            moduleCtrl->setAnalogGain(analogicGain);
-        if (numericGainVariation != numericGain)
-            moduleCtrl->setDigitalGain(numericGain);
-        if (PDAVariation != PDA)
-            moduleCtrl->write_VdacPda(PDA);
+        moduleCtrl->setTint(expositionTime);
+    if (analogicGainVariation != analogicGain)
+        moduleCtrl->setAnalogGain(analogicGain);
+    if (numericGainVariation != numericGain)
+        moduleCtrl->setDigitalGain(numericGain);
+    if (PDAVariation != PDA)
+        moduleCtrl->write_VdacPda(PDA);
+
+    for (auto &ctrl : controls)
+    {
+        if (ctrl->previous_value != ctrl->value)
+        {
+            set_control_by_code(ctrl->control->id, ctrl->value);
+            ctrl->previous_value = ctrl->value;
+        }
+        else if (ctrl->previous_value_bool != ctrl->value_bool)
+        {
+            set_control_by_code(ctrl->control->id, ctrl->value_bool);
+            ctrl->previous_value_bool = ctrl->value_bool;
+        }
+    }
 }
 
 void ModuleControl::render()
@@ -42,7 +57,7 @@ void ModuleControl::render()
 
         readRegister();
         writeRegister();
-	auto_controls();
+
         ImGui::PopItemWidth();
         ImGui::NewLine();
 #ifndef DEBUG_MODE
@@ -59,21 +74,46 @@ void ModuleControl::render()
 
 void ModuleControl::auto_controls()
 {
-    Control_List *control_list ;
-    control_list=get_control_list();
-	
-    for(int i=0;i<control_list->number_of_controls;i++)
-    {
-	printf("%s\n",control_list->controls[i].name);
-        if(strcmp(control_list->controls[i].type,"bool")==0)
-        {
-            ImGui::Text(control_list->controls[i].name);
-            ImGui::SameLine(elementOffset);
-            bool tmp;
-            if (ImGui::Checkbox("##tmp", &tmp))
-            {
+    Control_List *control_list;
+    control_list = get_control_list();
 
-            }
+    for (int i = 0; i < control_list->number_of_controls; i++)
+    {
+
+        if (strcmp(control_list->controls[i].name, "sensor_mode") != 0)
+        {
+            Ext_Control *ext_ctrl = new Ext_Control();
+            ext_ctrl->control = &(control_list->controls[i]);
+            ext_ctrl->value = control_list->controls[i].default_value;
+            ext_ctrl->previous_value = control_list->controls[i].default_value;
+            ext_ctrl->value_bool = control_list->controls[i].default_value;
+            ext_ctrl->previous_value_bool = control_list->controls[i].default_value;
+            controls.push_back(ext_ctrl);
+        }
+    }
+}
+
+void ModuleControl::auto_controls_render()
+{
+
+    for (auto &ctrl : controls)
+    {
+        if (strcmp(ctrl->control->type, "bool") == 0)
+        {
+            ImGui::Text(ctrl->control->name);
+            ImGui::SameLine(elementOffset);
+            if (ImGui::Checkbox("##tmp", &ctrl->value_bool))
+                ;
+        }
+        else
+        {
+            ImGui::Text(ctrl->control->name);
+            ImGui::SameLine(elementOffset);
+            ImGui::InputInt("##NGain", &ctrl->value, 1, 100, ImGuiInputTextFlags_CharsDecimal);
+            if (ctrl->value < ctrl->control->minimum)
+                ctrl->value = ctrl->control->minimum;
+            else if (ctrl->value > ctrl->control->maximum)
+                ctrl->value = ctrl->control->maximum;
         }
     }
 }
@@ -159,7 +199,7 @@ void ModuleControl::writeRegister()
     ImGui::InputText("##regval", valueToWrite, 7, ImGuiInputTextFlags_CharsHexadecimal);
     formatHex(registerToWrite);
     formatHex(valueToWrite);
-    
+
     ImGui::Spacing();
 
     if (ImGui::Button("Write"))
@@ -187,7 +227,7 @@ void ModuleControl::formatHex(char *value)
     {
         if (len > 4)
             len = 4;
-        
+
         // Move least signigicants bits to the left of the string
         for (size_t k = 0; k < 6 - len; k++)
         {

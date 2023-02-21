@@ -4,10 +4,23 @@
 #include "ModuleControl_v100.hpp"
 #include "api.hpp"
 #include <sys/time.h>
+#include <vector>
+
+
+
+
 /**
  * @brief Interface between application and module control
  * 
  */
+struct Ext_Control{
+    Control *control;
+    int value;
+    int previous_value;
+    bool value_bool;
+    bool previous_value_bool;
+};
+
 class ModuleControl
 {
 private:
@@ -119,6 +132,8 @@ private:
     void formatHex(char *value);
     void apply();
     void auto_controls();
+    void auto_controls_render();
+    std::vector<Ext_Control *> controls;
 
 public:
     /**
