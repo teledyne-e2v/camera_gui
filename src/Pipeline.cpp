@@ -23,7 +23,7 @@ void Pipeline::createElements()
     queue1 = gst_element_factory_make("queue", "queue0");
     queue2 = gst_element_factory_make("queue", "queue1");
     videoconvert = gst_element_factory_make("videoconvert", "videoconvert0");
-
+    autoexposure = gst_element_factory_make("autoexposure", "autoexposure0");
     appsink = gst_element_factory_make("appsink", "videosink0");
     imageFreeze = gst_element_factory_make("freeze", "freeze0");
 
@@ -53,16 +53,16 @@ void Pipeline::linkElements()
     g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
 #else
     //gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
-    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze, barcodereader, autofocus, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze, barcodereader, autofocus,autoexposure, appsink, NULL);
 
-    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus)
+    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus || !autoexposure)
     {
         printf("not initialized\n");
         exit(0);
     }
 
 
-    g_assert(gst_element_link_many(videosrc,imageFreeze,barcodereader, autofocus, appsink, NULL));
+    g_assert(gst_element_link_many(videosrc,imageFreeze,barcodereader, autofocus,autoexposure, appsink, NULL));
 
     //g_assert(gst_element_link_filtered(videosrc, queue1, caps));
 

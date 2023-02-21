@@ -18,10 +18,10 @@ struct Control {
     char name[64];
     int id;
     char type[32];
-    int minimum;
-    int maximum;
+    int64_t minimum;
+    int64_t maximum;
     int step;
-    int default_value;
+    int64_t default_value;
 };
 
 struct Control_List {

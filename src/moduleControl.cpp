@@ -4,8 +4,9 @@ ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
     : moduleCtrl(moduleCtrl)
 {
 
-    auto_controls();
+    
 #ifndef DEBUG_MODE
+    auto_controls();
     int PdaRegValue;
     double PdaVoltageValue;
     moduleCtrl->read_VdacPda(&PdaRegValue, &PdaVoltageValue);
@@ -16,15 +17,9 @@ ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
 
 void ModuleControl::apply()
 {
-    if (expositionTime != expositionTimeVariation)
-        moduleCtrl->setTint(expositionTime);
-    if (analogicGainVariation != analogicGain)
-        moduleCtrl->setAnalogGain(analogicGain);
-    if (numericGainVariation != numericGain)
-        moduleCtrl->setDigitalGain(numericGain);
     if (PDAVariation != PDA)
         moduleCtrl->write_VdacPda(PDA);
-
+	
     for (auto &ctrl : controls)
     {
         if (ctrl->previous_value != ctrl->value)
@@ -49,25 +44,19 @@ void ModuleControl::render()
 
         ImGui::PushItemWidth(-1);
         PDAConf();
-
-        expositionTimeConf();
-        analogicGainConf();
-
-        numericGainConf();
-
+	auto_controls_render();
         readRegister();
         writeRegister();
+
 
         ImGui::PopItemWidth();
         ImGui::NewLine();
 #ifndef DEBUG_MODE
         apply();
 #endif
+	
         ImGui::End();
 
-        expositionTimeVariation = expositionTime;
-        analogicGainVariation = analogicGain;
-        numericGainVariation = numericGain;
         PDAVariation = PDA;
     }
 }
@@ -76,11 +65,11 @@ void ModuleControl::auto_controls()
 {
     Control_List *control_list;
     control_list = get_control_list();
-
+	
     for (int i = 0; i < control_list->number_of_controls; i++)
     {
 
-        if (strcmp(control_list->controls[i].name, "sensor_mode") != 0)
+        if (strncmp(control_list->controls[i].name, "sensor_",7) != 0)
         {
             Ext_Control *ext_ctrl = new Ext_Control();
             ext_ctrl->control = &(control_list->controls[i]);
@@ -98,18 +87,19 @@ void ModuleControl::auto_controls_render()
 
     for (auto &ctrl : controls)
     {
+
         if (strcmp(ctrl->control->type, "bool") == 0)
         {
             ImGui::Text(ctrl->control->name);
             ImGui::SameLine(elementOffset);
-            if (ImGui::Checkbox("##tmp", &ctrl->value_bool))
+            if (ImGui::Checkbox(ctrl->control->name, &ctrl->value_bool))
                 ;
         }
         else
         {
             ImGui::Text(ctrl->control->name);
             ImGui::SameLine(elementOffset);
-            ImGui::InputInt("##NGain", &ctrl->value, 1, 100, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputInt(ctrl->control->name, &ctrl->value, 1, 100, ImGuiInputTextFlags_CharsDecimal);
             if (ctrl->value < ctrl->control->minimum)
                 ctrl->value = ctrl->control->minimum;
             else if (ctrl->value > ctrl->control->maximum)
@@ -127,37 +117,6 @@ void ModuleControl::PDAConf()
         PDA = 750;
     else if (PDA < -91)
         PDA = -91;
-}
-
-void ModuleControl::expositionTimeConf()
-{
-    ImGui::Text("Exposition time:");
-    ImGui::SameLine(elementOffset);
-    ImGui::InputFloat("##expTime", &expositionTime, 1, 100, "%.2f ms");
-    if (expositionTime <= 0)
-        expositionTime = 1;
-    else if (expositionTime > 500)
-        expositionTime = 500;
-}
-
-void ModuleControl::analogicGainConf()
-{
-    ImGui::Text("Analogic gain (1 to 8):");
-    ImGui::SameLine(elementOffset);
-    ImGui::InputInt("##Again", &analogicGain, 1, 100, ImGuiInputTextFlags_CharsDecimal);
-    if (analogicGain <= 0)
-        analogicGain = 1;
-    else if (analogicGain > 8)
-        analogicGain = 8;
-}
-
-void ModuleControl::numericGainConf()
-{
-    ImGui::Text("Numeric gain:");
-    ImGui::SameLine(elementOffset);
-    ImGui::InputInt("##NGain", &numericGain, 1, 100, ImGuiInputTextFlags_CharsDecimal);
-    if (numericGain <= 0)
-        numericGain = 1;
 }
 
 void ModuleControl::readRegister()

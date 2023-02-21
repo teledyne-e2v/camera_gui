@@ -92,4 +92,5 @@ private:
     GstElement *queue2          = nullptr;
     GstElement *autofocus       = nullptr;
     GstElement *appsink         = nullptr;
+    GstElement *autoexposure    = nullptr;
 };

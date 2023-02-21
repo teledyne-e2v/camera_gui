@@ -128,10 +128,10 @@ void print_control_list()
         printf("\tName: %s\n", control_list.controls[i].name);
         printf("\tID: %x\n", control_list.controls[i].id);
         printf("\tType: %s\n", control_list.controls[i].type);
-        printf("\tMinimum: %d\n", control_list.controls[i].minimum);
-        printf("\tMaximum: %d\n", control_list.controls[i].maximum);
+        printf("\tMinimum: %ld\n", control_list.controls[i].minimum);
+        printf("\tMaximum: %ld\n", control_list.controls[i].maximum);
         printf("\tStep: %d\n", control_list.controls[i].step);
-        printf("\tDefault value: %d\n", control_list.controls[i].default_value);
+        printf("\tDefault value: %ld\n", control_list.controls[i].default_value);
     }
 }
 
@@ -195,9 +195,9 @@ void initialization(char *v4l2_device, int sensor_mode)
                         control_list.controls[j].default_value = atoi(splited[i] + 8);
 
                     } else if (strlen(splited[i]) > 4 && strncmp(splited[i], "min=", 4) == 0) {
-                        control_list.controls[j].minimum = atoi(splited[i] + 4);
+                        control_list.controls[j].minimum = atoll(splited[i] + 4);
                     } else if (strlen(splited[i]) > 4 && strncmp(splited[i], "max=", 4) == 0) {
-                        control_list.controls[j].maximum = atoi(splited[i] + 4);
+                        control_list.controls[j].maximum = atoll(splited[i] + 4);
                     } else if (strlen(splited[i]) > 5 && strncmp(splited[i], "step=", 5) == 0) {
                         control_list.controls[j].step = atoi(splited[i] + 5);
                     }

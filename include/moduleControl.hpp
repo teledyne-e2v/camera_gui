@@ -24,35 +24,15 @@ struct Ext_Control{
 class ModuleControl
 {
 private:
-    float expositionTimeVariation;
-    int PDAVariation;
-    int analogicGainVariation;
-    int numericGainVariation;
-    ModuleCtrl *moduleCtrl;
 
-    /**
-     * @brief exposition time 
-     * 
-     */
-    float expositionTime = 15;
+    int PDAVariation;
+    ModuleCtrl *moduleCtrl;
 
     /**
      * @brief PDA value
      * 
      */
     int PDA = 300;
-
-    /**
-     * @brief analogic gain
-     * 
-     */
-    int analogicGain = 2;
-
-    /**
-     * @brief numerical gain
-     * 
-     */
-    int numericGain = 0;
 
     /**
      * @brief Register to write
@@ -92,27 +72,6 @@ private:
      * 
      */
     void PDAConf();
-
-    /**
-     * @brief 
-     *  Create the exposition time input int
-     * 
-     */
-    void expositionTimeConf();
-
-    /**
-     * @brief 
-     * Create the analogic gain input int
-     * 
-     */
-    void analogicGainConf();
-
-    /**
-     * @brief 
-     * Create the numeric gain input int
-     * 
-     */
-    void numericGainConf();
 
     /**
      * @brief 
