@@ -82,7 +82,8 @@ sources = [
      'src/BarcodeDisplayer.cpp',
      'src/Pipeline.cpp',
      'src/Window.cpp',
-     'src/Application.cpp'
+     'src/Application.cpp',
+	'src/api.cpp'
 ]
 
 executable('gst-imgui'

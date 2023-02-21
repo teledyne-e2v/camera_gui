@@ -42,7 +42,7 @@ void ModuleControl::render()
 
         readRegister();
         writeRegister();
-
+	auto_controls();
         ImGui::PopItemWidth();
         ImGui::NewLine();
 #ifndef DEBUG_MODE
@@ -59,12 +59,15 @@ void ModuleControl::render()
 
 void ModuleControl::auto_controls()
 {
-    struct Control_list *control_list=get_list_controls();
+    Control_List *control_list ;
+    control_list=get_control_list();
+	
     for(int i=0;i<control_list->number_of_controls;i++)
     {
-        if(strcmp(control.control_list[i].type,"bool")==0)
+	printf("%s\n",control_list->controls[i].name);
+        if(strcmp(control_list->controls[i].type,"bool")==0)
         {
-            ImGui::Text(control.control_list[i].name);
+            ImGui::Text(control_list->controls[i].name);
             ImGui::SameLine(elementOffset);
             bool tmp;
             if (ImGui::Checkbox("##tmp", &tmp))

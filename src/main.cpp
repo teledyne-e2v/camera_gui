@@ -1,9 +1,12 @@
 #include <iostream>
 
 #include "Application.hpp"
+#include "api.hpp"
+
 
 int main(int argc, char **argv)
 {
+	initialization("/dev/video0",2);
     try
     {
         Application *app = new Application(argc, argv);

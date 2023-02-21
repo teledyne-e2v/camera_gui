@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 #include "ModuleControl_v100.hpp"
-#include "api.h"
+#include "api.hpp"
 #include <sys/time.h>
 /**
  * @brief Interface between application and module control
