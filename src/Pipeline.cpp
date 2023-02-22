@@ -106,6 +106,12 @@ GstElement *Pipeline::getBarcodeReader()
     return barcodereader;
 }
 
+GstElement *Pipeline::getAutoexposure()
+{
+    return autoexposure;
+}
+
+
 void Pipeline::freezeStream(bool freeze)
 {
     g_object_set(G_OBJECT(imageFreeze), "freeze", freeze, NULL);

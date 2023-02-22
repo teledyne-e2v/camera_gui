@@ -43,6 +43,12 @@ public:
     GstElement *getBarcodeReader();
 
     /**
+     * @brief Get the Autoexposure object
+     * 
+     * @return GstElement* 
+     */
+    GstElement *getAutoexposure();
+    /**
      * @brief activate the freeze
      * 
      * @param freeze 
