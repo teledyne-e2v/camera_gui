@@ -90,6 +90,7 @@ private:
 
     void formatHex(char *value);
     void apply();
+    void update_auto_controls();
     void auto_controls();
     void auto_controls_render();
     std::vector<Ext_Control *> controls;

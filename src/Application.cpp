@@ -23,7 +23,7 @@ Application::Application(int argc, char **argv)
     barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
     barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
     photoTaker = new TakePhotos(&map);
-    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure());
+    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(),moduleControlConfig);
     glGenTextures(1, &videotex);
     glBindTexture(GL_TEXTURE_2D, videotex);
 

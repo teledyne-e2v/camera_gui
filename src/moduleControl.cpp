@@ -82,6 +82,25 @@ void ModuleControl::auto_controls()
     }
 }
 
+
+void ModuleControl::update_auto_controls()
+{
+    for (auto &ctrl : controls)
+    {
+        if (strcmp(ctrl->control->type, "bool") == 0)
+        {
+            ctrl->value_bool=get_control_by_code(ctrl->control->id);
+            ctrl->previous_value_bool = ctrl->value_bool;
+        }
+        else
+        {
+            ctrl->value=get_control_by_code(ctrl->control->id);
+            ctrl->previous_value = ctrl->value;
+        }
+    }
+}
+
+
 void ModuleControl::auto_controls_render()
 {
 

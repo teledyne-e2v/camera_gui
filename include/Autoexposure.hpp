@@ -14,7 +14,7 @@
 class AutoexposureControl
 {
 public:
-    AutoexposureControl(GstElement *autoexposure);
+    AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl);
     ~AutoexposureControl();
     void render();
 private:
@@ -22,4 +22,5 @@ private:
     GstElement *Autoexposure = nullptr;
     bool work;
     bool toggleOnce=false;
+    ModuleControl *moduleControl;
 };
