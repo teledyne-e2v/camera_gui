@@ -20,6 +20,6 @@ public:
 private:
 
     GstElement *Autoexposure = nullptr;
-    bool work;
-    bool toggleOnce=false;
+    bool work=false;
+    bool toggleOnce=true;
 };

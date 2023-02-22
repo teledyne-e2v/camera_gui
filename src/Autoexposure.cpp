@@ -1,10 +1,10 @@
 #include "Autoexposure.hpp"
 
-AutoexposureControl::AutofocusControl(GstElement *autoexposure)
+AutoexposureControl::AutoexposureControl(GstElement *autoexposure)
 {
     Autoexposure=autoexposure;
 }
-AutoexposureControl::~AutofocusControl()
+AutoexposureControl::~AutoexposureControl()
 {
 
 }
@@ -12,7 +12,7 @@ void AutoexposureControl::render()
 {
     ImGui::Begin("Autoexposure Control");
 
-    if (ImGui::Checkbox("Toggle autoexposure", work))
+    if (ImGui::Checkbox("Toggle autoexposure", &work))
     {
         if(toggleOnce==false)
         {
