@@ -31,7 +31,7 @@ private:
     int previous_max_exp=20000;
     int lowerbound=50;
     int previous_lowerbound=50;
-    int upperbound=110;
+    int upperbound=70;
     int previous_upperbound=110;
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;

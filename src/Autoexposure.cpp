@@ -65,7 +65,7 @@ void AutoexposureControl::render()
     ImGui::Text("latency");
     ImGui::SameLine();
     ImGui::InputInt("latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(latency,5,200000);
+    limit(latency,0,100);
     if (latency != previous_latency)
     {
         g_object_set(G_OBJECT(Autoexposure), "latency", latency, NULL);
