@@ -25,8 +25,14 @@ private:
     bool useExpTime=false;
     int optimize=1;
     int previous_optimize=1;
+    int latency=4;
+    int previous_latency=4;
     int max_exp=20000;
     int previous_max_exp=20000;
+    int lowerbound=50;
+    int previous_lowerbound=50;
+    int upperbound=110;
+    int previous_upperbound=110;
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;
 };

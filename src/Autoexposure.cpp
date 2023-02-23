@@ -1,13 +1,12 @@
 #include "Autoexposure.hpp"
-
-AutoexposureControl::AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl)
+#include "utils.hpp"
+AutoexposureControl::AutoexposureControl(GstElement *autoexposure, ModuleControl *moduleCtrl)
 {
-    Autoexposure=autoexposure;
-    moduleControl=moduleCtrl;
+    Autoexposure = autoexposure;
+    moduleControl = moduleCtrl;
 }
 AutoexposureControl::~AutoexposureControl()
 {
-
 }
 void AutoexposureControl::render()
 {
@@ -15,61 +14,83 @@ void AutoexposureControl::render()
 
     if (ImGui::Checkbox("Toggle autoexposure", &work))
     {
-        if(toggleOnce==false)
+        if (toggleOnce == false)
         {
             g_object_set(G_OBJECT(Autoexposure), "work", work, NULL);
-            toggleOnce=true;
+            toggleOnce = true;
         }
-
     }
-    else if(toggleOnce==true)
+    else if (toggleOnce == true)
     {
         g_object_set(G_OBJECT(Autoexposure), "work", work, NULL);
-        toggleOnce=false;
+        toggleOnce = false;
     }
 
     if (ImGui::Checkbox("Use exposition time", &useExpTime))
     {
-	if(toggleOnce2==false)
+        if (toggleOnce2 == false)
         {
             g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
-            toggleOnce2=true;
+            toggleOnce2 = true;
         }
     }
-    else if(toggleOnce2==true)
+    else if (toggleOnce2 == true)
     {
         g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
-        toggleOnce2=false;
+        toggleOnce2 = false;
     }
 
     g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
-    toggleOnce2=false;
+    toggleOnce2 = false;
 
     ImGui::Text("Optimization");
     ImGui::SameLine();
     ImGui::InputInt("Optimization", &optimize, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    if (optimize < 0)
-        optimize = 0;
-    else if (optimize > 5)
-        optimize = 5;
-    if(optimize!=previous_optimize)
-{
-g_object_set(G_OBJECT(Autoexposure), "optimize", optimize, NULL);
-previous_optimize=optimize;
-}
+    if (optimize != previous_optimize)
+    {
+        g_object_set(G_OBJECT(Autoexposure), "optimize", optimize, NULL);
+        previous_optimize = optimize;
+    }
 
-     ImGui::Text("Maximum exposure");
+    ImGui::Text("Maximum exposure");
     ImGui::SameLine();
     ImGui::InputInt("Maximum exposure", &max_exp, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    if (max_exp < 0)
-        max_exp = 0;
-    else if (max_exp > 200000)
-        max_exp = 200000;
-    if(max_exp!=previous_max_exp)
-{
-g_object_set(G_OBJECT(Autoexposure), "maxexposition", max_exp, NULL);
-previous_max_exp=max_exp;
-}
+    limit(max_exp,5,200000);
+    if (max_exp != previous_max_exp)
+    {
+        g_object_set(G_OBJECT(Autoexposure), "maxexposition", max_exp, NULL);
+        previous_max_exp = max_exp;
+    }
+
+    ImGui::Text("latency");
+    ImGui::SameLine();
+    ImGui::InputInt("latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(latency,5,200000);
+    if (latency != previous_latency)
+    {
+        g_object_set(G_OBJECT(Autoexposure), "latency", latency, NULL);
+        previous_latency = latency;
+    }
+
+    ImGui::Text("lowerbound");
+    ImGui::SameLine();
+    ImGui::InputInt("lowerbound", &lowerbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(lowerbound,0,254);
+    if (lowerbound != previous_lowerbound)
+    {
+        g_object_set(G_OBJECT(Autoexposure), "lowerbound", lowerbound, NULL);
+        previous_lowerbound = lowerbound;
+    }
+
+    ImGui::Text("upperbound");
+    ImGui::SameLine();
+    ImGui::InputInt("upperbound", &upperbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(upperbound,1,255);
+    if (upperbound != previous_upperbound)
+    {
+        g_object_set(G_OBJECT(Autoexposure), "upperbound", upperbound, NULL);
+        previous_upperbound = upperbound;
+    }
 
 
 
