@@ -12,11 +12,12 @@ AutoexposureControl::~AutoexposureControl()
 void AutoexposureControl::apply_ROI()
 {
     ImVec4 roi=Roi->getROI();
+
     g_object_set(G_OBJECT(autoexposure),
-                     "ROI1x", roi.w,
-                     "ROI1y", roi.x,
-                     "ROI2x", roi.y,
-                     "ROI2y", roi.z,
+                     "ROI1x",(int) roi.x,
+                     "ROI1y",(int) roi.y,
+                     "ROI2x", (int)roi.z,
+                     "ROI2y",(int) roi.w,
                      NULL);
 }
 
@@ -106,7 +107,7 @@ void AutoexposureControl::render()
     }
 
 
-
+	apply_ROI();
     moduleControl->update_auto_controls();
     ImGui::End();
 }

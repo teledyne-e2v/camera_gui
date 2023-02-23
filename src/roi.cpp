@@ -20,7 +20,33 @@ ImVec4 ROI::getROI()
 
     int width = static_cast<int>((normPos2.x - normPos1.x) * videoWidth);
     int height = static_cast<int>((normPos2.y - normPos1.y) * videoHeight);
-    return ImVec4(x, y, x + width, y + height);
+int x1=x;
+int x2=x + width;
+int y1;
+int y2;
+if(y>y + height)
+{
+y1=y+height;
+y2=y;
+}
+else
+{
+y2=y+height;
+y1=y;
+}
+
+if(x>x + width)
+{
+x1=x+width;
+x2=x;
+}
+else
+{
+x2=x+width;
+x1=x;
+}
+
+    return ImVec4((float)x1,  (float)y1,(float)x2,(float)y2);
 }
 
 void ROI::setVideoSize(int width, int height)
