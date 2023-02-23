@@ -14,12 +14,14 @@
 class AutoexposureControl
 {
 public:
-    AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl);
+    AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl,ROI *Roi);
     ~AutoexposureControl();
+    void apply_ROI();
     void render();
 private:
-
-    GstElement *Autoexposure = nullptr;
+    ROI* Roi;
+    
+    GstElement *autoexposure = nullptr;
     bool work=false;
     bool toggleOnce=true;
     bool useExpTime=false;

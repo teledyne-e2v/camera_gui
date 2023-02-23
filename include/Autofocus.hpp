@@ -14,7 +14,7 @@
 class AutofocusControl
 {
 public:
-    AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf);
+    AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi);
     ~AutofocusControl();
 
     void render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 positionOfStream, ImVec2 windowSize, ImVec2 windowPosition);

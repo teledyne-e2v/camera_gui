@@ -11,16 +11,17 @@ typedef enum
     COMPLETED
 } AutofocusStatus;
 
-AutofocusControl::AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf)
-    : autofocus(autofocus), moduleCtrl(moduleCtrl), moduleControl(moduleControl), conf(conf)
+AutofocusControl::AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi)
+    : autofocus(autofocus), moduleCtrl(moduleCtrl), moduleControl(moduleControl), conf(conf),Roi(Roi)
 {
-    Roi = new ROI(autofocus);
+    
 }
 
 AutofocusControl::~AutofocusControl()
 {
-    delete Roi;
+
 }
+
 
 void AutofocusControl::setVideoSize(int videoWidth, int videoHeight)
 {

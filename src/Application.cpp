@@ -15,15 +15,16 @@ Application::Application(int argc, char **argv)
     window = new Window();
 
     pipeline = new Pipeline(argc, argv);
-
+    
     moduleControlConfig = new ModuleControl(moduleCtrl);
     autofocusConfig = new Config(pipeline->getAutofocus());
-    autofocusControl = new AutofocusControl(pipeline->getAutofocus(), moduleCtrl, moduleControlConfig, autofocusConfig);
+    Roi = new ROI(pipeline->getAutofocus());
+    autofocusControl = new AutofocusControl(pipeline->getAutofocus(), moduleCtrl, moduleControlConfig, autofocusConfig,Roi);
     autofocusDebug = new Debug(pipeline->getAutofocus());
     barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
     barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
     photoTaker = new TakePhotos(&map);
-    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(),moduleControlConfig);
+    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(),moduleControlConfig,Roi);
     glGenTextures(1, &videotex);
     glBindTexture(GL_TEXTURE_2D, videotex);
 

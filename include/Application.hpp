@@ -45,6 +45,7 @@ private:
     ModuleControl *moduleControlConfig;
     Config *autofocusConfig;
     AutofocusControl *autofocusControl;
+    ROI *Roi;
     Debug *autofocusDebug;
     BarcodeReader *barcodeReaderConfig;
     BarcodeDisplayer *barcodeDisplayer;

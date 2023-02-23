@@ -1,13 +1,26 @@
 #include "Autoexposure.hpp"
 #include "utils.hpp"
-AutoexposureControl::AutoexposureControl(GstElement *autoexposure, ModuleControl *moduleCtrl)
+AutoexposureControl::AutoexposureControl(GstElement *autoexposure, ModuleControl *moduleCtrl,ROI *Roi)
+    :   Roi(Roi),autoexposure(autoexposure)
 {
-    Autoexposure = autoexposure;
     moduleControl = moduleCtrl;
 }
 AutoexposureControl::~AutoexposureControl()
 {
 }
+
+void AutoexposureControl::apply_ROI()
+{
+    ImVec4 roi=Roi->getROI();
+    g_object_set(G_OBJECT(autoexposure),
+                     "ROI1x", roi.w,
+                     "ROI1y", roi.x,
+                     "ROI2x", roi.y,
+                     "ROI2y", roi.z,
+                     NULL);
+}
+
+
 void AutoexposureControl::render()
 {
     ImGui::Begin("Autoexposure Control");
@@ -16,13 +29,13 @@ void AutoexposureControl::render()
     {
         if (toggleOnce == false)
         {
-            g_object_set(G_OBJECT(Autoexposure), "work", work, NULL);
+            g_object_set(G_OBJECT(autoexposure), "work", work, NULL);
             toggleOnce = true;
         }
     }
     else if (toggleOnce == true)
     {
-        g_object_set(G_OBJECT(Autoexposure), "work", work, NULL);
+        g_object_set(G_OBJECT(autoexposure), "work", work, NULL);
         toggleOnce = false;
     }
 
@@ -30,17 +43,17 @@ void AutoexposureControl::render()
     {
         if (toggleOnce2 == false)
         {
-            g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
+            g_object_set(G_OBJECT(autoexposure), "useExpositionTime", useExpTime, NULL);
             toggleOnce2 = true;
         }
     }
     else if (toggleOnce2 == true)
     {
-        g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
+        g_object_set(G_OBJECT(autoexposure), "useExpositionTime", useExpTime, NULL);
         toggleOnce2 = false;
     }
 
-    g_object_set(G_OBJECT(Autoexposure), "useExpositionTime", useExpTime, NULL);
+    g_object_set(G_OBJECT(autoexposure), "useExpositionTime", useExpTime, NULL);
     toggleOnce2 = false;
 
     ImGui::Text("Optimization");
@@ -48,7 +61,7 @@ void AutoexposureControl::render()
     ImGui::InputInt("Optimization", &optimize, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     if (optimize != previous_optimize)
     {
-        g_object_set(G_OBJECT(Autoexposure), "optimize", optimize, NULL);
+        g_object_set(G_OBJECT(autoexposure), "optimize", optimize, NULL);
         previous_optimize = optimize;
     }
 
@@ -58,7 +71,7 @@ void AutoexposureControl::render()
     limit(max_exp,5,200000);
     if (max_exp != previous_max_exp)
     {
-        g_object_set(G_OBJECT(Autoexposure), "maxexposition", max_exp, NULL);
+        g_object_set(G_OBJECT(autoexposure), "maxexposition", max_exp, NULL);
         previous_max_exp = max_exp;
     }
 
@@ -68,7 +81,7 @@ void AutoexposureControl::render()
     limit(latency,0,100);
     if (latency != previous_latency)
     {
-        g_object_set(G_OBJECT(Autoexposure), "latency", latency, NULL);
+        g_object_set(G_OBJECT(autoexposure), "latency", latency, NULL);
         previous_latency = latency;
     }
 
@@ -78,7 +91,7 @@ void AutoexposureControl::render()
     limit(lowerbound,0,254);
     if (lowerbound != previous_lowerbound)
     {
-        g_object_set(G_OBJECT(Autoexposure), "lowerbound", lowerbound, NULL);
+        g_object_set(G_OBJECT(autoexposure), "lowerbound", lowerbound, NULL);
         previous_lowerbound = lowerbound;
     }
 
@@ -88,7 +101,7 @@ void AutoexposureControl::render()
     limit(upperbound,1,255);
     if (upperbound != previous_upperbound)
     {
-        g_object_set(G_OBJECT(Autoexposure), "upperbound", upperbound, NULL);
+        g_object_set(G_OBJECT(autoexposure), "upperbound", upperbound, NULL);
         previous_upperbound = upperbound;
     }
 
