@@ -90,7 +90,7 @@ private:
 
     void formatHex(char *value);
     void apply();
-    void update_auto_controls();
+    
     void auto_controls();
     void auto_controls_render();
     std::vector<Ext_Control *> controls;
@@ -108,7 +108,7 @@ public:
      * 
      */
     bool showWindow = false;
-
+    void update_auto_controls();
     void setPDA(int PDA);
 
     ModuleControl(ModuleCtrl *moduleCtrl);

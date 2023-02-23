@@ -20,7 +20,13 @@ public:
 private:
 
     GstElement *Autoexposure = nullptr;
-    bool work;
-    bool toggleOnce=false;
+    bool work=false;
+    bool toggleOnce=true;
+    bool useExpTime=false;
+    int optimize=1;
+    int previous_optimize=1;
+    int max_exp=20000;
+    int previous_max_exp=20000;
     ModuleControl *moduleControl;
+	bool toggleOnce2=true;
 };
