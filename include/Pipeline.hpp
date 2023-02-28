@@ -99,4 +99,5 @@ private:
     GstElement *autofocus       = nullptr;
     GstElement *appsink         = nullptr;
     GstElement *autoexposure    = nullptr;
+    GstElement *multifocus    = nullptr;
 };

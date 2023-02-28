@@ -53,16 +53,16 @@ void Pipeline::linkElements()
     g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
 #else
     //gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
-    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze, barcodereader, autofocus,autoexposure, appsink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), videosrc,imageFreeze, barcodereader, autofocus, multifocus,autoexposure, appsink, NULL);
 
-    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus || !autoexposure)
+    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus || !multifocus || !autoexposure)
     {
         printf("not initialized\n");
         exit(0);
     }
 
 
-    g_assert(gst_element_link_many(videosrc,imageFreeze,barcodereader, autofocus,autoexposure, appsink, NULL));
+    g_assert(gst_element_link_many(videosrc,imageFreeze,barcodereader, autofocus,autoexposure,multifocus, appsink, NULL));
 
     //g_assert(gst_element_link_filtered(videosrc, queue1, caps));
 
@@ -75,6 +75,7 @@ void Pipeline::linkElements()
 	g_object_set(G_OBJECT(appsink), "drop", 1, NULL);
     g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);*/
     g_object_set(G_OBJECT(filter), "caps", caps, NULL);
+    g_object_set(G_OBJECT(multifocus), "work", false, NULL);
   gst_element_set_state(pipeline,GST_STATE_PLAYING);
 
 #endif
