@@ -62,6 +62,8 @@ public:
 
     void setVideoSize(int width, int height);
 
+    ImVec4 getROI();
+
 private:
     float videoWidth = 0;
     float videoHeight = 0;

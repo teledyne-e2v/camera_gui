@@ -70,6 +70,7 @@ void Pipeline::linkElements()
     g_object_set(G_OBJECT(autofocus), "listen", false, "debug_level", 2, NULL);
 
     g_object_set(G_OBJECT(barcodereader), "framing", false, NULL);
+    g_object_set(G_OBJECT(autoexposure), "optimize", 2, NULL);
 	/*
     g_object_set(G_OBJECT(appsink), "sync", 0, NULL);
 	g_object_set(G_OBJECT(appsink), "drop", 1, NULL);

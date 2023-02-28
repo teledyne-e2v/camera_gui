@@ -14,13 +14,27 @@
 class AutoexposureControl
 {
 public:
-    AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl);
+    AutoexposureControl(GstElement *autoexposure,ModuleControl *moduleCtrl,ROI *Roi);
     ~AutoexposureControl();
+    void apply_ROI();
     void render();
 private:
-
-    GstElement *Autoexposure = nullptr;
-    bool work;
-    bool toggleOnce=false;
+    ROI* Roi;
+    
+    GstElement *autoexposure = nullptr;
+    bool work=false;
+    bool toggleOnce=true;
+    bool useExpTime=false;
+    int optimize=1;
+    int previous_optimize=1;
+    int latency=4;
+    int previous_latency=4;
+    int max_exp=20000;
+    int previous_max_exp=20000;
+    int lowerbound=50;
+    int previous_lowerbound=50;
+    int upperbound=70;
+    int previous_upperbound=110;
     ModuleControl *moduleControl;
+	bool toggleOnce2=true;
 };

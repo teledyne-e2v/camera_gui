@@ -13,6 +13,42 @@ ROI::~ROI()
 {
 }
 
+ImVec4 ROI::getROI()
+{
+    int x = static_cast<int>(normPos1.x * videoWidth);
+    int y = static_cast<int>(normPos1.y * videoHeight);
+
+    int width = static_cast<int>((normPos2.x - normPos1.x) * videoWidth);
+    int height = static_cast<int>((normPos2.y - normPos1.y) * videoHeight);
+int x1=x;
+int x2=x + width;
+int y1;
+int y2;
+if(y>y + height)
+{
+y1=y+height;
+y2=y;
+}
+else
+{
+y2=y+height;
+y1=y;
+}
+
+if(x>x + width)
+{
+x1=x+width;
+x2=x;
+}
+else
+{
+x2=x+width;
+x1=x;
+}
+
+    return ImVec4((float)x1,  (float)y1,(float)x2,(float)y2);
+}
+
 void ROI::setVideoSize(int width, int height)
 {
     this->videoWidth = static_cast<float>(width);
@@ -101,7 +137,7 @@ void ROI::moveROI(ImVec2 streamPosition, ImVec2 streamSize)
         float newX2 = normPos2.x + delta.x;
         float newY2 = normPos2.y + delta.y;
 
-        if (newX1 >= 0 && newX2 <= 1)   // directly update the x coordinate when the ROI would still be inside the video
+        if (newX1 >= 0 && newX2 <= 1) // directly update the x coordinate when the ROI would still be inside the video
         {
             normPos1.x = newX1;
             normPos2.x = newX2;
@@ -121,7 +157,7 @@ void ROI::moveROI(ImVec2 streamPosition, ImVec2 streamSize)
             }
         }
 
-        if (newY1 >= 0 && newY2 <= 1)   // directly update the y coordinate when the ROI would still be inside the video
+        if (newY1 >= 0 && newY2 <= 1) // directly update the y coordinate when the ROI would still be inside the video
         {
             normPos1.y = newY1;
             normPos2.y = newY2;
@@ -188,7 +224,7 @@ void ROI::updatePluginROI()
     if (changed)
     {
         // convert the roi normalize positions into absolute coordinates, width and height
-         
+
         int x = static_cast<int>(normPos1.x * videoWidth);
         int y = static_cast<int>(normPos1.y * videoHeight);
 
@@ -196,11 +232,11 @@ void ROI::updatePluginROI()
         int height = static_cast<int>((normPos2.y - normPos1.y) * videoHeight);
 
         g_object_set(G_OBJECT(autofocus),
-                    "x", x,
-                    "y", y,
-                    "width", width,
-                    "height", height,
-                    NULL);
+                     "x", x,
+                     "y", y,
+                     "width", width,
+                     "height", height,
+                     NULL);
     }
 #endif
 
@@ -241,7 +277,7 @@ void ROI::render()
             {
                 normPos1.x -= delta / 2.0f;
                 normPos2.x += delta / 2.0f;
-                
+
                 changed = true;
 
                 updatePluginROI();
