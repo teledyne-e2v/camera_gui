@@ -15,7 +15,7 @@
 #include "debug.hpp"
 #include "BarcodeDisplayer.hpp"
 #include "Autoexposure.hpp"
-
+#include "Multifocus.hpp"
 
 class Application
 {
@@ -50,6 +50,7 @@ private:
     BarcodeReader *barcodeReaderConfig;
     BarcodeDisplayer *barcodeDisplayer;
     AutoexposureControl *autoexposureControl;
+    MultifocusControl *multifocusControl;
     GstMapInfo map;
     GLuint videotex;
 

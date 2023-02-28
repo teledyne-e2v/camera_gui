@@ -84,7 +84,8 @@ sources = [
      'src/Window.cpp',
      'src/Application.cpp',
 	'src/api.cpp',
-	'src/Autoexposure.cpp'
+	'src/Autoexposure.cpp',
+	'src/Multifocus.cpp'
 ]
 
 executable('gst-imgui'

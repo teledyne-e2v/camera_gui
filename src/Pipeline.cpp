@@ -112,6 +112,10 @@ GstElement *Pipeline::getAutoexposure()
     return autoexposure;
 }
 
+GstElement *Pipeline::getMultifocus()
+{
+    return multifocus;
+}
 
 void Pipeline::freezeStream(bool freeze)
 {
