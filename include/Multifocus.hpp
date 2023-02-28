@@ -13,13 +13,18 @@
 class MultifocusControl
 {
 public:
-    MultifocusControl(GstElement *Multifocus,ModuleControl *moduleCtrl);
+    MultifocusControl(GstElement *multifocus);
     ~MultifocusControl();
     void render();
 private:
 
-    GstElement *Multifocus = nullptr;
-    bool work;
+    GstElement *multifocus = nullptr;
+    bool work=false;
     bool toggleOnce=false;
-    ModuleControl *moduleControl;
+    int latency;
+    int previous_latency;
+    int number_of_plans;
+    int previous_number_of_plans;
+    int space_between_switch;
+    int previous_space_between_switch;
 };
