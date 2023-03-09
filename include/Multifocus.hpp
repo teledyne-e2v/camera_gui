@@ -6,9 +6,6 @@
 
 #include "imgui.h"
 
-#include "ModuleControl_v100.hpp"
-#include "moduleControl.hpp"
-#include "config.hpp"
 
 class MultifocusControl
 {
@@ -21,10 +18,10 @@ private:
     GstElement *multifocus = nullptr;
     bool work=false;
     bool toggleOnce=false;
-    int latency;
-    int previous_latency;
-    int number_of_plans;
-    int previous_number_of_plans;
+    int latency=3;
+    int previous_latency=3;
+    int number_of_plans=3;
+    int previous_number_of_plans=3;
     int space_between_switch;
     int previous_space_between_switch;
 };

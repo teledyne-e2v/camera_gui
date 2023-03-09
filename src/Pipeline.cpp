@@ -32,6 +32,7 @@ void Pipeline::createElements()
 #else
     videosrc = gst_element_factory_make("v4l2src", "videosrc0");
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
+    multifocus = gst_element_factory_make("multifocus", "multifocus0");
     barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
 #endif
 }
