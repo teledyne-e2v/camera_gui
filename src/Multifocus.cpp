@@ -1,13 +1,27 @@
 #include "Multifocus.hpp"
 
-MultifocusControl::MultifocusControl(GstElement *multifocus)
-:   multifocus(multifocus)
+MultifocusControl::MultifocusControl(GstElement *multifocus,ROI *Roi)
+:   multifocus(multifocus),Roi(Roi)
 {
 
 }
+
+
+void MultifocusControl::apply_ROI()
+{
+    ImVec4 roi=Roi->getROI();
+
+    g_object_set(G_OBJECT(autoexposure),
+                     "ROI1x",(int) roi.x,
+                     "ROI1y",(int) roi.y,
+                     "ROI2x", (int)roi.z,
+                     "ROI2y",(int) roi.w,
+                     NULL);
+}
+
 MultifocusControl::~MultifocusControl()
 {
-
+     
 }
 void MultifocusControl::render()
 {
@@ -30,6 +44,7 @@ void MultifocusControl::render()
 
     if(ImGui::Button("Reset multifocus plans"))
 {
+    apply_ROI();
         g_object_set(G_OBJECT(multifocus), "reset", true, NULL);
 }
 

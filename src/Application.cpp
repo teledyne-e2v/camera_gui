@@ -24,7 +24,7 @@ Application::Application(int argc, char **argv)
     barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
     barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
     photoTaker = new TakePhotos(&map);
-    multifocusControl = new MultifocusControl(pipeline->getMultifocus());
+    multifocusControl = new MultifocusControl(pipeline->getMultifocus(),Roi);
     autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(),moduleControlConfig,Roi);
     glGenTextures(1, &videotex);
     glBindTexture(GL_TEXTURE_2D, videotex);
