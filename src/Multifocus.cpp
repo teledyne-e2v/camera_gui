@@ -106,9 +106,9 @@ ImGui::Text("Autodetect plans");
         g_object_get(G_OBJECT(multifocus), "plan1", &plan1, NULL);
         previous_plan1 = plan1;
         g_object_get(G_OBJECT(multifocus), "plan2", &plan2, NULL);
-        previous_plan1 = plan2;
+        previous_plan2 = plan2;
         g_object_get(G_OBJECT(multifocus), "plan3", &plan3, NULL);
-        previous_plan1 = plan3;
+        previous_plan3 = plan3;
     }
     
 
