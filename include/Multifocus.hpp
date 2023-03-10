@@ -18,6 +18,8 @@ private:
     GstElement *multifocus = nullptr;
     bool work=false;
     bool toggleOnce=false;
+    bool autodetect=true;
+    bool previous_autodetect=false;
     int latency=3;
     int previous_latency=3;
     int number_of_plans=3;

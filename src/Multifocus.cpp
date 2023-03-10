@@ -42,6 +42,30 @@ void MultifocusControl::render()
         toggleOnce = false;
     }
 
+
+ImGui::Text("Autodetect plans");
+    ImGui::SameLine();
+    if (ImGui::Checkbox("##Autodetect plans", &autodetect))
+    {
+        if (previous_autodetect == false)
+        {
+            g_object_set(G_OBJECT(multifocus), "auto_detect_plans", autodetect, NULL);
+            previous_autodetect = true;
+        }
+    }
+    else if (previous_autodetect == true)
+    {
+        g_object_set(G_OBJECT(multifocus), "auto_detect_plans", autodetect, NULL);
+        previous_autodetect = false;
+    }
+
+
+    if(ImGui::Button("Next"))
+{
+    apply_ROI();
+        g_object_set(G_OBJECT(multifocus), "next", true, NULL);
+}
+
     if(ImGui::Button("Reset multifocus plans"))
 {
     apply_ROI();
