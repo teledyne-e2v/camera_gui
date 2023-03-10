@@ -14,10 +14,10 @@ void AutoexposureControl::apply_ROI()
     ImVec4 roi=Roi->getROI();
 
     g_object_set(G_OBJECT(autoexposure),
-                     "ROI1x",(int) roi.x,
-                     "ROI1y",(int) roi.y,
-                     "ROI2x", (int)roi.z,
-                     "ROI2y",(int) roi.w,
+                     "roi1x",(int) roi.x,
+                     "roi1y",(int) roi.y,
+                     "roi2x", (int)roi.z,
+                     "roi2y",(int) roi.w,
                      NULL);
 }
 
