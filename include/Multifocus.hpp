@@ -23,9 +23,9 @@ private:
     int latency=3;
     int previous_latency=3;
     int number_of_plans=3;
-    int previous_number_of_plans=3;
-    int space_between_switch;
-    int previous_space_between_switch;
+    int previous_number_of_plans=4;
+    int space_between_switch=5;
+    int previous_space_between_switch=4;
     ROI *Roi;
     void apply_ROI();
 };
