@@ -1,5 +1,5 @@
 #include "Multifocus.hpp"
-
+#include "utils.hpp"
 MultifocusControl::MultifocusControl(GstElement *multifocus,ROI *Roi)
 :   multifocus(multifocus),Roi(Roi)
 {
@@ -99,5 +99,51 @@ ImGui::Text("Autodetect plans");
         g_object_set(G_OBJECT(multifocus), "space_between_switch", space_between_switch, NULL);
         previous_space_between_switch = space_between_switch;
     }
-    ImGui::End();
+    
+
+    if(ImGui::Button("Refresh"))
+    {
+        plan1=g_object_get(G_OBJECT(multifocus), "plan1", &plan1, NULL);
+        previous_plan1 = plan1;
+        plan1=g_object_get(G_OBJECT(multifocus), "plan2", &plan2, NULL);
+        previous_plan1 = plan2;
+        plan1=g_object_get(G_OBJECT(multifocus), "plan3", &plan3, NULL);
+        previous_plan1 = plan3;
+    }
+    
+
+    ImGui::Text("plan1");
+    ImGui::SameLine();
+    ImGui::InputInt("##plan1", &plan1, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(plan1,-90,780);
+    if (plan1 != previous_plan1)
+    {
+        g_object_set(G_OBJECT(multifocus), "plan1", plan1, NULL);
+        previous_plan1 = plan1;
+    }
+
+
+    ImGui::Text("plan2");
+    ImGui::SameLine();
+    ImGui::InputInt("##plan2", &plan2, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(plan2,-90,780);
+    if (plan2 != previous_plan2)
+    {
+        g_object_set(G_OBJECT(multifocus), "plan2", plan2, NULL);
+        previous_plan2 = plan2;
+    }
+
+
+    ImGui::Text("plan3");
+    ImGui::SameLine();
+    ImGui::InputInt("##plan3", &plan3, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(plan3,-90,780);
+    if (plan3 != previous_plan3)
+    {
+        g_object_set(G_OBJECT(multifocus), "plan3", plan3, NULL);
+        previous_plan3 = plan3;
+    }
+
+ImGui::End();
+
 }

@@ -26,6 +26,13 @@ private:
     int previous_number_of_plans=4;
     int space_between_switch=5;
     int previous_space_between_switch=4;
+    int plan1=0;
+    int plan2=0;
+    int plan3=0;
+    int previous_plan1=0;
+    int previous_plan2=0;
+    int previous_plan3=0;
+
     ROI *Roi;
     void apply_ROI();
 };

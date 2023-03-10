@@ -59,7 +59,7 @@ void AutoexposureControl::render()
 
     ImGui::Text("Optimization");
     ImGui::SameLine();
-    ImGui::InputInt("Optimization", &optimize, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputInt("##Optimization", &optimize, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     if (optimize != previous_optimize)
     {
         g_object_set(G_OBJECT(autoexposure), "optimize", optimize, NULL);
@@ -68,7 +68,7 @@ void AutoexposureControl::render()
 
     ImGui::Text("Maximum exposure");
     ImGui::SameLine();
-    ImGui::InputInt("Maximum exposure", &max_exp, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputInt("##Maximum exposure", &max_exp, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     limit(max_exp,5,200000);
     if (max_exp != previous_max_exp)
     {
@@ -78,7 +78,7 @@ void AutoexposureControl::render()
 
     ImGui::Text("latency");
     ImGui::SameLine();
-    ImGui::InputInt("latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputInt("##latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     limit(latency,0,100);
     if (latency != previous_latency)
     {
@@ -88,7 +88,7 @@ void AutoexposureControl::render()
 
     ImGui::Text("lowerbound");
     ImGui::SameLine();
-    ImGui::InputInt("lowerbound", &lowerbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputInt("##lowerbound", &lowerbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     limit(lowerbound,0,254);
     if (lowerbound != previous_lowerbound)
     {
@@ -98,7 +98,7 @@ void AutoexposureControl::render()
 
     ImGui::Text("upperbound");
     ImGui::SameLine();
-    ImGui::InputInt("upperbound", &upperbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputInt("##upperbound", &upperbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     limit(upperbound,1,255);
     if (upperbound != previous_upperbound)
     {
