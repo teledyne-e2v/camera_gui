@@ -85,24 +85,14 @@ void AutoexposureControl::render()
         previous_latency = latency;
     }
 
-    ImGui::Text("lowerbound");
+    ImGui::Text("target");
     ImGui::SameLine();
-    ImGui::InputInt("##lowerbound", &lowerbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(lowerbound, 0, 254);
-    if (lowerbound != previous_lowerbound)
+    ImGui::InputInt("##target", &target, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(target, 0, 255);
+    if (target != previous_target)
     {
-        g_object_set(G_OBJECT(autoexposure), "lowerbound", lowerbound, NULL);
-        previous_lowerbound = lowerbound;
-    }
-
-    ImGui::Text("upperbound");
-    ImGui::SameLine();
-    ImGui::InputInt("##upperbound", &upperbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(upperbound, 1, 255);
-    if (upperbound != previous_upperbound)
-    {
-        g_object_set(G_OBJECT(autoexposure), "upperbound", upperbound, NULL);
-        previous_upperbound = upperbound;
+        g_object_set(G_OBJECT(autoexposure), "target", target, NULL);
+        previous_target = target;
     }
 
     apply_ROI();
