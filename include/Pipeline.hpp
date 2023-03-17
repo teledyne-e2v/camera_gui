@@ -4,54 +4,54 @@
 
 /**
  * @brief Class creating and working on the pipeline
- * 
+ *
  */
 class Pipeline
 {
 public:
-/**
- * @brief Construct a new Pipeline object
- * 
- * @param argc 
- * @param argv 
- */
+    /**
+     * @brief Construct a new Pipeline object
+     *
+     * @param argc
+     * @param argv
+     */
     Pipeline(int argc, char **argv);
     ~Pipeline();
     /**
      * @brief Get the Sample object
-     * 
-     * @return GstSample* 
+     *
+     * @return GstSample*
      */
     GstSample *getSample();
     /**
      * @brief Set the State object
-     * 
-     * @param state 
+     *
+     * @param state
      */
     void setState(GstState state);
     /**
      * @brief Get the Autofocus object
-     * 
-     * @return GstElement* 
+     *
+     * @return GstElement*
      */
     GstElement *getAutofocus();
     /**
      * @brief Get the Barcode Reader object
-     * 
-     * @return GstElement* 
+     *
+     * @return GstElement*
      */
     GstElement *getBarcodeReader();
 
     /**
      * @brief Get the Autoexposure object
-     * 
-     * @return GstElement* 
+     *
+     * @return GstElement*
      */
     GstElement *getAutoexposure();
     /**
      * @brief activate the freeze
-     * 
-     * @param freeze 
+     *
+     * @param freeze
      */
     GstElement *getMultifocus();
     void freezeStream(bool freeze);
@@ -59,46 +59,46 @@ public:
     void getVideoSize(int *width, int *height);
 
 private:
-/**
- * @brief Create a Elements object
- * 
- */
+    /**
+     * @brief Create a Elements object
+     *
+     */
     void createElements();
     /**
      * @brief link elements togethers
-     * 
+     *
      */
     void linkElements();
 
 private:
-/**
- * @brief pipeline
- * 
- */
-    GstElement *pipeline        = nullptr;
+    /**
+     * @brief pipeline
+     *
+     */
+    GstElement *pipeline = nullptr;
     /**
      * @brief video sources (nvarguscamerasrc in our case)
-     * 
+     *
      */
-    GstElement *videosrc        = nullptr;
+    GstElement *videosrc = nullptr;
 
     /**
      * @brief image freeze plugin
-     * 
+     *
      */
-    GstElement *imageFreeze     = nullptr;
+    GstElement *imageFreeze = nullptr;
 
     /**
      * @brief nvvidconv
-     * 
+     *
      */
-    GstElement *nvvidconv       = nullptr;
-    GstElement *videoconvert    = nullptr;
-    GstElement *barcodereader   = nullptr;
-    GstElement *queue1          = nullptr;
-    GstElement *queue2          = nullptr;
-    GstElement *autofocus       = nullptr;
-    GstElement *appsink         = nullptr;
-    GstElement *autoexposure    = nullptr;
-    GstElement *multifocus    = nullptr;
+    GstElement *nvvidconv = nullptr;
+    GstElement *videoconvert = nullptr;
+    GstElement *barcodereader = nullptr;
+    GstElement *queue1 = nullptr;
+    GstElement *queue2 = nullptr;
+    GstElement *autofocus = nullptr;
+    GstElement *appsink = nullptr;
+    GstElement *autoexposure = nullptr;
+    GstElement *multifocus = nullptr;
 };

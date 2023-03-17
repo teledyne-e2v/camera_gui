@@ -1,7 +1,7 @@
 #include "Autoexposure.hpp"
 #include "utils.hpp"
-AutoexposureControl::AutoexposureControl(GstElement *autoexposure, ModuleControl *moduleCtrl,ROI *Roi)
-    :   Roi(Roi),autoexposure(autoexposure)
+AutoexposureControl::AutoexposureControl(GstElement *autoexposure, ModuleControl *moduleCtrl, ROI *Roi)
+    : Roi(Roi), autoexposure(autoexposure)
 {
     moduleControl = moduleCtrl;
 }
@@ -11,16 +11,15 @@ AutoexposureControl::~AutoexposureControl()
 
 void AutoexposureControl::apply_ROI()
 {
-    ImVec4 roi=Roi->getROI();
+    ImVec4 roi = Roi->getROI();
 
     g_object_set(G_OBJECT(autoexposure),
-                     "roi1x",(int) roi.x,
-                     "roi1y",(int) roi.y,
-                     "roi2x", (int)roi.z,
-                     "roi2y",(int) roi.w,
-                     NULL);
+                 "roi1x", (int)roi.x,
+                 "roi1y", (int)roi.y,
+                 "roi2x", (int)roi.z,
+                 "roi2y", (int)roi.w,
+                 NULL);
 }
-
 
 void AutoexposureControl::render()
 {
@@ -69,7 +68,7 @@ void AutoexposureControl::render()
     ImGui::Text("Maximum exposure");
     ImGui::SameLine();
     ImGui::InputInt("##Maximum exposure", &max_exp, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(max_exp,5,200000);
+    limit(max_exp, 5, 200000);
     if (max_exp != previous_max_exp)
     {
         g_object_set(G_OBJECT(autoexposure), "maxexposition", max_exp, NULL);
@@ -79,7 +78,7 @@ void AutoexposureControl::render()
     ImGui::Text("latency");
     ImGui::SameLine();
     ImGui::InputInt("##latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(latency,0,100);
+    limit(latency, 0, 100);
     if (latency != previous_latency)
     {
         g_object_set(G_OBJECT(autoexposure), "latency", latency, NULL);
@@ -89,7 +88,7 @@ void AutoexposureControl::render()
     ImGui::Text("lowerbound");
     ImGui::SameLine();
     ImGui::InputInt("##lowerbound", &lowerbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(lowerbound,0,254);
+    limit(lowerbound, 0, 254);
     if (lowerbound != previous_lowerbound)
     {
         g_object_set(G_OBJECT(autoexposure), "lowerbound", lowerbound, NULL);
@@ -99,15 +98,14 @@ void AutoexposureControl::render()
     ImGui::Text("upperbound");
     ImGui::SameLine();
     ImGui::InputInt("##upperbound", &upperbound, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(upperbound,1,255);
+    limit(upperbound, 1, 255);
     if (upperbound != previous_upperbound)
     {
         g_object_set(G_OBJECT(autoexposure), "upperbound", upperbound, NULL);
         previous_upperbound = upperbound;
     }
 
-
-	apply_ROI();
+    apply_ROI();
     moduleControl->update_auto_controls();
     ImGui::End();
 }

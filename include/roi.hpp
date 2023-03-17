@@ -70,10 +70,9 @@ private:
 
     /**
      * @brief Whether or not the roi has been changed
-     * 
+     *
      */
     bool changed = false;
-
 
     GstElement *autofocus;
 

@@ -12,16 +12,15 @@
 class GstLog
 {
 public:
-	GstLog ();
-	~GstLog ();
+	GstLog();
+	~GstLog();
 
-	void render (bool* open);
+	void render(bool *open);
 
 private:
-
-	ImGuiTextBuffer  buf;
-	ImGuiTextFilter  filter;
-	ImVector<int>  line_offsets;
+	ImGuiTextBuffer buf;
+	ImGuiTextFilter filter;
+	ImVector<int> line_offsets;
 
 	bool track;
 
@@ -30,7 +29,7 @@ private:
 
 	std::fstream file;
 
-	GTimer* timer;
+	GTimer *timer;
 
-	void readLines ();
+	void readLines();
 };

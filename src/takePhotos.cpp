@@ -112,7 +112,6 @@ void TakePhotos::setImageSize(int width, int height)
     imageHeight = height;
 }
 
-
 void addIFD(unsigned char *Y800data, int *offset, short int tag, short int fieldType, int count, int valueOffset)
 {
     Y800data[*offset] = tag / 256;
@@ -162,11 +161,10 @@ void Y800toTIFF(unsigned char *Y800data, int row, int col, char *path, char *pho
 
     std::ofstream flux;
 
-
     std::string pathStart = std::string(path) +
-        ((path[strlen(path) - 1] == '/') ? "" : "/") +
-        std::string(photoName) + "_" +
-        std::to_string(photoNumber + 1);
+                            ((path[strlen(path) - 1] == '/') ? "" : "/") +
+                            std::string(photoName) + "_" +
+                            std::to_string(photoNumber + 1);
 
     std::string fileName = pathStart + ".tiff";
 
@@ -211,4 +209,3 @@ void saveFrameFunction(std::vector<unsigned char *> *frameVect, int width, int h
     }
     frameVect->clear();
 }
-

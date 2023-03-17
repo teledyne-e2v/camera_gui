@@ -128,8 +128,6 @@ public:
      *
      */
     bool showWindow = false;
-    
-
 
     /**
      * @brief render the window

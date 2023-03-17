@@ -1,6 +1,6 @@
 #include "debug.hpp"
 #include "utils.hpp"
-//#define DEBUG_MODE
+// #define DEBUG_MODE
 
 Debug::Debug(GstElement *autofocus)
 {

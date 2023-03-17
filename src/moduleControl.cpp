@@ -4,7 +4,6 @@ ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
     : moduleCtrl(moduleCtrl)
 {
 
-    
 #ifndef DEBUG_MODE
     auto_controls();
     int PdaRegValue;
@@ -19,7 +18,7 @@ void ModuleControl::apply()
 {
     if (PDAVariation != PDA)
         moduleCtrl->write_VdacPda(PDA);
-	
+
     for (auto &ctrl : controls)
     {
         if (ctrl->previous_value != ctrl->value)
@@ -44,17 +43,16 @@ void ModuleControl::render()
 
         ImGui::PushItemWidth(-1);
         PDAConf();
-	auto_controls_render();
+        auto_controls_render();
         readRegister();
         writeRegister();
-
 
         ImGui::PopItemWidth();
         ImGui::NewLine();
 #ifndef DEBUG_MODE
         apply();
 #endif
-	
+
         ImGui::End();
 
         PDAVariation = PDA;
@@ -65,11 +63,11 @@ void ModuleControl::auto_controls()
 {
     Control_List *control_list;
     control_list = get_control_list();
-	
+
     for (int i = 0; i < control_list->number_of_controls; i++)
     {
 
-        if (strncmp(control_list->controls[i].name, "sensor_",7) != 0)
+        if (strncmp(control_list->controls[i].name, "sensor_", 7) != 0)
         {
             Ext_Control *ext_ctrl = new Ext_Control();
             ext_ctrl->control = &(control_list->controls[i]);
@@ -82,24 +80,22 @@ void ModuleControl::auto_controls()
     }
 }
 
-
 void ModuleControl::update_auto_controls()
 {
     for (auto &ctrl : controls)
     {
         if (strcmp(ctrl->control->type, "bool") == 0)
         {
-            ctrl->value_bool=get_control_by_code(ctrl->control->id);
+            ctrl->value_bool = get_control_by_code(ctrl->control->id);
             ctrl->previous_value_bool = ctrl->value_bool;
         }
         else
         {
-            ctrl->value=get_control_by_code(ctrl->control->id);
+            ctrl->value = get_control_by_code(ctrl->control->id);
             ctrl->previous_value = ctrl->value;
         }
     }
 }
-
 
 void ModuleControl::auto_controls_render()
 {
