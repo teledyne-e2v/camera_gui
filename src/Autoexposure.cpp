@@ -54,8 +54,19 @@ void AutoexposureControl::render()
         toggleOnce2 = false;
     }
 
-    g_object_set(G_OBJECT(autoexposure), "useExpositionTime", useExpTime, NULL);
-    toggleOnce2 = false;
+    if (ImGui::Checkbox("Use Digital Gain", &useDigitalGain))
+    {
+        if (toggleOnce3 == false)
+        {
+            g_object_set(G_OBJECT(autoexposure), "useDigitalGain", useDigitalGain, NULL);
+            toggleOnce3 = true;
+        }
+    }
+    else if (toggleOnce3 == true)
+    {
+        g_object_set(G_OBJECT(autoexposure), "useDigitalGain", useDigitalGain, NULL);
+        toggleOnce3 = false;
+    }
 
     ImGui::Text("Optimization");
     ImGui::SameLine();
@@ -72,8 +83,18 @@ void AutoexposureControl::render()
     limit(max_exp,5,200000);
     if (max_exp != previous_max_exp)
     {
-        g_object_set(G_OBJECT(autoexposure), "maxexposition", max_exp, NULL);
+        g_object_set(G_OBJECT(autoexposure), "maxExposition", max_exp, NULL);
         previous_max_exp = max_exp;
+    }
+
+    ImGui::Text("Maximum analog gain");
+    ImGui::SameLine();
+    ImGui::InputInt("##Maximum analog gain", &max_analog_gain, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(max_analog_gain,5,200000);
+    if (max_analog_gain != previous_max_analog_gain)
+    {
+        g_object_set(G_OBJECT(autoexposure), "maxAnalogGain", max_analog_gain, NULL);
+        previous_max_analog_gain = max_analog_gain;
     }
 
     ImGui::Text("latency");

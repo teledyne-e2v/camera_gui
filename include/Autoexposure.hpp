@@ -24,7 +24,12 @@ private:
     GstElement *autoexposure = nullptr;
     bool work=false;
     bool toggleOnce=true;
+    bool toggleOnce3=true;
     bool useExpTime=false;
+    bool useDigitalGain=true;
+
+    int max_analog_gain=15;
+    int previous_max_analog_gain=15;
     int optimize=1;
     int previous_optimize=1;
     int latency=4;
