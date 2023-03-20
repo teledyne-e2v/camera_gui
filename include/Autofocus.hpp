@@ -28,7 +28,7 @@ private:
     ROI *Roi;
 
     GstElement *autofocus = nullptr;
-    
+
     int ref = 0;
     bool displayRedRectangle = false;
 

@@ -37,7 +37,7 @@ private:
 
 private:
     Window *window;
-    Pipeline * pipeline;
+    Pipeline *pipeline;
 
     ModuleCtrl *moduleCtrl;
 

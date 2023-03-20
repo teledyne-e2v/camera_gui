@@ -36,10 +36,9 @@ private:
     int previous_latency=4;
     int max_exp=20000;
     int previous_max_exp=20000;
-    int lowerbound=50;
-    int previous_lowerbound=50;
-    int upperbound=70;
-    int previous_upperbound=110;
+    int target=60;
+    int previous_target=60;
+
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;
 };

@@ -11,11 +11,9 @@
 #define REG_ANA_GAIN 0x0D
 #define REG_DIG_GAIN 0x0E
 
-
-
 /**RGU UPDATE TOPAZ**/
-//replace exit by return
-//add temperature sensor read
+// replace exit by return
+// add temperature sensor read
 
 /************************************************
  *Main fuction
@@ -73,7 +71,6 @@ void ModuleCtrl::ModuleControlInit()
 	printf("Enable PDA50 DAC\n");
 	enable_VdacPda(devicepda, bus);
 
-
 	/* Init i2c devicetemp */
 
 	memset(&devicetemp, 0, sizeof(devicetemp));
@@ -86,8 +83,6 @@ void ModuleCtrl::ModuleControlInit()
 	devicetemp.page_bytes = 8;
 	/*Address length in bytes*/
 	devicetemp.iaddr_bytes = 1;
-
-
 }
 
 /************************************************
@@ -97,7 +92,7 @@ void ModuleCtrl::ModuleControlClose()
 {
 	// Disable PDA50 DAC
 	printf("Disable PDA50 DAC\n");
-	
+
 	disable_VdacPda(devicepda, bus);
 
 	/* Close de bus*/
@@ -114,7 +109,7 @@ int ModuleCtrl::readReg(int regAddr, int *value)
 	unsigned char buffer[2];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	device.page_bytes = 256;
 	buffer[0] = 1;
@@ -122,14 +117,14 @@ int ModuleCtrl::readReg(int regAddr, int *value)
 	if ((i2c_ioctl_read(&device, regAddr, buffer, size)) != size)
 	{
 		fprintf(stderr, "READ ERROR: device=0x%x register address=0x%x\n", device.addr, regAddr);
-		//i2c_close(bus);
-		error=-3;
+		// i2c_close(bus);
+		error = -3;
 	}
 	else
 	{
 		*value = buffer[0] * 256 + buffer[1];
 	}
-	//printf("error=%d\n",error);
+	// printf("error=%d\n",error);
 	return error;
 }
 
@@ -141,7 +136,7 @@ int ModuleCtrl::writeReg(int regAddr, int value)
 	unsigned char buffer[2];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	*buffer = ((value)&0xff00) >> 8;
 	*(buffer + 1) = ((value)&0x00ff);
@@ -151,25 +146,24 @@ int ModuleCtrl::writeReg(int regAddr, int value)
 	if ((i2c_ioctl_write(&device, regAddr, buffer, size)) != size)
 	{
 		fprintf(stderr, "WRITE ERROR: device=0x%x register address=0x%x\n", device.addr, regAddr);
-		//i2c_close(bus);
-		error=-3;
+		// i2c_close(bus);
+		error = -3;
 	}
-	//printf("error=%d\n",error);
+	// printf("error=%d\n",error);
 	return error;
 }
 int ModuleCtrl::read_sensor_state(int *state)
 {
-	//device.page_bytes = 256;
-
+	// device.page_bytes = 256;
 
 	int ulAddress;
-	int ulValue=0;
-	int error=0;
+	int ulValue = 0;
+	int error = 0;
 
 	ulAddress = REG_FB_STATE;
 
-	error=this->readReg(ulAddress, &ulValue);
-	*state=ulValue;
+	error = this->readReg(ulAddress, &ulValue);
+	*state = ulValue;
 
 	return error;
 }
@@ -326,7 +320,6 @@ int ModuleCtrl::setAnalogGain(float again)
 	return 0;
 }
 
-
 /************************************************
  *Set the digital gain
  ************************************************/
@@ -340,7 +333,7 @@ int ModuleCtrl::setDigitalGain(float dgain)
 	regAddr = REG_DIG_GAIN;
 	device.page_bytes = 256;
 
-	//from x0.004 to x16 (decimal ex: x1=256, x1.5=384...)
+	// from x0.004 to x16 (decimal ex: x1=256, x1.5=384...)
 	b = (int)(dgain * 256);
 
 	if (b > 4095)
@@ -348,7 +341,7 @@ int ModuleCtrl::setDigitalGain(float dgain)
 	if (b < 1)
 		b = 1;
 
-	//write (b) in register
+	// write (b) in register
 	*buffer = ((b)&0xff00) >> 8;
 	*(buffer + 1) = ((b)&0x00ff);
 	if ((i2c_ioctl_write(&device, regAddr, buffer, size)) != size)
@@ -360,7 +353,6 @@ int ModuleCtrl::setDigitalGain(float dgain)
 	return 0;
 }
 
-
 /************************************************
  *TLENS PDA50 functions
  ************************************************/
@@ -370,17 +362,17 @@ int enable_VdacPda(I2CDevice device, int bus)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	// SET CFG_ENABLE = 1
 	*buffer = 0x01;
 	regAddr = 0x00;
 	if ((i2c_ioctl_write(&device, regAddr, buffer, size)) != size)
 	{
-		//fprintf(stderr, "Can't write in %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't write in %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 	return error;
 }
@@ -391,17 +383,17 @@ int disable_VdacPda(I2CDevice device, int bus)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	// SET CFG_ENABLE = 0
 	*buffer = 0x00;
 	regAddr = 0x00;
 	if ((i2c_ioctl_write(&device, regAddr, buffer, size)) != size)
 	{
-		//fprintf(stderr, "Can't write in %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't write in %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 	return error;
 }
@@ -412,7 +404,7 @@ int ModuleCtrl::write_VdacPda(int PdaRegValue)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	// SET DAC VALUE
 	// printf("PdaRegValue=%d\n", PdaRegValue);
@@ -444,10 +436,10 @@ int ModuleCtrl::write_VdacPda(int PdaRegValue)
 	*buffer = MSB;
 	if ((i2c_ioctl_write(&devicepda, regAddr, buffer, size)) != size)
 	{
-		//fprintf(stderr, "Can't write in %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't write in %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 	// dumpPda50Reg(devicepda, bus);
 	//  WRITE LSB
@@ -455,10 +447,10 @@ int ModuleCtrl::write_VdacPda(int PdaRegValue)
 	*buffer = LSB;
 	if ((i2c_ioctl_write(&devicepda, regAddr, buffer, size)) != size)
 	{
-		//fprintf(stderr, "Can't write in %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't write in %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 	// dumpPda50Reg(devicepda, bus);
 	return error;
@@ -471,7 +463,7 @@ int ModuleCtrl::read_VdacPda(int *PdaRegValue, double *PdaVoltageValue)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
+	int error = 0;
 
 	devicepda.page_bytes = 1;
 
@@ -480,10 +472,10 @@ int ModuleCtrl::read_VdacPda(int *PdaRegValue, double *PdaVoltageValue)
 	regAddr = 0x02;
 	if ((i2c_ioctl_read(&devicepda, regAddr, &MSB, size)) != size)
 	{
-		//fprintf(stderr, "Can't read %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't read %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 
 	// READ LSB
@@ -491,10 +483,10 @@ int ModuleCtrl::read_VdacPda(int *PdaRegValue, double *PdaVoltageValue)
 	*buffer = LSB;
 	if ((i2c_ioctl_read(&devicepda, regAddr, &LSB, size)) != size)
 	{
-		//fprintf(stderr, "Can't read %x reg!\n", regAddr);
-		//i2c_close(bus);
-		//exit(-3);
-		error=-3;
+		// fprintf(stderr, "Can't read %x reg!\n", regAddr);
+		// i2c_close(bus);
+		// exit(-3);
+		error = -3;
 	}
 
 	if (MSB >= 128)
@@ -518,9 +510,9 @@ int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int T
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
-	uint16_t value=0;
-	uint8_t extended=TempMode;
+	int error = 0;
+	uint16_t value = 0;
+	uint8_t extended = TempMode;
 	unsigned char MSB, LSB;
 
 	// READ REMOTE_MSB
@@ -528,7 +520,7 @@ int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int T
 	if ((i2c_ioctl_read(&devicetemp, regAddr, &MSB, size)) != size)
 	{
 		fprintf(stderr, "READ ERROR: device=0x%x register address=0x%x\n", devicetemp.addr, regAddr);
-		error=-3;
+		error = -3;
 	}
 
 	// READ REMOTE_LSB
@@ -537,15 +529,15 @@ int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int T
 	if ((i2c_ioctl_read(&devicetemp, regAddr, &LSB, size)) != size)
 	{
 		fprintf(stderr, "READ ERROR: device=0x%x register address=0x%x\n", devicetemp.addr, regAddr);
-		error=-3;
-	}	
-	
-	if(error==0)
+		error = -3;
+	}
+
+	if (error == 0)
 	{
 		value = ((MSB & 0x7F) << 8) + LSB;
 		printf("REMOTE=0x%x (%d), MSB=0x%x, LSB=0x%x\n", value, value, MSB, LSB);
-		*RemoteTempValue=(value >> 8) + (extended ? -64 : 0 ) + ((value & 0xF0) >> 4) * 0.0625;
-		//fprintf(stderr, "RemoteTemp=%f°C\n",*RemoteTempValue);
+		*RemoteTempValue = (value >> 8) + (extended ? -64 : 0) + ((value & 0xF0) >> 4) * 0.0625;
+		// fprintf(stderr, "RemoteTemp=%f°C\n",*RemoteTempValue);
 	}
 
 	// READ LOCAL
@@ -553,14 +545,14 @@ int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int T
 	if ((i2c_ioctl_read(&devicetemp, regAddr, &MSB, size)) != size)
 	{
 		fprintf(stderr, "READ ERROR: device=0x%x register address=0x%x\n", devicetemp.addr, regAddr);
-		error=-3;
+		error = -3;
 	}
 	else
 	{
-		fprintf(stderr, "LOCAL=0x%x (%d)\n",MSB,MSB);
+		fprintf(stderr, "LOCAL=0x%x (%d)\n", MSB, MSB);
 	}
-		*LocalTempValue=(double)( MSB - 64 * TempMode);
-		//fprintf(stderr, "LocalTemp=%f°C\n",*LocalTempValue);
+	*LocalTempValue = (double)(MSB - 64 * TempMode);
+	// fprintf(stderr, "LocalTemp=%f°C\n",*LocalTempValue);
 
 	return error;
 }
@@ -571,8 +563,8 @@ int ModuleCtrl::get_TempMode(int *tempMode)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
-	uint16_t value=0;
+	int error = 0;
+	uint16_t value = 0;
 
 	unsigned char MSB, LSB;
 
@@ -581,15 +573,15 @@ int ModuleCtrl::get_TempMode(int *tempMode)
 	if ((i2c_ioctl_read(&devicetemp, regAddr, &MSB, size)) != size)
 	{
 		fprintf(stderr, "READ ERROR: device=0x%x register address=0x%x\n", devicetemp.addr, regAddr);
-		error=-3;
+		error = -3;
 	}
 	else
 	{
-				
-		fprintf(stderr, "MSB=%x\n",MSB);
+
+		fprintf(stderr, "MSB=%x\n", MSB);
 	}
 
-	*tempMode=(MSB & 0x04) >> 2;
+	*tempMode = (MSB & 0x04) >> 2;
 
 	return error;
 }
@@ -600,20 +592,20 @@ int ModuleCtrl::set_TempMode(int tempMode)
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
-	int error=0;
-	uint16_t value=0;
+	int error = 0;
+	uint16_t value = 0;
 
 	unsigned char MSB, LSB;
 	//*buffer = ((value)&0xff00) >> 8;
-	*buffer= 0x04*tempMode;
-	
-	//devicepda.page_bytes = 8;
-	// WRITE CONFIG REG
-	regAddr = 0x09;	
+	*buffer = 0x04 * tempMode;
+
+	// devicepda.page_bytes = 8;
+	//  WRITE CONFIG REG
+	regAddr = 0x09;
 	if ((i2c_ioctl_write(&devicetemp, regAddr, buffer, size)) != size)
 	{
 		fprintf(stderr, "WRITE ERROR: device=0x%x register address=0x%x\n", device.addr, regAddr);
-		error=-3;
+		error = -3;
 	}
 
 	return error;

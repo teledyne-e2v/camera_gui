@@ -26,9 +26,9 @@ void BarcodeDisplayer::render()
 
     if (ImGui::Button("Clear"))
     {
-        #ifndef DEBUG_MODE
+#ifndef DEBUG_MODE
         g_object_set(G_OBJECT(barcodereader), "clearBarcode", true, NULL);
-        #endif
+#endif
     }
     updateLogs();
     ImGui::End();
@@ -42,12 +42,12 @@ void BarcodeDisplayer::updateLogs()
     g_object_get(G_OBJECT(barcodereader), "strCode", &message, NULL);
     if (message != NULL)
     {
-	    if (strlen(message) == 0)
-	    {
-		    strncpy(this->barcodes, "empty", 6);
-	    }
-	    else
-	    {
+        if (strlen(message) == 0)
+        {
+            strncpy(this->barcodes, "empty", 6);
+        }
+        else
+        {
             strncpy(barcodes, message, 80000);
             free(message);
             barcodes[80000 - 1] = 0;

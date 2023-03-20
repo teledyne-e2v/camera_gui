@@ -34,8 +34,8 @@ private:
     void apply();
     void getCoordinates();
     std::vector<COORDS> vectPoints;
-    void frameBarcodes(ImDrawList *drawList,ImVec2 sizeOfStream ,ImVec2 streamInWindow);
-    int getPos(const char * str,const size_t len, unsigned int i,const char delimiter);
+    void frameBarcodes(ImDrawList *drawList, ImVec2 sizeOfStream, ImVec2 streamInWindow);
+    int getPos(const char *str, const size_t len, unsigned int i, const char delimiter);
 
 private:
     GstElement *barcodereader;
@@ -44,7 +44,7 @@ private:
     bool compression = false;
 
     barcode listOfBarcodes[BarcodesNumber];
-    
+
     bool any = false;
     bool barcode1D = false;
     bool barcode2D = false;
