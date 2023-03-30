@@ -37,7 +37,7 @@ void ModuleCtrl::ModuleControlInit()
 	{
 
 		fprintf(stderr, "Open i2c bus:%s error!\n", bus_name);
-		exit(-3);
+		return;
 	}
 	printf("Bus %s open\n", bus_name);
 
@@ -188,7 +188,7 @@ int ModuleCtrl::setTint(float b)
 	{
 		fprintf(stderr, "Can't read %x reg!\n", regAddr);
 		i2c_close(bus);
-		exit(-3);
+		return 0;
 	}
 
 	line = (*buffer << 8) + *(buffer + 1);
@@ -205,7 +205,7 @@ int ModuleCtrl::setTint(float b)
 	{
 		fprintf(stderr, "Can't write in %x reg!\n", regAddr);
 		i2c_close(bus);
-		exit(-3);
+		return 0;
 	}
 
 	// write in reg_tint_ck
@@ -217,7 +217,7 @@ int ModuleCtrl::setTint(float b)
 	{
 		fprintf(stderr, "Can't write in %x reg!\n", regAddr);
 		i2c_close(bus);
-		exit(-3);
+		return 0;
 	}
 
 	return 0;
@@ -315,7 +315,7 @@ int ModuleCtrl::setAnalogGain(float again)
 	{
 		fprintf(stderr, "Can't write in %x reg!\n", regAddr);
 		i2c_close(bus);
-		exit(-3);
+		return 0;
 	}
 	return 0;
 }
@@ -348,7 +348,7 @@ int ModuleCtrl::setDigitalGain(float dgain)
 	{
 		fprintf(stderr, "Can't write in %x reg!\n", regAddr);
 		i2c_close(bus);
-		exit(-3);
+		return 0;
 	}
 	return 0;
 }
