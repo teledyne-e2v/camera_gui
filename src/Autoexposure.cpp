@@ -12,13 +12,16 @@ AutoexposureControl::~AutoexposureControl()
 void AutoexposureControl::apply_ROI()
 {
     ImVec4 roi = Roi->getROI();
-
-    g_object_set(G_OBJECT(autoexposure),
+    if(roi != previousRoi)
+    {
+        previousRoi = roi;
+        g_object_set(G_OBJECT(autoexposure),
                  "roi1x", (int)roi.x,
                  "roi1y", (int)roi.y,
                  "roi2x", (int)roi.z,
                  "roi2y", (int)roi.w,
                  NULL);
+    }
 }
 
 void AutoexposureControl::render()
