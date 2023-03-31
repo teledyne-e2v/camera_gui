@@ -142,6 +142,7 @@ void Application::populateFrame()
             pipeline->freezeStream(!frozen);
             frozen = !frozen;
         }
+        ImGui::Text("%d",(int)FPS);
 
         /**
          *  Keep the video stream aspect ratio when drawing it to the screen
