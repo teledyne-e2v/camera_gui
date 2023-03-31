@@ -22,7 +22,6 @@ void Pipeline::createElements()
     pipeline = gst_pipeline_new("pipeline");
     queue1 = gst_element_factory_make("queue", "queue0");
     queue2 = gst_element_factory_make("queue", "queue1");
-    videoconvert = gst_element_factory_make("videoconvert", "videoconvert0");
     autoexposure = gst_element_factory_make("autoexposure", "autoexposure0");
     appsink = gst_element_factory_make("appsink", "videosink0");
     imageFreeze = gst_element_factory_make("freeze", "freeze0");
