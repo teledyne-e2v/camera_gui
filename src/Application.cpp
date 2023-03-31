@@ -1,7 +1,7 @@
 #include "Application.hpp"
 #include <unistd.h>
 #include <fstream>
-
+#include <chrono>
 Application::Application(int argc, char **argv)
 {
     loadImGuiConfig();
@@ -15,17 +15,17 @@ Application::Application(int argc, char **argv)
     window = new Window();
 
     pipeline = new Pipeline(argc, argv);
-    
+
     moduleControlConfig = new ModuleControl(moduleCtrl);
     autofocusConfig = new Config(pipeline->getAutofocus());
     Roi = new ROI(pipeline->getAutofocus());
-    autofocusControl = new AutofocusControl(pipeline->getAutofocus(), moduleCtrl, moduleControlConfig, autofocusConfig,Roi);
+    autofocusControl = new AutofocusControl(pipeline->getAutofocus(), moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
     autofocusDebug = new Debug(pipeline->getAutofocus());
     barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
     barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
     photoTaker = new TakePhotos(&map);
-    multifocusControl = new MultifocusControl(pipeline->getMultifocus(),Roi);
-    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(),moduleControlConfig,Roi);
+    multifocusControl = new MultifocusControl(pipeline->getMultifocus(), Roi);
+    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(), moduleControlConfig, Roi);
     glGenTextures(1, &videotex);
     glBindTexture(GL_TEXTURE_2D, videotex);
 
@@ -50,7 +50,7 @@ Application::~Application()
 
 void Application::run()
 {
-	printf("Running app\n");
+    printf("Running app\n");
     pipeline->setState(GST_STATE_PLAYING);
     pipeline->getVideoSize(&videoWidth, &videoHeight);
     autofocusControl->setVideoSize(videoWidth, videoHeight);
@@ -77,12 +77,11 @@ void Application::createFrame()
         GstBuffer *videobuf = gst_sample_get_buffer(videosample);
 
         gst_buffer_map(videobuf, &map, GST_MAP_READ);
-	gst_sample_unref(videosample);
+        gst_sample_unref(videosample);
         glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
                      GL_UNSIGNED_BYTE, map.data);
 
         gst_buffer_unmap(videobuf, &map);
-        
     }
 
     ImGui_ImplOpenGL3_NewFrame();
@@ -93,6 +92,27 @@ void Application::createFrame()
 
 void Application::populateFrame()
 {
+
+    if (frameCounter == 0)
+    {
+        start = std::chrono::high_resolution_clock::now();
+    }
+    end = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    if(duration.count() > 1000000)
+    {
+        frameCounter++;
+        FPS=frameCounter*1000000.0/duration.count();
+        frameCounter=0;
+    }
+    else
+    {
+        frameCounter++;
+    }
+    printf("FPS : %f\n",FPS);
+
+
     createDockSpace();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -116,7 +136,6 @@ void Application::populateFrame()
 
         ImGui::SetNextWindowClass(&gstWindowClass);
         ImGui::Begin("Gstreamer stream", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove);
-	
 
         if (ImGui::Button((frozen) ? "Resume" : "Freeze"))
         {
@@ -144,7 +163,7 @@ void Application::populateFrame()
             streamSize.x = (windowSize.y * videoWidth) / videoHeight;
             streamSize.y = windowSize.y - 10;
         }
-	
+
         ImVec2 streamPosition = ImVec2((windowSize.x - streamSize.x) * 0.5f, (windowSize.y - streamSize.y) * 0.5f);
         streamPosition.y += ImGui::GetCursorPosY();
         windowSize.y += windowSizeYOffset;
@@ -156,9 +175,8 @@ void Application::populateFrame()
 
         autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
 
+        autofocusConfig->showWindow = true;
 
-	autofocusConfig->showWindow = true;
-	
         autofocusConfig->security();
         autofocusConfig->render();
         moduleControlConfig->showWindow = true;
@@ -167,7 +185,7 @@ void Application::populateFrame()
         multifocusControl->render();
         barcodeReaderConfig->render(drawList, streamSize, streamPosition + windowPosition);
         barcodeDisplayer->render();
-	
+
         autofocusDebug->render(autofocusControl->isAutofocusDone);
         ImGui::End();
     }

@@ -16,6 +16,7 @@
 #include "BarcodeDisplayer.hpp"
 #include "Autoexposure.hpp"
 #include "Multifocus.hpp"
+#include <chrono>
 
 class Application
 {
@@ -64,4 +65,9 @@ private:
     int videoHeight = 0;
 
     bool frozen = false;
+
+    int frameCounter=0;
+    std::chrono::_V2::system_clock::time_point start;
+    std::chrono::_V2::system_clock::time_point end;
+    float FPS=0;
 };
