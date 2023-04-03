@@ -22,9 +22,9 @@ Install tem with:
 
 	
 The application need the following gstreamer plugin to run properly:
-- autofocus
-- barcodereader
-- freeze
+- gst-autofocus
+- gst-barcode-reader
+- gst-freeze
 
 The installation can be checked with ```gst-inspect-1.0```.
 It is required to setup the following environment variables before check the pulgins installation:
