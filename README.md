@@ -4,58 +4,97 @@
 
 This application aims to simplify the use of autofocus and sensor control.
 
+It is running on **Nvidia Jetson Nano** and require **OPTIMOM 2M** driver installed on the system.
+
 # Dependencies
+Library dependencies are:
+- v4l-utils
+- libv4l-dev
+- libgstreamer1.0-dev
+- libgstreamer-plugins-base1.0-dev
+- libglfw3-dev
+- libglfw3
 
-	- libglfw3-dev
-	- libglfw3
-	- meson
-	- ninja
-    - autofocus plugin
-    - barcodereader plugin
-    - freeze plugin
+Install tem with: 
 
-# Auto-installation script
-
-
-To auto-install all dependencies (except the plugins) and auto-compile, run :
-	./install.sh
-
-To install the plugins refer to their documentation
+	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3
 
 
-# Manual Compilation (useless if script worked)
- 
-First you must make sure that your device's clock is correctly setup.
+	
+The application need the following gstreamer plugin to run properly:
+- gst-autofocus
+- gst-barcode-reader
+- gst-freeze
+
+The installation can be checked with ```gst-inspect-1.0```.
+It is required to setup the following environment variables before check the pulgins installation:
+
+	export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
+	export LD_LIBRARY_PATH=/usr/local/lib/
+
+Then the plugins can be checked one by one.
+
+Autofocus:
+
+	gst-inspect-1.0 autofocus
+	
+Barcode Reader:
+	
+	gst-inspect-1.0 barcodereader
+
+Image Freeze:
+	
+	gst-inspect-1.0 freeze
+
+In the these commands return an error, please install the missing plugin following the dedicated procedure.
+
+# Installation
+First you must make sure that your device's clock is correctly setup on the Jetson Nano.
 Otherwise the compilation will fail.
 
-Move to the ImGuiInterface directory using the command cd
+Following tools are required for build and compilation:
+- meson
+- ninja
+
+Check installation with:
+
+	ninja --version
+	meson --version
+	
+Ninja should be preinstalled but meson may need to be installes:
+
+	sudo apt install meson
+
+Move to the **camera_gui** directory using the command cd
 
 Then do:
+
     meson build
 
 And finally:
+
     ninja -C build
 
 Note: if some dependencies are missing, meson will signal it.
 
 # Usage
 
-run:
+Execute the following srcipt to start the application:
 
-- start.sh
+	start.sh
 
 You should see the interface with the video stream.
 
-if it doesn't work :
+If the start script doesn't work, you can execute manually:
 
-- cd build
-- export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
-- export LD_LIBRARY_PATH=/usr/local/lib/
-- ./gst-imgui
+	cd build
+	export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
+	export LD_LIBRARY_PATH=/usr/local/lib/
+	./gst-imgui
 
-# Explanation
+# Camera GUI manual
 
-## Autofocus Controle
+## Autofocus Control
 
 Allows the user to do the autofocus and change the ROI
 

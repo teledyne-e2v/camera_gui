@@ -506,7 +506,7 @@ int ModuleCtrl::read_VdacPda(int *PdaRegValue, double *PdaVoltageValue)
 
 int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int TempMode)
 {
-	int regAddr, b;
+	int regAddr;
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
@@ -559,14 +559,13 @@ int ModuleCtrl::read_Temp(double *LocalTempValue, double *RemoteTempValue, int T
 
 int ModuleCtrl::get_TempMode(int *tempMode)
 {
-	int regAddr, b;
+	int regAddr;
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
 	int error = 0;
-	uint16_t value = 0;
 
-	unsigned char MSB, LSB;
+	unsigned char MSB;
 
 	// READ CONFIG REG
 	regAddr = 0x03;
@@ -588,14 +587,12 @@ int ModuleCtrl::get_TempMode(int *tempMode)
 
 int ModuleCtrl::set_TempMode(int tempMode)
 {
-	int regAddr, b;
+	int regAddr;
 	unsigned char buffer[1];
 	ssize_t size = sizeof(buffer);
 	memset(buffer, 0, size);
 	int error = 0;
-	uint16_t value = 0;
 
-	unsigned char MSB, LSB;
 	//*buffer = ((value)&0xff00) >> 8;
 	*buffer = 0x04 * tempMode;
 

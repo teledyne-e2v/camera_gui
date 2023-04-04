@@ -13,20 +13,13 @@
 
 class AutofocusControl
 {
-public:
-    AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi);
-    ~AutofocusControl();
-
-    void render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 positionOfStream, ImVec2 windowSize, ImVec2 windowPosition);
-
-    void setVideoSize(int videoWidth, int videoHeight);
 
 public:
     bool isAutofocusDone = false;
 
 private:
-    ROI *Roi;
 
+	
     GstElement *autofocus = nullptr;
 
     int ref = 0;
@@ -35,9 +28,19 @@ private:
     bool startingAutofocus = false;
     ModuleCtrl *moduleCtrl;
     ModuleControl *moduleControl;
+	Config *conf = NULL;
+    ROI *Roi = NULL;
     bool calibrating = false;
     bool calibrationState = false;
-    Config *conf;
+    
 
     const ImVec2 buttonSize = ImVec2(100, 0);
+public:
+    AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi);
+    ~AutofocusControl();
+
+    void render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 positionOfStream, ImVec2 windowSize, ImVec2 windowPosition);
+
+    void setVideoSize(int videoWidth, int videoHeight);
+
 };

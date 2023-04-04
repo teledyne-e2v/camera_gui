@@ -140,16 +140,12 @@ void close_driver_access()
 
 void initialization(char *v4l2_device, int sensor_mode)
 {
-
-    unsigned int n_buffers;
-
-    struct buffer *buffers;
-
     fd = open(v4l2_device, O_RDWR | O_NONBLOCK, 0);
     system("v4l2-ctl -l > /tmp/ctrls_list.txt");
     ctrls = fopen("/tmp/ctrls_list.txt", "r"); // open this file
 
     char line[256];
+    char sensor_mode_name[]="sensor_mode";
     int j = 0;
 
     while (fgets(line, 256, ctrls))
@@ -234,28 +230,28 @@ void initialization(char *v4l2_device, int sensor_mode)
         fmt.fmt.pix.width = 1920;
         fmt.fmt.pix.height = 1080;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_GREY;
-        set_control("sensor_mode", 2);
+        set_control(sensor_mode_name, 2);
     }
     else if (sensor_mode == 0)
     {
         fmt.fmt.pix.width = 1920;
         fmt.fmt.pix.height = 1080;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_Y10;
-        set_control("sensor_mode", 0);
+        set_control(sensor_mode_name, 0);
     }
     else if (sensor_mode == 1)
     {
         fmt.fmt.pix.width = 1920;
         fmt.fmt.pix.height = 800;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_Y10;
-        set_control("sensor_mode", 1);
+        set_control(sensor_mode_name, 1);
     }
     else if (sensor_mode == 3)
     {
         fmt.fmt.pix.width = 1920;
         fmt.fmt.pix.height = 80;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_GREY;
-        set_control("sensor_mode", 3);
+        set_control(sensor_mode_name, 3);
     }
     else
     {

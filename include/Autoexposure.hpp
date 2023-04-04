@@ -41,4 +41,5 @@ private:
 
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;
+    ImVec4 previousRoi;
 };
