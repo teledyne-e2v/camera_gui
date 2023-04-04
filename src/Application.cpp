@@ -110,7 +110,6 @@ void Application::populateFrame()
     {
         frameCounter++;
     }
-    printf("FPS : %f\n",FPS);
 
 
     createDockSpace();
