@@ -37,7 +37,15 @@ Then the plugins can be checked one by one.
 Autofocus:
 
 	gst-inspect-1.0 autofocus
-	
+
+Multifocus:
+
+	gst-inspect-1.0 multifocus
+
+Autoexposure:
+
+	gst-inspect-1.0 autoexposure
+
 Barcode Reader:
 	
 	gst-inspect-1.0 barcodereader
