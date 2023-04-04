@@ -55,12 +55,47 @@ void Pipeline::linkElements()
 #else
     // gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
     gst_bin_add_many(GST_BIN(pipeline), videosrc, imageFreeze, barcodereader, autofocus, multifocus, autoexposure, appsink, NULL);
-
-    if (!videosrc || !barcodereader || !appsink || !pipeline || !imageFreeze || !autofocus || !multifocus || !autoexposure)
+    if(!videosrc)
     {
-        printf("not initialized\n");
+        printf("v4l2src plugin not initialized\n");
         exit(0);
     }
+    else if(!barcodereader)
+    {
+        printf("barcodereader plugin not initialized\n");
+        exit(0);
+    }
+    else if(!appsink)
+    {
+        printf("appsink plugin not initialized\n");
+        exit(0);
+    }
+    else if(!imageFreeze)
+    {
+        printf("imageFreeze plugin not initialized\n");
+        exit(0);
+    }
+    else if(!autofocus)
+    {
+        printf("autofocus plugin not initialized\n");
+        exit(0);
+    }
+    else if(!multifocus)
+    {
+        printf("multifocus plugin not initialized\n");
+        exit(0);
+    }
+    else if(!autoexposure)
+    {
+        printf("autoexposure plugin not initialized\n");
+        exit(0);
+    }
+    else if(!pipeline)
+    {
+        printf("pipeline not initialized\n");
+        exit(0);
+    }
+
 
     g_assert(gst_element_link_many(videosrc, imageFreeze, barcodereader, autofocus, autoexposure, multifocus, appsink, NULL));
 
