@@ -38,9 +38,9 @@ void Pipeline::createElements()
 
 void Pipeline::linkElements()
 {
-    GstCaps *caps = caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "GRAY8", NULL);
-    GstElement *filter = gst_element_factory_make("capsfilter", "filter");
+
 #ifdef DEBUG_MODE
+    GstCaps *caps = caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "GRAY8", NULL);
     gst_bin_add_many(GST_BIN(pipeline), videosrc, imageFreeze, appsink, NULL);
 
     if (!videosrc || !appsink || !pipeline || !imageFreeze)
@@ -51,6 +51,7 @@ void Pipeline::linkElements()
 
     g_assert(gst_element_link_many(videosrc, imageFreeze, NULL));
     g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
+    gst_caps_unref(caps);
 #else
     // gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
     gst_bin_add_many(GST_BIN(pipeline), videosrc, imageFreeze, barcodereader, autofocus, multifocus, autoexposure, appsink, NULL);
@@ -73,7 +74,7 @@ void Pipeline::linkElements()
     g_object_set(G_OBJECT(appsink), "sync", 0, NULL);
     g_object_set(G_OBJECT(appsink), "drop", 1, NULL);
     g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);*/
-    g_object_set(G_OBJECT(filter), "caps", caps, NULL);
+    //g_object_set(G_OBJECT(filter), "caps", caps, NULL);
     g_object_set(G_OBJECT(multifocus), "work", false, NULL);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
@@ -81,7 +82,7 @@ void Pipeline::linkElements()
 
     g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
 
-    gst_caps_unref(caps);
+    
 }
 
 GstSample *Pipeline::getSample()

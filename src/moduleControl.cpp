@@ -105,14 +105,14 @@ void ModuleControl::auto_controls_render()
 
         if (strcmp(ctrl->control->type, "bool") == 0)
         {
-            ImGui::Text(ctrl->control->name);
+            ImGui::Text("%s",ctrl->control->name);
             ImGui::SameLine(elementOffset);
             if (ImGui::Checkbox(ctrl->control->name, &ctrl->value_bool))
                 ;
         }
         else
         {
-            ImGui::Text(ctrl->control->name);
+            ImGui::Text("%s",ctrl->control->name);
             ImGui::SameLine(elementOffset);
             ImGui::InputInt(ctrl->control->name, &ctrl->value, 1, 100, ImGuiInputTextFlags_CharsDecimal);
             if (ctrl->value < ctrl->control->minimum)
