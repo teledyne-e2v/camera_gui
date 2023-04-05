@@ -18,6 +18,8 @@ Application::Application(int argc, char **argv)
 
     moduleControlConfig = new ModuleControl(moduleCtrl);
     Roi = new ROI();
+    freeze=pipeline->getImageFreeze();
+
     autofocus = pipeline->getAutofocus();
     if(autofocus)
     {

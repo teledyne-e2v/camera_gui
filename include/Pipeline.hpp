@@ -54,6 +54,7 @@ public:
      * @param freeze
      */
     GstElement *getMultifocus();
+GstElement *getImageFreeze();
     void freezeStream(bool freeze);
 
     void getVideoSize(int *width, int *height);

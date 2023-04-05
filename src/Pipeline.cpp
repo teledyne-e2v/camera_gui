@@ -167,6 +167,12 @@ GstElement *Pipeline::getAutofocus()
 {
     return autofocus;
 }
+
+GstElement *Pipeline::getImageFreeze()
+{
+    return imageFreeze;
+}
+
 GstElement *Pipeline::getBarcodeReader()
 {
     return barcodereader;
