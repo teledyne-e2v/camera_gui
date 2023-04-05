@@ -38,7 +38,8 @@ private:
     int previous_max_exp=20000;
     int target=60;
     int previous_target=60;
-
+    bool loadAndSaveConf=true;
+bool toggleOnce3=true;
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;
     ImVec4 previousRoi;

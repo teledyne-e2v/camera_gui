@@ -56,6 +56,20 @@ void AutoexposureControl::render()
         toggleOnce2 = false;
     }
 
+    if (ImGui::Checkbox("Load and save conf", &loadAndSaveConf))
+    {
+        if (toggleOnce3 == false)
+        {
+            g_object_set(G_OBJECT(autoexposure), "loadAndSaveConf", loadAndSaveConf, NULL);
+            toggleOnce3 = true;
+        }
+    }
+    else if (toggleOnce3 == true)
+    {
+        g_object_set(G_OBJECT(autoexposure), "loadAndSaveConf", loadAndSaveConf, NULL);
+        toggleOnce3 = false;
+    }
+
     if (ImGui::Checkbox("Use Digital Gain", &useDigitalGain))
     {
         if (toggleOnce3 == false)
