@@ -60,7 +60,7 @@ void ROI::resetROI()
     normPos1 = {0, 0};
     normPos2 = {1, 1};
     changed = true;
-    updatePluginROI();
+    //updatePluginROI();
 }
 
 void ROI::selectROI(ImVec2 streamPosition, ImVec2 streamSize, ImVec2 windowSize, ImVec2 windowPosition)
@@ -98,7 +98,7 @@ void ROI::selectROI(ImVec2 streamPosition, ImVec2 streamSize, ImVec2 windowSize,
     {
         dragging = false;
         changed = true;
-        updatePluginROI();
+        //updatePluginROI();
     }
 }
 
@@ -183,7 +183,7 @@ void ROI::moveROI(ImVec2 streamPosition, ImVec2 streamSize)
     {
         dragging = false;
         changed = true;
-        updatePluginROI();
+        //updatePluginROI();
     }
 }
 
@@ -195,7 +195,7 @@ void ROI::centerROI(ImVec2 center)
 
     changed = true;
 
-    updatePluginROI();
+    //updatePluginROI();
 }
 
 void ROI::drawROI(ImDrawList *drawList, ImVec2 windowPos, ImVec2 windowSize, bool lostFocus)
@@ -280,7 +280,7 @@ void ROI::render()
 
                 changed = true;
 
-                updatePluginROI();
+                //updatePluginROI();
             }
         }
 
@@ -308,7 +308,7 @@ void ROI::render()
 
                 changed = true;
 
-                updatePluginROI();
+                //updatePluginROI();
             }
         }
 
@@ -353,7 +353,7 @@ void ROI::render()
 
                 changed = true;
 
-                updatePluginROI();
+                //updatePluginROI();
             }
         }
     }

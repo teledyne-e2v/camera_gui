@@ -32,7 +32,8 @@ private:
     ROI *Roi = NULL;
     bool calibrating = false;
     bool calibrationState = false;
-    
+    ImVec4 previousRoi;
+    void updatePluginROI();
 
     const ImVec2 buttonSize = ImVec2(100, 0);
 public:

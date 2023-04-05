@@ -20,6 +20,24 @@ AutofocusControl::~AutofocusControl()
 {
 }
 
+void AutofocusControl::updatePluginROI()
+{
+#ifndef DEBUG_MODE
+        ImVec4 roi = Roi->getROI();
+        if(roi.w != previousRoi.w || roi.x != previousRoi.x || roi.y != previousRoi.y || roi.z != previousRoi.z)
+        {
+
+        g_object_set(G_OBJECT(autofocus),
+                     "x", roi.x ,
+                     "y", roi.y,
+                     "width", roi.z - roi.x,
+                     "height", roi.w- roi.y,
+                     NULL);
+    }
+
+#endif
+}
+
 void AutofocusControl::setVideoSize(int videoWidth, int videoHeight)
 {
     Roi->setVideoSize(videoWidth, videoHeight);
@@ -59,7 +77,7 @@ void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 st
     if (ImGui::Button("Autofocus", buttonSize) && streamSize.y != 0 && streamSize.x != 0)
     {
 #ifndef DEBUG_MODE
-        Roi->updatePluginROI();
+        updatePluginROI();
         g_object_set(G_OBJECT(autofocus), "autofocusStatus", PENDING, NULL);
 
         startingAutofocus = true;
@@ -88,7 +106,7 @@ void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 st
     if (ImGui::Button("Calibrating", buttonSize))
     {
 #ifndef DEBUG_MODE
-        Roi->updatePluginROI();
+        updatePluginROI();
         g_object_set(G_OBJECT(autofocus), "calibrating", true, NULL);
 #endif
         calibrating = true;
@@ -103,7 +121,7 @@ void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 st
 #endif
 
     if (focus_lost)
-        Roi->updatePluginROI();
+        updatePluginROI();
 
     Roi->drawROI(drawList, streamPosition, streamSize, displayRedRectangle && focus_lost);
 
