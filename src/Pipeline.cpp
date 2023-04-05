@@ -53,64 +53,101 @@ void Pipeline::linkElements()
     g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
     gst_caps_unref(caps);
 #else
-    // gst_bin_add_many(GST_BIN(pipeline), videosrc, nvvidconv, imageFreeze, autofocus, barcodereader, queue, appsink, NULL);
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, imageFreeze, barcodereader, autofocus, multifocus, autoexposure, appsink, NULL);
+
+
+    GstElement *element[]={imageFreeze, barcodereader, autofocus, autoexposure, multifocus, appsink};
+gst_bin_add(GST_BIN(pipeline), videosrc);
+for(int i=0;i<6;i++)
+	{
+		if(element[i])
+		{	
+			gst_bin_add(GST_BIN(pipeline), element[i]);
+		}
+	}
+
+
     if(!videosrc)
     {
         printf("v4l2src plugin not initialized\n");
         exit(0);
     }
-    else if(!barcodereader)
+    if(!barcodereader)
     {
         printf("barcodereader plugin not initialized\n");
     }
-    else if(!appsink)
+    if(!appsink)
     {
         printf("appsink plugin not initialized\n");
         exit(0);
     }
-    else if(!imageFreeze)
+    if(!imageFreeze)
     {
         printf("imageFreeze plugin not initialized\n");
     }
-    else if(!autofocus)
+    if(!autofocus)
     {
         printf("autofocus plugin not initialized\n");
     }
-    else if(!multifocus)
+    if(!multifocus)
     {
         printf("multifocus plugin not initialized\n");
     }
-    else if(!autoexposure)
+    if(!autoexposure)
     {
         printf("autoexposure plugin not initialized\n");
     }
-    else if(!pipeline)
+    if(!pipeline)
     {
         printf("pipeline not initialized\n");
         exit(0);
     }
 
 
-    g_assert(gst_element_link_many(videosrc, imageFreeze, barcodereader, autofocus, autoexposure, multifocus, appsink, NULL));
-
-    // g_assert(gst_element_link_filtered(videosrc, queue1, caps));
-
+    GstElement *previousElement = videosrc;
+	for(int i=0;i<6;i++)
+	{
+		if(element[i])
+		{
+			g_assert(gst_element_link(previousElement,element[i]));
+			previousElement=element[i];
+		}
+	}
+    if(autofocus)
+{
     g_object_set(G_OBJECT(autofocus), "listen", false, "debug_level", 2, NULL);
-
+}
+	if(barcodereader)
+{
     g_object_set(G_OBJECT(barcodereader), "framing", false, NULL);
+}
+
+	if(autoexposure)
+{
     g_object_set(G_OBJECT(autoexposure), "optimize", 2, NULL);
+}
+
+	if(multifocus)
+{
+    g_object_set(G_OBJECT(multifocus), "work", false, NULL);
+}
+	if(imageFreeze)
+{
+    g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
+}
+
+
+
     /*
     g_object_set(G_OBJECT(appsink), "sync", 0, NULL);
     g_object_set(G_OBJECT(appsink), "drop", 1, NULL);
     g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);*/
     //g_object_set(G_OBJECT(filter), "caps", caps, NULL);
-    g_object_set(G_OBJECT(multifocus), "work", false, NULL);
+
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
 #endif
+	
 
-    g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
 
     
 }

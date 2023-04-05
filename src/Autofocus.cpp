@@ -24,54 +24,26 @@ void AutofocusControl::updatePluginROI()
 {
 #ifndef DEBUG_MODE
         ImVec4 roi = Roi->getROI();
+
         if(roi.w != previousRoi.w || roi.x != previousRoi.x || roi.y != previousRoi.y || roi.z != previousRoi.z)
         {
 
         g_object_set(G_OBJECT(autofocus),
-                     "x", roi.x ,
-                     "y", roi.y,
-                     "width", roi.z - roi.x,
-                     "height", roi.w- roi.y,
+                     "x", (int)roi.x ,
+                     "y", (int)roi.y,
+                     "width",(int) (roi.z - roi.x),
+                     "height",(int)( roi.w- roi.y),
                      NULL);
     }
 
 #endif
 }
 
-void AutofocusControl::setVideoSize(int videoWidth, int videoHeight)
-{
-    Roi->setVideoSize(videoWidth, videoHeight);
-}
 
-void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 streamPosition, ImVec2 windowSize, ImVec2 windowPosition)
+
+bool AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 streamPosition, ImVec2 windowSize, ImVec2 windowPosition)
 {
     ImGui::Begin("Autofocus Control");
-
-    if (ImGui::Button("Reset ROI", buttonSize))
-    {
-        Roi->resetROI();
-    }
-
-    if (ImGui::Button("Center ROI", buttonSize))
-    {
-        Roi->centerROI(ImVec2(0.5, 0.5));
-    }
-
-    ImGui::RadioButton("Select ROI", &ref, 0); // add button to change ROI
-    ImGui::RadioButton("Move ROI", &ref, 1);   // add button to move ROI
-
-    ImGui::Spacing();
-    Roi->render();
-    ImGui::NewLine();
-
-    if (ref == 0)
-    {
-        Roi->selectROI(streamPosition, streamSize, windowSize, windowPosition);
-    }
-    else if (ref == 1)
-    {
-        Roi->moveROI(streamPosition, streamSize);
-    }
 
     // Button to launch autofocus
     if (ImGui::Button("Autofocus", buttonSize) && streamSize.y != 0 && streamSize.x != 0)
@@ -123,8 +95,6 @@ void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 st
     if (focus_lost)
         updatePluginROI();
 
-    Roi->drawROI(drawList, streamPosition, streamSize, displayRedRectangle && focus_lost);
-
     ImGui::Checkbox("Display lost focus", &displayRedRectangle);
 
     if (calibrating)
@@ -162,4 +132,5 @@ void AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 st
     ImGui::Text("PDA: %d", pda);
 
     ImGui::End();
+    return displayRedRectangle && focus_lost;
 }

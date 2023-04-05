@@ -17,21 +17,34 @@ Application::Application(int argc, char **argv)
     pipeline = new Pipeline(argc, argv);
 
     moduleControlConfig = new ModuleControl(moduleCtrl);
-
+    Roi = new ROI();
     autofocus = pipeline->getAutofocus();
-    if(!autofocus)
+    if(autofocus)
     {
-    Roi = new ROI(autofocus);
     autofocusConfig = new Config(autofocus);
-    
     autofocusControl = new AutofocusControl(autofocus, moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
     autofocusDebug = new Debug(autofocus);
     }
-    barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
-    barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
+    barcodereader = pipeline->getBarcodeReader();
+    if(barcodereader)
+    {
+    barcodeReaderConfig = new BarcodeReader(barcodereader);
+    barcodeDisplayer = new BarcodeDisplayer(barcodereader);
+    }
+
     photoTaker = new TakePhotos(&map);
-    multifocusControl = new MultifocusControl(pipeline->getMultifocus(), Roi);
-    autoexposureControl = new AutoexposureControl(pipeline->getAutoexposure(), moduleControlConfig, Roi);
+
+    multifocus = pipeline->getMultifocus();
+	if(multifocus)
+{
+    multifocusControl = new MultifocusControl(multifocus, Roi);
+}
+	autoexposure=pipeline->getAutoexposure();
+	if(autoexposure)
+{
+    autoexposureControl = new AutoexposureControl(autoexposure, moduleControlConfig, Roi);
+}
+
     glGenTextures(1, &videotex);
     glBindTexture(GL_TEXTURE_2D, videotex);
 
@@ -43,7 +56,7 @@ Application::Application(int argc, char **argv)
 
 Application::~Application()
 {
-    if(!autofocus)
+    if(autofocus)
     {
     delete autofocusConfig;
     delete autofocusControl;
@@ -61,10 +74,7 @@ void Application::run()
     printf("Running app\n");
     pipeline->setState(GST_STATE_PLAYING);
     pipeline->getVideoSize(&videoWidth, &videoHeight);
-    if(!autofocus)
-    {
-    autofocusControl->setVideoSize(videoWidth, videoHeight);
-    }
+    Roi->setVideoSize(videoWidth, videoHeight);
     photoTaker->setImageSize(videoWidth, videoHeight);
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -146,12 +156,14 @@ void Application::populateFrame()
 
         ImGui::SetNextWindowClass(&gstWindowClass);
         ImGui::Begin("Gstreamer stream", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove);
-
+	if(freeze)
+{
         if (ImGui::Button((frozen) ? "Resume" : "Freeze"))
         {
             pipeline->freezeStream(!frozen);
             frozen = !frozen;
         }
+}
         ImGui::Text("%d",(int)FPS);
 
         /**
@@ -183,9 +195,13 @@ void Application::populateFrame()
 
         photoTaker->render();
         ImDrawList *drawList = ImGui::GetWindowDrawList();
-        if(!autofocus)
+
+
+	Roi->render2(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition, focus_lost);
+
+        if(autofocus)
     	{
-        autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
+        focus_lost = autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
 
         autofocusConfig->showWindow = true;
 
@@ -195,10 +211,20 @@ void Application::populateFrame()
         }
         moduleControlConfig->showWindow = true;
         moduleControlConfig->render();
+	
+	if(autoexposure)
+{
         autoexposureControl->render();
+}
+if(multifocus)
+{
         multifocusControl->render();
+}
+if(barcodereader)
+{
         barcodeReaderConfig->render(drawList, streamSize, streamPosition + windowPosition);
         barcodeDisplayer->render();
+}
 
         
         ImGui::End();

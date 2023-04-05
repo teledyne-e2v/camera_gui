@@ -55,6 +55,10 @@ private:
     GstMapInfo map;
     GLuint videotex;
     GstElement *autofocus;
+    GstElement *barcodereader;
+    GstElement *freeze;
+    GstElement *multifocus;
+    GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
 
@@ -63,7 +67,7 @@ private:
 
     int videoWidth = 0;
     int videoHeight = 0;
-
+    bool focus_lost=false;
     bool frozen = false;
 
     int frameCounter=0;

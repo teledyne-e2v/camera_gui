@@ -22,7 +22,6 @@ private:
 	
     GstElement *autofocus = nullptr;
 
-    int ref = 0;
     bool displayRedRectangle = false;
 
     bool startingAutofocus = false;
@@ -40,8 +39,5 @@ public:
     AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi);
     ~AutofocusControl();
 
-    void render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 positionOfStream, ImVec2 windowSize, ImVec2 windowPosition);
-
-    void setVideoSize(int videoWidth, int videoHeight);
-
+    bool render(ImDrawList *drawList, ImVec2 streamSize, ImVec2 positionOfStream, ImVec2 windowSize, ImVec2 windowPosition);
 };

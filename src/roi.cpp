@@ -2,8 +2,7 @@
 
 #include <stdio.h>
 
-ROI::ROI(GstElement *autofocus)
-    : autofocus(autofocus)
+ROI::ROI()
 {
     normPos1 = {0, 0};
     normPos2 = {1, 1};
@@ -208,6 +207,8 @@ void ROI::drawROI(ImDrawList *drawList, ImVec2 windowPos, ImVec2 windowSize, boo
     drawList->AddRect(pos1, pos2, color, (0.0F), 0, (4.0F));
 }
 
+
+
 void ROI::sort(float &p1, float &p2)
 {
     if (p1 > p2)
@@ -243,8 +244,43 @@ void ROI::updatePluginROI()
     changed = false;
 }*/
 
+void ROI::render2(ImDrawList *drawList, ImVec2 streamSize, ImVec2 streamPosition, ImVec2 windowSize, ImVec2 windowPosition, bool focus_lost)
+{
+    ImGui::Begin("ROI control");
+
+    if (ImGui::Button("Reset ROI", buttonSize))
+    {
+        resetROI();
+    }
+
+    if (ImGui::Button("Center ROI", buttonSize))
+    {
+        centerROI(ImVec2(0.5, 0.5));
+    }
+
+    ImGui::RadioButton("Select ROI", &ref, 0); // add button to change ROI
+    ImGui::RadioButton("Move ROI", &ref, 1);   // add button to move ROI
+
+    ImGui::Spacing();
+    render();
+    ImGui::NewLine();
+
+    if (ref == 0)
+    {
+        selectROI(streamPosition, streamSize, windowSize, windowPosition);
+    }
+    else if (ref == 1)
+    {
+        moveROI(streamPosition, streamSize);
+    }
+    	drawROI(drawList, streamPosition, streamSize, focus_lost);
+    ImGui::End();
+}
+
+
 void ROI::render()
 {
+
     bool changePos = false;
     lastSizeX = (normPos2.x - normPos1.x) * videoWidth;
     lastSizeY = (normPos2.y - normPos1.y) * videoHeight;

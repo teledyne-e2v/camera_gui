@@ -8,7 +8,7 @@
 class ROI
 {
 public:
-    ROI(GstElement *autofocus);
+    ROI();
     ~ROI();
 
     /**
@@ -59,6 +59,7 @@ public:
     //void updatePluginROI();
 
     void render();
+    void render2(ImDrawList *drawList, ImVec2 streamSize, ImVec2 streamPosition, ImVec2 windowSize, ImVec2 windowPosition, bool focus_lost);
 
     void setVideoSize(int width, int height);
 
@@ -67,7 +68,8 @@ public:
 private:
     float videoWidth = 0;
     float videoHeight = 0;
-
+	int ref = 0;
+    const ImVec2 buttonSize = ImVec2(100, 0);
     /**
      * @brief Whether or not the roi has been changed
      *
