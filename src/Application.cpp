@@ -17,10 +17,16 @@ Application::Application(int argc, char **argv)
     pipeline = new Pipeline(argc, argv);
 
     moduleControlConfig = new ModuleControl(moduleCtrl);
-    autofocusConfig = new Config(pipeline->getAutofocus());
-    Roi = new ROI(pipeline->getAutofocus());
-    autofocusControl = new AutofocusControl(pipeline->getAutofocus(), moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
-    autofocusDebug = new Debug(pipeline->getAutofocus());
+
+    autofocus = pipeline->getAutofocus();
+    if(!autofocus)
+    {
+    Roi = new ROI(autofocus);
+    autofocusConfig = new Config(autofocus);
+    
+    autofocusControl = new AutofocusControl(autofocus, moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
+    autofocusDebug = new Debug(autofocus);
+    }
     barcodeReaderConfig = new BarcodeReader(pipeline->getBarcodeReader());
     barcodeDisplayer = new BarcodeDisplayer(pipeline->getBarcodeReader());
     photoTaker = new TakePhotos(&map);
@@ -37,9 +43,11 @@ Application::Application(int argc, char **argv)
 
 Application::~Application()
 {
+    if(!autofocus)
+    {
     delete autofocusConfig;
     delete autofocusControl;
-
+    }
     delete pipeline;
 
     delete window;
@@ -53,7 +61,10 @@ void Application::run()
     printf("Running app\n");
     pipeline->setState(GST_STATE_PLAYING);
     pipeline->getVideoSize(&videoWidth, &videoHeight);
+    if(!autofocus)
+    {
     autofocusControl->setVideoSize(videoWidth, videoHeight);
+    }
     photoTaker->setImageSize(videoWidth, videoHeight);
     glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -172,13 +183,16 @@ void Application::populateFrame()
 
         photoTaker->render();
         ImDrawList *drawList = ImGui::GetWindowDrawList();
-
+        if(!autofocus)
+    	{
         autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
 
         autofocusConfig->showWindow = true;
 
         autofocusConfig->security();
         autofocusConfig->render();
+	autofocusDebug->render(autofocusControl->isAutofocusDone);
+        }
         moduleControlConfig->showWindow = true;
         moduleControlConfig->render();
         autoexposureControl->render();
@@ -186,7 +200,7 @@ void Application::populateFrame()
         barcodeReaderConfig->render(drawList, streamSize, streamPosition + windowPosition);
         barcodeDisplayer->render();
 
-        autofocusDebug->render(autofocusControl->isAutofocusDone);
+        
         ImGui::End();
     }
 

@@ -63,7 +63,6 @@ void Pipeline::linkElements()
     else if(!barcodereader)
     {
         printf("barcodereader plugin not initialized\n");
-        exit(0);
     }
     else if(!appsink)
     {
@@ -73,22 +72,18 @@ void Pipeline::linkElements()
     else if(!imageFreeze)
     {
         printf("imageFreeze plugin not initialized\n");
-        exit(0);
     }
     else if(!autofocus)
     {
         printf("autofocus plugin not initialized\n");
-        exit(0);
     }
     else if(!multifocus)
     {
         printf("multifocus plugin not initialized\n");
-        exit(0);
     }
     else if(!autoexposure)
     {
         printf("autoexposure plugin not initialized\n");
-        exit(0);
     }
     else if(!pipeline)
     {

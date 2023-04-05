@@ -17,7 +17,7 @@
 #include "Autoexposure.hpp"
 #include "Multifocus.hpp"
 #include <chrono>
-
+#include <gst/gst.h>
 class Application
 {
 public:
@@ -54,7 +54,7 @@ private:
     MultifocusControl *multifocusControl;
     GstMapInfo map;
     GLuint videotex;
-
+    GstElement *autofocus;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
 

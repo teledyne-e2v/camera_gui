@@ -56,7 +56,7 @@ public:
      *
      * @param element
      */
-    void updatePluginROI();
+    //void updatePluginROI();
 
     void render();
 

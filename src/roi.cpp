@@ -217,7 +217,7 @@ void ROI::sort(float &p1, float &p2)
         p1 = tmp;
     }
 }
-
+/*
 void ROI::updatePluginROI()
 {
 #ifndef DEBUG_MODE
@@ -241,7 +241,7 @@ void ROI::updatePluginROI()
 #endif
 
     changed = false;
-}
+}*/
 
 void ROI::render()
 {
