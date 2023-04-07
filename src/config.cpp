@@ -242,7 +242,7 @@ void Config::security() // refer to the limit documentation of the autofocus plu
     limit(strategy, 0, 1);
     limit(smallStep, 1, bigStep);
     limit(bigStep, smallStep, 700);
-    limit(pdaMin, 0, pdaMax);
+    limit(pdaMin, -90, pdaMax);
     limit(pdaMax, pdaMin, 750);
     limit(dec, 0, 20);
     limit(offset, 0, 100);

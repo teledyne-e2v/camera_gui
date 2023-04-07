@@ -39,8 +39,8 @@ private:
      * More information in the plugin documentation.
      * Default value is defined by the plugin.
      */
-    int pdaMin = 200;
-    int previousPdaMin = 200;
+    int pdaMin = -90;
+    int previousPdaMin = -90;
     /**
      * @brief
      * Define the maxPDA of the autofocus algorithm.

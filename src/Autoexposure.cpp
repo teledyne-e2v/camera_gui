@@ -84,6 +84,20 @@ void AutoexposureControl::render()
         toggleOnce3 = false;
     }
 
+    if (ImGui::Checkbox("Debug mode", &debug))
+    {
+        if (toggleOnce5 == false)
+        {
+            g_object_set(G_OBJECT(autoexposure), "debug", debug, NULL);
+            toggleOnce5 = true;
+        }
+    }
+    else if (toggleOnce5 == true)
+    {
+        g_object_set(G_OBJECT(autoexposure), "debug", debug, NULL);
+        toggleOnce5 = false;
+    }
+
     ImGui::Text("Optimization");
     ImGui::SameLine();
     ImGui::InputInt("##Optimization", &optimize, 0, 1, ImGuiInputTextFlags_CharsDecimal);
@@ -113,6 +127,27 @@ void AutoexposureControl::render()
         previous_max_analog_gain = max_analog_gain;
     }
 
+
+ImGui::Text("Minimum digital gain");
+    ImGui::SameLine();
+    ImGui::InputInt("##Minimum digital gain", &min_digital_gain, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(min_digital_gain,1,2000);
+    if (min_digital_gain != previous_min_digital_gain)
+    {
+        g_object_set(G_OBJECT(autoexposure), "minDigitalGain", min_digital_gain, NULL);
+        previous_min_digital_gain = min_digital_gain;
+    }
+
+ImGui::Text("Maximum digital gain");
+    ImGui::SameLine();
+    ImGui::InputInt("##Maximum digital gain", &max_digital_gain, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(max_digital_gain,256,4096);
+    if (max_digital_gain != previous_max_digital_gain)
+    {
+        g_object_set(G_OBJECT(autoexposure), "maxDigitalGain", max_digital_gain, NULL);
+        previous_max_digital_gain = max_digital_gain;
+    }
+
     ImGui::Text("latency");
     ImGui::SameLine();
     ImGui::InputInt("##latency", &latency, 0, 1, ImGuiInputTextFlags_CharsDecimal);
@@ -132,6 +167,7 @@ void AutoexposureControl::render()
         g_object_set(G_OBJECT(autoexposure), "target", target, NULL);
         previous_target = target;
     }
+
 
     apply_ROI();
     moduleControl->update_auto_controls();

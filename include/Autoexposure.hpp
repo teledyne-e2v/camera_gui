@@ -27,7 +27,11 @@ private:
     bool toggleOnce3=true;
     bool useExpTime=false;
     bool useDigitalGain=true;
-
+    bool debug=false;
+    int min_digital_gain=256;
+    int previous_min_digital_gain=256;
+    int max_digital_gain=4096;
+    int previous_max_digital_gain=4096;
     int max_analog_gain=15;
     int previous_max_analog_gain=15;
     int optimize=1;
@@ -40,6 +44,7 @@ private:
     int previous_target=60;
     bool loadAndSaveConf=true;
 bool toggleOnce4=true;
+bool toggleOnce5=true;
     ModuleControl *moduleControl;
 	bool toggleOnce2=true;
     ImVec4 previousRoi;
