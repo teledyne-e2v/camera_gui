@@ -2,7 +2,7 @@
 
 #include <gst/app/app.h>
 #include <cstdio>
-
+#include <fstream>
 Pipeline::Pipeline(int argc, char **argv)
 {
     gst_init(&argc, &argv);
@@ -26,33 +26,22 @@ void Pipeline::createElements()
     appsink = gst_element_factory_make("appsink", "videosink0");
     imageFreeze = gst_element_factory_make("freeze", "freeze0");
 
-#ifdef DEBUG_MODE
-    videosrc = gst_element_factory_make("videotestsrc", "videosrc0");
-#else
+    std::ifstream file("myfile.txt");
+    if(!file.is_open()){
+        videosrc = gst_element_factory_make("videotestsrc", "videosrc0");}
+else{
     videosrc = gst_element_factory_make("v4l2src", "videosrc0");
+    file.close();
+    }
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
     multifocus = gst_element_factory_make("multifocus", "multifocus0");
     barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
-#endif
 }
 
 void Pipeline::linkElements()
 {
 
-#ifdef DEBUG_MODE
-    GstCaps *caps = caps = gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "GRAY8", NULL);
-    gst_bin_add_many(GST_BIN(pipeline), videosrc, imageFreeze, appsink, NULL);
 
-    if (!videosrc || !appsink || !pipeline || !imageFreeze)
-    {
-        printf("not initialized\n");
-        exit(0);
-    }
-
-    g_assert(gst_element_link_many(videosrc, imageFreeze, NULL));
-    g_assert(gst_element_link_filtered(imageFreeze, appsink, caps));
-    gst_caps_unref(caps);
-#else
 
 
     GstElement *element[]={imageFreeze, barcodereader, autofocus, autoexposure, multifocus, appsink};
@@ -143,10 +132,7 @@ for(int i=0;i<6;i++)
     g_object_set(G_OBJECT(appsink), "max-buffers", 1, NULL);*/
     //g_object_set(G_OBJECT(filter), "caps", caps, NULL);
 
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
-#endif
-	
+    gst_element_set_state(pipeline, GST_STATE_PLAYING);	
 
 
     
