@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Application.hpp"
-#include "api.hpp"
+#include <topaz_api.h>
 
 
 int main(int argc, char **argv)

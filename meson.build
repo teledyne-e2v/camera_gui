@@ -83,15 +83,17 @@ sources = [
      'src/Pipeline.cpp',
      'src/Window.cpp',
      'src/Application.cpp',
-	'src/api.cpp',
 	'src/Autoexposure.cpp',
 	'src/Multifocus.cpp'
 ]
 
+topaz_api_lib = cc.find_library('topaz_api',dirs : ['/usr/local/lib'])
+topaz_api_include = include_directories('/usr/local/include/')
+
 executable('gst-imgui'
      ,sources
-     ,include_directories: inc_dirs
-     ,dependencies : [deps, thread_dep]
+     ,include_directories: [inc_dirs, topaz_api_include]
+     ,dependencies : [deps, thread_dep, topaz_api_lib]
      ,c_args : extra_args
     )
 

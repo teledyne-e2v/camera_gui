@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 #include "ModuleControl_v100.hpp"
-#include "api.hpp"
+#include <topaz_api.h>
 #include <sys/time.h>
 #include <vector>
 

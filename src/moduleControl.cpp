@@ -1,5 +1,4 @@
 #include "moduleControl.hpp"
-
 ModuleControl::ModuleControl(ModuleCtrl *moduleCtrl)
     : moduleCtrl(moduleCtrl)
 {

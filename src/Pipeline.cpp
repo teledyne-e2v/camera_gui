@@ -22,19 +22,21 @@ void Pipeline::createElements()
     pipeline = gst_pipeline_new("pipeline");
     queue1 = gst_element_factory_make("queue", "queue0");
     queue2 = gst_element_factory_make("queue", "queue1");
-    autoexposure = gst_element_factory_make("autoexposure", "autoexposure0");
+
     appsink = gst_element_factory_make("appsink", "videosink0");
     imageFreeze = gst_element_factory_make("freeze", "freeze0");
 
-    std::ifstream file("myfile.txt");
+    std::ifstream file("/dev/video0");
     if(!file.is_open()){
         videosrc = gst_element_factory_make("videotestsrc", "videosrc0");}
 else{
     videosrc = gst_element_factory_make("v4l2src", "videosrc0");
-    file.close();
-    }
+    autoexposure = gst_element_factory_make("autoexposure", "autoexposure0");
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
     multifocus = gst_element_factory_make("multifocus", "multifocus0");
+    file.close();
+    }
+
     barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
 }
 
