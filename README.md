@@ -25,8 +25,8 @@ The application need the following gstreamer plugin to run properly (it can run 
 - gst-autofocus (required version : 1.2)
 - gst-multifocus (required version : 1.0)
 - gst-autoexposure (required version : 1.0)
-- gst-barcode-reader 
-- gst-freeze 
+- gst-barcode-reader (required version : 1.0)
+- gst-freeze (required version : 1.0)
 
 The installation can be checked with ```gst-inspect-1.0```.
 It is required to setup the following environment variables before check the pulgins installation:
