@@ -5,7 +5,7 @@
 #include <gst/app/app.h>
 #include "roi.hpp"
 #include "imgui.h"
-
+#include <string>
 class MultifocusControl
 {
 public:
@@ -31,7 +31,14 @@ private:
     int previous_plan1 = 0;
     int previous_plan2 = 0;
     int previous_plan3 = 0;
-
+    bool previous_reset = false;
+    bool reset=false;
+    int proc_once=0;
     ROI *Roi;
     void apply_ROI();
+    int plans[50];
+    int previous_plans[50];
+    bool rewrite=true;
+    std::string tmp;
 };
+
