@@ -41,6 +41,7 @@ public:
      * @return GstElement*
      */
     GstElement *getBarcodeReader();
+    GstElement *getSharpness();
 
     /**
      * @brief Get the Autoexposure object
@@ -101,4 +102,5 @@ private:
     GstElement *appsink = nullptr;
     GstElement *autoexposure = nullptr;
     GstElement *multifocus = nullptr;
+    GstElement *sharpness = nullptr;
 };

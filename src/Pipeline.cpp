@@ -34,6 +34,7 @@ else{
     autoexposure = gst_element_factory_make("autoexposure", "autoexposure0");
     autofocus = gst_element_factory_make("autofocus", "autofocus0");
     multifocus = gst_element_factory_make("multifocus", "multifocus0");
+    sharpness = gst_element_factory_make("sharpness", "sharpness0");
     file.close();
     }
 
@@ -46,9 +47,9 @@ void Pipeline::linkElements()
 
 
 
-    GstElement *element[]={imageFreeze, barcodereader, autofocus, autoexposure, multifocus, appsink};
+    GstElement *element[]={imageFreeze, barcodereader, autofocus, autoexposure, multifocus,sharpness, appsink};
 gst_bin_add(GST_BIN(pipeline), videosrc);
-for(int i=0;i<6;i++)
+for(int i=0;i<7;i++)
 	{
 		if(element[i])
 		{	
@@ -87,6 +88,10 @@ for(int i=0;i<6;i++)
     {
         printf("autoexposure plugin not initialized\n");
     }
+    if(!sharpness)
+    {
+        printf("autoexposure plugin not initialized\n");
+    }
     if(!pipeline)
     {
         printf("pipeline not initialized\n");
@@ -106,6 +111,10 @@ for(int i=0;i<6;i++)
     if(autofocus)
 {
     g_object_set(G_OBJECT(autofocus), "listen", false, "debug_level", 2, NULL);
+}
+ if(sharpness)
+{
+    g_object_set(G_OBJECT(autofocus), "work", false, NULL);
 }
 	if(barcodereader)
 {
@@ -164,6 +173,11 @@ GstElement *Pipeline::getImageFreeze()
 GstElement *Pipeline::getBarcodeReader()
 {
     return barcodereader;
+}
+
+GstElement *Pipeline::getSharpness()
+{
+    return sharpness;
 }
 
 GstElement *Pipeline::getAutoexposure()

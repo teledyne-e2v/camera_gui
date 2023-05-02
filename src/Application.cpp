@@ -21,6 +21,7 @@ Application::Application(int argc, char **argv)
     freeze=pipeline->getImageFreeze();
 
     autofocus = pipeline->getAutofocus();
+
     if(autofocus)
     {
     autofocusConfig = new Config(autofocus);
@@ -32,6 +33,13 @@ Application::Application(int argc, char **argv)
     {
     barcodeReaderConfig = new BarcodeReader(barcodereader);
     barcodeDisplayer = new BarcodeDisplayer(barcodereader);
+    }
+
+    sharpness = pipeline->getSharpness();
+
+    if(sharpness)
+    {
+        sharpnessControl = new SharpnessControl(sharpness, Roi);
     }
 
     photoTaker = new TakePhotos(&map);
@@ -221,6 +229,10 @@ void Application::populateFrame()
 if(multifocus)
 {
         multifocusControl->render();
+}
+if(sharpness)
+{
+        sharpnessControl->render();
 }
 if(barcodereader)
 {

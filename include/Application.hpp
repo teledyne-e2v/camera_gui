@@ -16,6 +16,8 @@
 #include "BarcodeDisplayer.hpp"
 #include "Autoexposure.hpp"
 #include "Multifocus.hpp"
+#include "Sharpness.hpp"
+
 #include <chrono>
 #include <gst/gst.h>
 class Application
@@ -52,9 +54,11 @@ private:
     BarcodeDisplayer *barcodeDisplayer;
     AutoexposureControl *autoexposureControl;
     MultifocusControl *multifocusControl;
+    SharpnessControl *sharpnessControl;
     GstMapInfo map;
     GLuint videotex;
     GstElement *autofocus;
+    GstElement *sharpness;
     GstElement *barcodereader;
     GstElement *freeze;
     GstElement *multifocus;
