@@ -28,10 +28,15 @@ private:
     int plan1 = 0;
     int plan2 = 0;
     int plan3 = 0;
+    int number_of_values=0;
+    bool done_once=false;
     int previous_plan1 = 0;
     int previous_plan2 = 0;
     int previous_plan3 = 0;
-
+    bool previous_done = false;
+    int done=0;
     ROI *Roi;
     void apply_ROI();
+    int csv_x[1000];
+    int csv_y[1000];
 };

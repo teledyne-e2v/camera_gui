@@ -1,5 +1,5 @@
 #include "Window.hpp"
-
+#include "external/implot/implot.h"
 #include <cstdio>
 #include <iostream>
 
@@ -31,7 +31,7 @@ Window::~Window()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
+ImPlot::DestroyContext();
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -62,6 +62,7 @@ void Window::initImGui()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+ImPlot::CreateContext();
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);

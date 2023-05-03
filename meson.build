@@ -67,6 +67,8 @@ sources = [
      'external/imgui/examples/imgui_impl_glfw.cpp',
      'external/imgui/examples/imgui_impl_opengl3.cpp',
      'external/imgui/examples/libs/gl3w/GL/gl3w.c',
+     'external/implot/implot.cpp',
+     'external/implot/implot_items.cpp',
 	 'src/main.cpp',
 	'src/roi.cpp',
       'include/roi.hpp',
@@ -84,7 +86,8 @@ sources = [
      'src/Window.cpp',
      'src/Application.cpp',
 	'src/Autoexposure.cpp',
-	'src/Multifocus.cpp'
+	'src/Multifocus.cpp',
+	'src/Sharpness.cpp'
 ]
 
 topaz_api_lib = cc.find_library('topaz_api',dirs : ['/usr/local/lib'])

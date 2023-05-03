@@ -47,7 +47,7 @@ void Pipeline::linkElements()
 
 
 
-    GstElement *element[]={imageFreeze, barcodereader, autofocus, autoexposure, multifocus,sharpness, appsink};
+    GstElement *element[]={imageFreeze, barcodereader,sharpness, autofocus, autoexposure, multifocus, appsink};
 gst_bin_add(GST_BIN(pipeline), videosrc);
 for(int i=0;i<7;i++)
 	{
@@ -100,7 +100,7 @@ for(int i=0;i<7;i++)
 
 
     GstElement *previousElement = videosrc;
-	for(int i=0;i<6;i++)
+	for(int i=0;i<7;i++)
 	{
 		if(element[i])
 		{
@@ -114,7 +114,7 @@ for(int i=0;i<7;i++)
 }
  if(sharpness)
 {
-    g_object_set(G_OBJECT(autofocus), "work", false, NULL);
+    g_object_set(G_OBJECT(sharpness), "work", false, NULL);
 }
 	if(barcodereader)
 {

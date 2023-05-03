@@ -1,5 +1,7 @@
 #include "Sharpness.hpp"
 #include "utils.hpp"
+#include "external/implot/implot.h"
+#include <stdio.h>
 SharpnessControl::SharpnessControl(GstElement *sharpness, ROI *Roi)
     : sharpness(sharpness), Roi(Roi)
 {
@@ -8,7 +10,7 @@ SharpnessControl::SharpnessControl(GstElement *sharpness, ROI *Roi)
 void SharpnessControl::apply_ROI()
 {
     ImVec4 roi = Roi->getROI();
-
+    printf("ROI : %f %f %f %f \n", roi.x, roi.y, roi.z, roi.w);
     g_object_set(G_OBJECT(sharpness),
                  "roi1x", (int)roi.x,
                  "roi1y", (int)roi.y,
@@ -22,7 +24,10 @@ SharpnessControl::~SharpnessControl()
 }
 void SharpnessControl::render()
 {
+
+
     ImGui::Begin("Sharpness Control");
+    
     ImGui::Text("Toggle sharpness viewer");
     ImGui::SameLine();
     if (ImGui::Checkbox("##Toggle sharpness", &work))
@@ -42,6 +47,7 @@ void SharpnessControl::render()
 
     if (ImGui::Button("Reset sharpness algorithm"))
     {
+
         apply_ROI();
         g_object_set(G_OBJECT(sharpness), "reset", true, NULL);
     }
@@ -56,4 +62,53 @@ void SharpnessControl::render()
     }
 
     ImGui::End();
+
+
+
+
+    g_object_get(G_OBJECT(sharpness), "done", &done, NULL);
+    if(done!=previous_done)
+    {
+	previous_done=done;
+	if(done)
+	{
+	done_once=true;
+    	FILE *file;
+
+ 	char * line = NULL;
+    	size_t len = 0;
+
+
+
+  	file = fopen("result.csv", "r+");
+	getline(&line, &len, file);
+
+		number_of_values=0;
+		while(!feof(file))
+		{
+			fscanf(file, "%d, %d\n", &(csv_x[number_of_values]), &(csv_y[number_of_values]));
+			number_of_values++;
+		}
+
+            fclose(file);
+
+
+}
+}
+if(done_once)
+{
+
+ImGui::Begin("Plot");
+if (ImPlot::BeginPlot("My Plot")) {
+
+    ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values-30);
+    ImPlot::EndPlot();
+}
+ImGui::End();
+}
+
+
+
+
+
 }

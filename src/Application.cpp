@@ -83,6 +83,7 @@ void Application::run()
 {
     printf("Running app\n");
     pipeline->setState(GST_STATE_PLAYING);
+
     pipeline->getVideoSize(&videoWidth, &videoHeight);
     Roi->setVideoSize(videoWidth, videoHeight);
     photoTaker->setImageSize(videoWidth, videoHeight);
@@ -123,7 +124,7 @@ void Application::createFrame()
 
 void Application::populateFrame()
 {
-
+	
     if (frameCounter == 0)
     {
         start = std::chrono::high_resolution_clock::now();
@@ -221,7 +222,13 @@ void Application::populateFrame()
         }
         moduleControlConfig->showWindow = true;
         moduleControlConfig->render();
-	
+
+
+
+if(sharpness)
+{
+        sharpnessControl->render();
+}
 	if(autoexposure)
 {
         autoexposureControl->render();
@@ -230,10 +237,7 @@ if(multifocus)
 {
         multifocusControl->render();
 }
-if(sharpness)
-{
-        sharpnessControl->render();
-}
+
 if(barcodereader)
 {
         barcodeReaderConfig->render(drawList, streamSize, streamPosition + windowPosition);
