@@ -116,7 +116,7 @@ void SharpnessControl::render()
         if (ImPlot::BeginPlot("My Plot"))
         {
 
-            ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values - 30);
+            ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values);
             ImPlot::EndPlot();
         }
         ImGui::End();
