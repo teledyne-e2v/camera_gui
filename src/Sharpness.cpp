@@ -25,9 +25,8 @@ SharpnessControl::~SharpnessControl()
 void SharpnessControl::render()
 {
 
-
     ImGui::Begin("Sharpness Control");
-    
+
     ImGui::Text("Toggle sharpness viewer");
     ImGui::SameLine();
     if (ImGui::Checkbox("##Toggle sharpness", &work))
@@ -43,7 +42,6 @@ void SharpnessControl::render()
         g_object_set(G_OBJECT(sharpness), "work", work, NULL);
         toggleOnce = false;
     }
-
 
     if (ImGui::Button("Reset sharpness algorithm"))
     {
@@ -61,54 +59,65 @@ void SharpnessControl::render()
         previous_latency = latency;
     }
 
+
+    ImGui::Text("Step");
+    ImGui::SameLine();
+    ImGui::InputInt("##step sharpness", &step, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    if (step != previous_step)
+    {
+        g_object_set(G_OBJECT(sharpness), "step", step, NULL);
+        previous_step = step;
+    }
+
+
+
+    ImGui::Text("Path:");
+    ImGui::SameLine();
+    ImGui::InputText("##Photo path", filename, 200);
+    if(strncmp(filename,previous_filename,200))
+    {
+        strncpy(previous_filename,filename,200);
+        g_object_set(G_OBJECT(sharpness), "filename", filename, NULL);
+    }
+
+
     ImGui::End();
 
-
-
-
     g_object_get(G_OBJECT(sharpness), "done", &done, NULL);
-    if(done!=previous_done)
+    if (done != previous_done)
     {
-	previous_done=done;
-	if(done)
-	{
-	done_once=true;
-    	FILE *file;
+        previous_done = done;
+        if (done)
+        {
+            done_once = true;
+            FILE *file;
 
- 	char * line = NULL;
-    	size_t len = 0;
+            char *line = NULL;
+            size_t len = 0;
 
+            file = fopen("result.csv", "r+");
+            getline(&line, &len, file);
 
-
-  	file = fopen("result.csv", "r+");
-	getline(&line, &len, file);
-
-		number_of_values=0;
-		while(!feof(file))
-		{
-			fscanf(file, "%d, %d\n", &(csv_x[number_of_values]), &(csv_y[number_of_values]));
-			number_of_values++;
-		}
+            number_of_values = 0;
+            while (!feof(file))
+            {
+                fscanf(file, "%d, %d\n", &(csv_x[number_of_values]), &(csv_y[number_of_values]));
+                number_of_values++;
+            }
 
             fclose(file);
+        }
+    }
+    if (done_once)
+    {
 
+        ImGui::Begin("Plot");
+        if (ImPlot::BeginPlot("My Plot"))
+        {
 
-}
-}
-if(done_once)
-{
-
-ImGui::Begin("Plot");
-if (ImPlot::BeginPlot("My Plot")) {
-
-    ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values-30);
-    ImPlot::EndPlot();
-}
-ImGui::End();
-}
-
-
-
-
-
+            ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values - 30);
+            ImPlot::EndPlot();
+        }
+        ImGui::End();
+    }
 }
