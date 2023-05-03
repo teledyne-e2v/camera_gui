@@ -5,6 +5,7 @@
 SharpnessControl::SharpnessControl(GstElement *sharpness, ROI *Roi)
     : sharpness(sharpness), Roi(Roi)
 {
+    strncpy(filename,"result.csv",200);
 }
 
 void SharpnessControl::apply_ROI()
@@ -95,7 +96,7 @@ void SharpnessControl::render()
             char *line = NULL;
             size_t len = 0;
 
-            file = fopen("result.csv", "r+");
+            file = fopen(filename, "r+");
             getline(&line, &len, file);
 
             number_of_values = 0;
