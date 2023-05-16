@@ -90,7 +90,7 @@ for(int i=0;i<7;i++)
     }
     if(!sharpness)
     {
-        printf("autoexposure plugin not initialized\n");
+        printf("sharpness plugin not initialized\n");
     }
     if(!pipeline)
     {
