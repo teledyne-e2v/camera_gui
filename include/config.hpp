@@ -120,7 +120,7 @@ private:
 
     int previous_pda_hold_cmd = 0;
 
-    static const int nbAlgos = 2;
+    static const int nbAlgos = 4;
 
 public:
     /**
@@ -147,4 +147,5 @@ public:
      */
     Config(GstElement *autofocus);
     void setOffset(int offset);
+    int getStrategy();
 };

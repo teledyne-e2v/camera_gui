@@ -23,6 +23,34 @@ void SharpnessControl::apply_ROI()
 SharpnessControl::~SharpnessControl()
 {
 }
+
+void SharpnessControl::plotAutofocus(char * logs)
+{
+	char * tmp[100];
+	count=0;
+	
+	while(strncmp(logs,"PDA :",5)!=0)
+	{
+		logs+=1;
+
+	}
+	while(strncmp(logs,"PDA :",5)==0)
+	{
+		
+		sscanf(logs,"PDA : %d sharpness : %d",pda+count,sharp+count);
+		count++;
+		logs+=10;
+		while(strncmp(logs,"PDA :",5)!=0 && strncmp(logs,"seconds",7)!=0)
+		{
+			logs+=1;
+
+		}
+
+
+	}
+
+}
+
 void SharpnessControl::render()
 {
 
@@ -113,10 +141,11 @@ void SharpnessControl::render()
     {
 
         ImGui::Begin("Plot");
-        if (ImPlot::BeginPlot("My Plot"))
+        if (ImPlot::BeginPlot("Sharpness in function of the PDA"))
         {
 
-            ImPlot::PlotLine("My Line Plot", csv_x, csv_y, number_of_values);
+            ImPlot::PlotLine("Sharpness algorithm output", csv_x, csv_y, number_of_values);
+	    ImPlot::PlotScatter("Autofocus debug", pda, sharp, count);
             ImPlot::EndPlot();
         }
         ImGui::End();

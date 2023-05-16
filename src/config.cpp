@@ -94,6 +94,8 @@ void Config::render()
         const char *items[nbAlgos];
         items[0] = "Naïve autofocus (more precise but slow)";
         items[1] = "Optimized autofocus";
+	items[2] = "Weighted mean autofocus";
+	items[3] = "Gaussian prediction autofocus";
         ImGui::PushItemWidth(-1);
         if (ImGui::BeginCombo("##Strategies", items[strategy]))
         {
@@ -237,9 +239,15 @@ void Config::render()
     }
 }
 
+
+int Config::getStrategy()
+{
+	return strategy;
+}
+
 void Config::security() // refer to the limit documentation of the autofocus plugin
 {
-    limit(strategy, 0, 1);
+    limit(strategy, 0, nbAlgos);
     limit(smallStep, 1, bigStep);
     limit(bigStep, smallStep, 700);
     limit(pdaMin, -90, pdaMax);

@@ -34,6 +34,7 @@ private:
     ImVec4 previousRoi;
     void updatePluginROI();
 
+
     const ImVec2 buttonSize = ImVec2(100, 0);
 public:
     AutofocusControl(GstElement *autofocus, ModuleCtrl *moduleCtrl, ModuleControl *moduleControl, Config *conf, ROI *Roi);

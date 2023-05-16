@@ -212,13 +212,14 @@ void Application::populateFrame()
 
         if(autofocus)
     	{
-        focus_lost = autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
+		focus_lost = autofocusControl->render(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition);
 
-        autofocusConfig->showWindow = true;
+		autofocusConfig->showWindow = true;
 
-        autofocusConfig->security();
-        autofocusConfig->render();
-	autofocusDebug->render(autofocusControl->isAutofocusDone);
+		autofocusConfig->security();
+		autofocusConfig->render();
+		autofocusDebug->render(autofocusControl->isAutofocusDone);
+		
         }
         moduleControlConfig->showWindow = true;
         moduleControlConfig->render();
@@ -228,6 +229,15 @@ void Application::populateFrame()
 if(sharpness)
 {
         sharpnessControl->render();
+	if(autofocus)
+	{
+
+		if(autofocusControl->isAutofocusDone && autofocusConfig->getStrategy()==3)
+		{
+
+			sharpnessControl->plotAutofocus(autofocusDebug->getLogs());
+		}
+	}
 }
 	if(autoexposure)
 {

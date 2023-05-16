@@ -12,6 +12,7 @@ public:
     SharpnessControl(GstElement *sharpness, ROI *Roi);
     ~SharpnessControl();
     void render();
+    void plotAutofocus(char* logs);
 
 private:
     GstElement *sharpness = nullptr;
@@ -38,6 +39,8 @@ private:
     void apply_ROI();
     int csv_x[1000];
     int csv_y[1000];
+    int pda[50],sharp[50];
+    int count=0;
     char filename[200];
     char previous_filename[200];
 };
