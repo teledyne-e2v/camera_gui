@@ -82,7 +82,7 @@ Note: if some dependencies are missing, meson will signal it.
 
 Execute the following srcipt to start the application:
 
-	start.sh
+	bash start.sh
 
 You should see the interface with the video stream.
 
