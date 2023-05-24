@@ -131,7 +131,6 @@ void MultifocusControl::render()
 	previous_reset=reset;
 
 	parseString(tmpchar, plans,number_of_plans);
-	printf("char get : %s\n",tmpchar);
 
 
     }
@@ -165,7 +164,6 @@ for(int i=0;i<number_of_plans;i++)
 	tmp=tmp + std::to_string(plans[i]) + ";";
 
 }
-	printf("i'm in : %s\n", tmp.c_str());
     	g_object_set(G_OBJECT(multifocus), "plans", tmp.c_str(), NULL);
 }
 

@@ -17,8 +17,12 @@ Library dependencies are:
 
 Install tem with: 
 
-	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3
-
+	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3 meson
+	
+	
+## Topaz api install
+Take a look at this github: 
+https://github.com/teledyne-e2v/topaz-api
 
 	
 The application need the following gstreamer plugin to run properly (it can run without but will be less interesting):
@@ -58,22 +62,9 @@ Image Freeze:
 
 In the these commands return an error, please install the missing plugin following the dedicated procedure.
 
-# Installation
+# Compilation
 First you must make sure that your device's clock is correctly setup on the Jetson Nano.
 Otherwise the compilation will fail.
-
-Following tools are required for build and compilation:
-- meson
-- ninja
-
-Check installation with:
-
-	ninja --version
-	meson --version
-	
-Ninja should be preinstalled but meson may need to be installes:
-
-	sudo apt install meson
 
 Move to the **camera_gui** directory using the command cd
 
@@ -91,7 +82,7 @@ Note: if some dependencies are missing, meson will signal it.
 
 Execute the following srcipt to start the application:
 
-	start.sh
+	bash start.sh
 
 You should see the interface with the video stream.
 
