@@ -7,7 +7,7 @@
 int main(int argc, char **argv)
 {
     char video[]="/dev/video0";
-	initialization(video,2);
+	initialization(video,2); 
     try
     {
         Application *app = new Application(argc, argv);

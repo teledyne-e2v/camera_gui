@@ -17,6 +17,7 @@
 #include "Autoexposure.hpp"
 #include "Multifocus.hpp"
 #include "Sharpness.hpp"
+#include "ToolBar.hpp"
 
 #include <chrono>
 #include <gst/gst.h>
@@ -55,8 +56,11 @@ private:
     AutoexposureControl *autoexposureControl;
     MultifocusControl *multifocusControl;
     SharpnessControl *sharpnessControl;
+    ToolBar *toolbar;
+
     GstMapInfo map;
     GLuint videotex;
+    
     GstElement *autofocus;
     GstElement *sharpness;
     GstElement *barcodereader;
