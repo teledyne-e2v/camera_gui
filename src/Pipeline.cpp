@@ -20,7 +20,7 @@ void Pipeline::createElements() {
   queue1 = gst_element_factory_make("queue", "queue0");
   whitebalance = gst_element_factory_make("whitebalance", "whitebalance0");
   bayer2rgb = gst_element_factory_make("bayer2rgb", "bayer2rgb0");
-  capssetter = gst_element_factory_make("capssetter", "capssetter0");
+  gray2bayer = gst_element_factory_make("gray2bayer", "gray2bayer0");
   queue2 = gst_element_factory_make("queue", "queue1");
 
   appsink = gst_element_factory_make("appsink", "videosink0");
@@ -37,57 +37,34 @@ void Pipeline::createElements() {
     sharpness = gst_element_factory_make("sharpness", "sharpness0");
     file.close();
   }
-
   barcodereader = gst_element_factory_make("barcodereader", "barcodereader0");
+
+  GstElement *elements[] = {
+      videosrc, imageFreeze, barcodereader, sharpness,  autofocus, autoexposure,
+      multifocus,  whitebalance,  gray2bayer, bayer2rgb, appsink};
+  const char *elements_name[] = {
+      "v4l2src","imageFreeze", "barcodereader", "sharpness",  "autofocus", "autoexposure",
+      "multifocus",  "whitebalance",  "gray2bayer", "bayer2rgb", "appsink"};
+  for (unsigned int i = 0; i < sizeof(elements) / sizeof(elements[0]); i++) {
+    if (elements[i]) {
+      gst_bin_add(GST_BIN(pipeline), elements[i]);
+    } else {
+      printf("%s plugin not initialized\n", elements_name[i]);
+    }
+  }
 }
 
 void Pipeline::linkElementsGRAY() {
 
-  GstElement *element[] = {imageFreeze,  barcodereader, sharpness, autofocus,
-                           autoexposure, multifocus,    appsink};
-  gst_bin_add(GST_BIN(pipeline), videosrc);
-  for (int i = 0; i < 7; i++) {
-    if (element[i]) {
-      gst_bin_add(GST_BIN(pipeline), element[i]);
-    }
-  }
-
-  if (!videosrc) {
-    printf("v4l2src plugin not initialized\n");
-    exit(0);
-  }
-  if (!barcodereader) {
-    printf("barcodereader plugin not initialized\n");
-  }
-  if (!appsink) {
-    printf("appsink plugin not initialized\n");
-    exit(0);
-  }
-  if (!imageFreeze) {
-    printf("imageFreeze plugin not initialized\n");
-  }
-  if (!autofocus) {
-    printf("autofocus plugin not initialized\n");
-  }
-  if (!multifocus) {
-    printf("multifocus plugin not initialized\n");
-  }
-  if (!autoexposure) {
-    printf("autoexposure plugin not initialized\n");
-  }
-  if (!sharpness) {
-    printf("autoexposure plugin not initialized\n");
-  }
-  if (!pipeline) {
-    printf("pipeline not initialized\n");
-    exit(0);
-  }
+  GstElement *elements[] = {
+      imageFreeze, barcodereader, sharpness,  autofocus, autoexposure,
+      multifocus, appsink};
 
   GstElement *previousElement = videosrc;
-  for (int i = 0; i < 7; i++) {
-    if (element[i]) {
-      g_assert(gst_element_link(previousElement, element[i]));
-      previousElement = element[i];
+  for (unsigned int i = 0; i < sizeof(elements) / sizeof(elements[0]); i++) {
+    if (elements[i]) {
+      g_assert(gst_element_link(previousElement, elements[i]));
+      previousElement = elements[i];
     }
   }
   if (autofocus) {
@@ -120,59 +97,22 @@ void Pipeline::linkElementsGRAY() {
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
 }
 
-
-
 void Pipeline::linkElementsCOLOR() {
-  GstElement *capsfilter = gst_element_factory_make("capsfilter", "capsfilter0");
+  GstCaps *caps1 =
+      gst_caps_new_simple("video/x-raw", "format", G_TYPE_STRING, "RGBA", NULL);
+  GstCaps *caps2 = gst_caps_new_simple("video/x-bayer", "format", G_TYPE_STRING,
+                                       "rggb", NULL);
 
-  GstElement *element[] = {imageFreeze,  barcodereader, sharpness, autofocus,
-                           autoexposure, multifocus, whitebalance,capssetter,bayer2rgb,capsfilter,  appsink};
+  GstElement *elements[] = {
+      imageFreeze, barcodereader, sharpness,  autofocus, autoexposure,
+      multifocus,  whitebalance,  gray2bayer, bayer2rgb, appsink};
 
-  gst_bin_add(GST_BIN(pipeline), videosrc);
-  for (int i = 0; i < 11; i++) {
-    if (element[i]) {
-      gst_bin_add(GST_BIN(pipeline), element[i]);
-    }
-  }
-  //gst_bin_add(GST_BIN(pipeline),whitebalance);
-  //gst_bin_add(GST_BIN(pipeline),capssetter);
-  //gst_bin_add(GST_BIN(pipeline),bayer2rgb);
-  if (!videosrc) {
-    printf("v4l2src plugin not initialized\n");
-    exit(0);
-  }
-  if (!barcodereader) {
-    printf("barcodereader plugin not initialized\n");
-  }
-  if (!appsink) {
-    printf("appsink plugin not initialized\n");
-    exit(0);
-  }
-  if (!imageFreeze) {
-    printf("imageFreeze plugin not initialized\n");
-  }
-  if (!autofocus) {
-    printf("autofocus plugin not initialized\n");
-  }
-  if (!multifocus) {
-    printf("multifocus plugin not initialized\n");
-  }
-  if (!autoexposure) {
-    printf("autoexposure plugin not initialized\n");
-  }
-  if (!sharpness) {
-    printf("autoexposure plugin not initialized\n");
-  }
-  if (!pipeline) {
-    printf("pipeline not initialized\n");
-    exit(0);
-  }
 
   GstElement *previousElement = videosrc;
-  for (int i = 0; i < 11; i++) {
-    if (element[i]) {
-      g_assert(gst_element_link(previousElement, element[i]));
-      previousElement = element[i];
+  for (unsigned int i = 0; i < sizeof(elements) / sizeof(elements[0]); i++) {
+    if (elements[i]) {
+      g_assert(gst_element_link(previousElement, elements[i]));
+      previousElement = elements[i];
     }
   }
   if (autofocus) {
@@ -195,14 +135,10 @@ void Pipeline::linkElementsCOLOR() {
   if (imageFreeze) {
     g_object_set(G_OBJECT(imageFreeze), "freeze", false, "listen", false, NULL);
   }
-  g_object_set(G_OBJECT(capssetter),"join",false,"caps","video/x-bayer,format=rggb",NULL);
-
-  g_object_set(G_OBJECT(capssetter),"caps","video/x-raw, format=RGBA", NULL);
-  //g_object_set(G_OBJECT(filter), "caps", caps, NULL);
-
+  gst_element_link_filtered(bayer2rgb, appsink, caps1);
+  gst_element_link_filtered(gray2bayer, bayer2rgb, caps2);
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
 }
-
 
 GstSample *Pipeline::getSample() {
   gst_app_sink_set_wait_on_eos(GST_APP_SINK(appsink), true);
@@ -246,12 +182,9 @@ void Pipeline::getVideoSize(int *width, int *height) {
   }
   gst_sample_unref(sample);
 }
-void Pipeline::switchToColor() {
-  
-
-}
+void Pipeline::switchToColor() {}
 
 void Pipeline::switchToGRAY() {
-gst_element_set_state(pipeline, GST_STATE_NULL);
+  gst_element_set_state(pipeline, GST_STATE_NULL);
   linkElementsGRAY();
 }

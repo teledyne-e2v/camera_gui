@@ -108,5 +108,5 @@ private:
   GstElement *sharpness = nullptr;
   GstElement *whitebalance = nullptr;
   GstElement *bayer2rgb = nullptr;
-  GstElement *capssetter = nullptr;
+  GstElement *gray2bayer = nullptr;
 };

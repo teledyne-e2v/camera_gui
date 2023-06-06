@@ -67,7 +67,7 @@ public:
      * @brief
      * Initialise IC2 connection
      */
-    void ModuleControlInit();
+    int ModuleControlInit();
 
     ~ModuleCtrl();
 

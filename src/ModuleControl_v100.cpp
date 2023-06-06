@@ -29,15 +29,16 @@ ModuleCtrl::~ModuleCtrl()
 /************************************************
  *Init I2C bus
  ************************************************/
-void ModuleCtrl::ModuleControlInit()
+int ModuleCtrl::ModuleControlInit()
 {
 	/* Open i2c bus */
+	int err=0;
 
 	if ((bus = i2c_open(bus_name)) == -1)
 	{
 
 		fprintf(stderr, "Open i2c bus:%s error!\n", bus_name);
-		return;
+		return -3;
 	}
 	printf("Bus %s open\n", bus_name);
 
@@ -68,8 +69,7 @@ void ModuleCtrl::ModuleControlInit()
 	devicepda.iaddr_bytes = 1;
 
 	// Enable PDA50 DAC
-	printf("Enable PDA50 DAC\n");
-	enable_VdacPda(devicepda, bus);
+	err = enable_VdacPda(devicepda, bus);
 
 	/* Init i2c devicetemp */
 
@@ -83,6 +83,7 @@ void ModuleCtrl::ModuleControlInit()
 	devicetemp.page_bytes = 8;
 	/*Address length in bytes*/
 	devicetemp.iaddr_bytes = 1;
+	return err;
 }
 
 /************************************************

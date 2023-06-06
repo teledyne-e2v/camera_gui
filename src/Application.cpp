@@ -2,13 +2,17 @@
 #include <chrono>
 #include <fstream>
 #include <unistd.h>
-Application::Application(int argc, char **argv) {
-  loadImGuiConfig();
 
+
+
+Application::Application(int argc, char **argv) {
+  int err=0;
+
+  loadImGuiConfig();
   moduleCtrl = new ModuleCtrl();
 
 #ifndef DEBUG_MODE
-  moduleCtrl->ModuleControlInit(); // init ic2
+  err=moduleCtrl->ModuleControlInit(); // init ic2
 #endif
   window = new Window();
 
@@ -18,7 +22,13 @@ Application::Application(int argc, char **argv) {
   Roi = new ROI();
   freeze = pipeline->getImageFreeze();
 
-  autofocus = pipeline->getAutofocus();
+
+  if(err==0)
+  {
+    autofocus = pipeline->getAutofocus();
+
+  }
+
 
   if (autofocus) {
     autofocusConfig = new Config(autofocus);
@@ -26,6 +36,8 @@ Application::Application(int argc, char **argv) {
         autofocus, moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
     autofocusDebug = new Debug(autofocus);
   }
+
+
   barcodereader = pipeline->getBarcodeReader();
   if (barcodereader) {
     barcodeReaderConfig = new BarcodeReader(barcodereader);
@@ -101,9 +113,17 @@ void Application::createFrame() {
 
     gst_buffer_map(videobuf, &map, GST_MAP_READ);
     gst_sample_unref(videosample);
+    if(map.size == 8294400)
+    {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0,
+       GL_RGBA, GL_UNSIGNED_BYTE, map.data);
+    }
+    else if(map.size == 2073600)
+    {
     glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
-                 GL_UNSIGNED_BYTE, map.data);
-
+                 GL_UNSIGNED_BYTE, map.data + 1920 * 1080 * 3);
+    }
+  
     gst_buffer_unmap(videobuf, &map);
   }
 
@@ -133,6 +153,7 @@ void Application::populateFrame() {
   createDockSpace();
 
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
 
   if (ImGui::Begin("###DockSpace", nullptr, window_flags)) {
     ImGui::PopStyleVar();
@@ -186,6 +207,7 @@ void Application::populateFrame() {
     streamPosition.y += ImGui::GetCursorPosY();
     windowSize.y += windowSizeYOffset;
     ImGui::SetCursorPos(streamPosition);
+
     ImGui::Image((void *)(intptr_t)videotex, streamSize);
 
     photoTaker->render();
@@ -194,7 +216,7 @@ void Application::populateFrame() {
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
                  windowSize, windowPosition, focus_lost);
 
-    toolbar->render();
+    // toolbar->render();
 
     if (autofocus) {
       focus_lost = autofocusControl->render(drawList, streamSize,
@@ -207,8 +229,10 @@ void Application::populateFrame() {
       autofocusConfig->render();
       autofocusDebug->render(autofocusControl->isAutofocusDone);
     }
+
     moduleControlConfig->showWindow = true;
     moduleControlConfig->render();
+
 
     if (sharpness) {
       sharpnessControl->render();
@@ -221,6 +245,7 @@ void Application::populateFrame() {
         }
       }
     }
+
     if (autoexposure) {
       autoexposureControl->render();
     }
@@ -249,7 +274,7 @@ void Application::renderFrame() {
   glfwGetFramebufferSize(win, &display_w, &display_h);
   glViewport(0, 0, display_w, display_h);
 
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
