@@ -97,19 +97,23 @@ void Application::run() {
 
   while (!window->shouldClose()) {
     glfwPollEvents();
-    createFrame();
+    bool frame_created = createFrame();
     populateFrame();
     renderFrame();
+    if(frame_created)
+      gst_buffer_unmap(videobuf, &map);
+
   }
 }
 
-void Application::createFrame() {
+bool Application::createFrame() {
   GstSample *videosample = pipeline->getSample();
   /**
    * Load the frame into an openGL texture if a new one is available
    */
+  bool created = false;
   if (videosample) {
-    GstBuffer *videobuf = gst_sample_get_buffer(videosample);
+    videobuf = gst_sample_get_buffer(videosample);
 
     gst_buffer_map(videobuf, &map, GST_MAP_READ);
     gst_sample_unref(videosample);
@@ -121,16 +125,17 @@ void Application::createFrame() {
     else if(map.size == 2073600)
     {
     glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
-                 GL_UNSIGNED_BYTE, map.data + 1920 * 1080 * 3);
+                 GL_UNSIGNED_BYTE, map.data);
     }
-  
-    gst_buffer_unmap(videobuf, &map);
+
+    created = true;
   }
 
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
 
   ImGui::NewFrame();
+  return created;
 }
 
 void Application::populateFrame() {
@@ -210,13 +215,24 @@ void Application::populateFrame() {
 
     ImGui::Image((void *)(intptr_t)videotex, streamSize);
 
+
+
+
+
+
     photoTaker->render();
+
+
+
+
+
+
     ImDrawList *drawList = ImGui::GetWindowDrawList();
 
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
                  windowSize, windowPosition, focus_lost);
-
-    // toolbar->render();
+    
+    //toolbar->render();
 
     if (autofocus) {
       focus_lost = autofocusControl->render(drawList, streamSize,

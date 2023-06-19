@@ -30,7 +30,7 @@ public:
     void run();
 
 private:
-    void createFrame();
+    bool createFrame();
     void populateFrame();
     void renderFrame();
 
@@ -42,6 +42,9 @@ private:
 private:
     Window *window;
     Pipeline *pipeline;
+
+
+    GstBuffer *videobuf;
 
     ModuleCtrl *moduleCtrl;
 

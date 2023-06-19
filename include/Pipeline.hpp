@@ -76,6 +76,7 @@ private:
   void linkElementsCOLOR();
 
 private:
+  bool color = false;
   /**
    * @brief pipeline
    *
@@ -103,10 +104,12 @@ private:
   GstElement *queue2 = nullptr;
   GstElement *autofocus = nullptr;
   GstElement *appsink = nullptr;
+
   GstElement *autoexposure = nullptr;
   GstElement *multifocus = nullptr;
   GstElement *sharpness = nullptr;
   GstElement *whitebalance = nullptr;
   GstElement *bayer2rgb = nullptr;
   GstElement *gray2bayer = nullptr;
+  GstElement *capsfilter = nullptr;
 };
