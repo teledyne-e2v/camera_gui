@@ -27,7 +27,7 @@ public:
     void run();
 
 private:
-    void createFrame();
+    bool createFrame();
     void populateFrame();
     void renderFrame();
 
@@ -61,6 +61,10 @@ private:
     GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
+
+
+    GstBuffer *videobuf;
+
 
     int display_w = 0;
     int display_h = 0;

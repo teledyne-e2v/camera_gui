@@ -83,34 +83,40 @@ void Application::run()
     while (!window->shouldClose())
     {
         glfwPollEvents();
-        createFrame();
+        bool created = createFrame();
         populateFrame();
         renderFrame();
+
+        if(created)
+          gst_buffer_unmap(videobuf, &map);
+
     }
 }
 
-void Application::createFrame()
+bool Application::createFrame()
 {
+    bool created = false;
     GstSample *videosample = pipeline->getSample();
     /**
      * Load the frame into an openGL texture if a new one is available
      */
     if (videosample)
     {
-        GstBuffer *videobuf = gst_sample_get_buffer(videosample);
+        videobuf = gst_sample_get_buffer(videosample);
 
         gst_buffer_map(videobuf, &map, GST_MAP_READ);
         gst_sample_unref(videosample);
         glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
                      GL_UNSIGNED_BYTE, map.data);
 
-        gst_buffer_unmap(videobuf, &map);
+        created = true;
     }
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
 
     ImGui::NewFrame();
+    return created;
 }
 
 void Application::populateFrame()
