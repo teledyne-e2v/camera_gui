@@ -24,7 +24,7 @@ public:
      * @brief render the window
      *
      */
-    void render();
+    void render(bool frame_created);
 
     /**
      * @brief Construct a new Take Photos object
@@ -38,6 +38,7 @@ public:
 private:
     int imageWidth = 1920;
     int imageHeight = 1080;
+    bool disabled = false;
 
     /**
      * @brief true when its already taking photos

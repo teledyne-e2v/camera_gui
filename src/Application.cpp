@@ -83,12 +83,14 @@ void Application::run()
     while (!window->shouldClose())
     {
         glfwPollEvents();
-        bool created = createFrame();
+        created = createFrame();
         populateFrame();
         renderFrame();
 
         if(created)
+        {
           gst_buffer_unmap(videobuf, &map);
+        }
 
     }
 }
@@ -164,7 +166,8 @@ void Application::populateFrame()
 
         ImGui::SetNextWindowClass(&gstWindowClass);
         ImGui::Begin("Gstreamer stream", nullptr, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove);
-	if(freeze)
+
+    if(freeze)
 {
         if (ImGui::Button((frozen) ? "Resume" : "Freeze"))
         {
@@ -201,9 +204,9 @@ void Application::populateFrame()
         ImGui::SetCursorPos(streamPosition);
         ImGui::Image((void *)(intptr_t)videotex, streamSize);
 
-        photoTaker->render();
         ImDrawList *drawList = ImGui::GetWindowDrawList();
 
+	    photoTaker->render(created);
 
 	Roi->render2(drawList, streamSize, windowPosition + streamPosition, windowSize, windowPosition, focus_lost);
 

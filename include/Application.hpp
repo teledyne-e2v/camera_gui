@@ -41,7 +41,7 @@ private:
     Pipeline *pipeline;
 
     ModuleCtrl *moduleCtrl;
-
+    bool created;
     TakePhotos *photoTaker;
     ModuleControl *moduleControlConfig;
     Config *autofocusConfig;
