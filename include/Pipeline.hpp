@@ -73,7 +73,6 @@ private:
    *
    */
   void linkElementsGRAY();
-  void linkElementsCOLOR();
 
 private:
   bool color = false;
@@ -81,7 +80,6 @@ private:
    * @brief pipeline
    *
    */
-  GstElement *pipeline = nullptr;
   /**
    * @brief video sources (nvarguscamerasrc in our case)
    *
@@ -100,16 +98,23 @@ private:
    */
   GstElement *nvvidconv = nullptr;
   GstElement *barcodereader = nullptr;
-  GstElement *queue1 = nullptr;
   GstElement *queue2 = nullptr;
   GstElement *autofocus = nullptr;
-  GstElement *appsink = nullptr;
 
   GstElement *autoexposure = nullptr;
-  GstElement *multifocus = nullptr;
   GstElement *sharpness = nullptr;
-  GstElement *whitebalance = nullptr;
-  GstElement *bayer2rgb = nullptr;
-  GstElement *gray2bayer = nullptr;
+  GstElement *multifocus = nullptr;
+
+
   GstElement *capsfilter = nullptr;
+
+  GstPad *blockpad = nullptr;
+
 };
+static  GstElement *pipeline = nullptr;
+ static GstElement *appsink = nullptr;
+ static GstElement *whitebalance = nullptr;
+ static GstElement *bayer2rgb = nullptr;
+ static GstElement *gray2bayer = nullptr;
+ static   GstElement *fpscounter = nullptr;  
+ static GstElement *queue1 = nullptr;

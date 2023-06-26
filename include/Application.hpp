@@ -18,6 +18,7 @@
 #include "Multifocus.hpp"
 #include "Sharpness.hpp"
 #include "ToolBar.hpp"
+#include <vector>
 
 #include <chrono>
 #include <gst/gst.h>
@@ -72,14 +73,17 @@ private:
     GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
-
+    
     int display_w = 0;
     int display_h = 0;
+    std::vector<GstBuffer *> bufferNotFree;
+    std::vector<GstMapInfo> mapNotFree;
 
     int videoWidth = 0;
     int videoHeight = 0;
     bool focus_lost=false;
     bool frozen = false;
+    bool isBufferFree = 1;
 
     int frameCounter=0;
     std::chrono::_V2::system_clock::time_point start;

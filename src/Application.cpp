@@ -3,16 +3,14 @@
 #include <fstream>
 #include <unistd.h>
 
-
-
 Application::Application(int argc, char **argv) {
-  int err=0;
+  int err = 0;
 
   loadImGuiConfig();
   moduleCtrl = new ModuleCtrl();
 
 #ifndef DEBUG_MODE
-  err=moduleCtrl->ModuleControlInit(); // init ic2
+  err = moduleCtrl->ModuleControlInit(); // init ic2
 #endif
   window = new Window();
 
@@ -22,13 +20,9 @@ Application::Application(int argc, char **argv) {
   Roi = new ROI();
   freeze = pipeline->getImageFreeze();
 
-
-  if(err==0)
-  {
+  if (err == 0) {
     autofocus = pipeline->getAutofocus();
-
   }
-
 
   if (autofocus) {
     autofocusConfig = new Config(autofocus);
@@ -36,7 +30,6 @@ Application::Application(int argc, char **argv) {
         autofocus, moduleCtrl, moduleControlConfig, autofocusConfig, Roi);
     autofocusDebug = new Debug(autofocus);
   }
-
 
   barcodereader = pipeline->getBarcodeReader();
   if (barcodereader) {
@@ -95,13 +88,45 @@ void Application::run() {
   photoTaker->setImageSize(videoWidth, videoHeight);
   glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 
+  start = std::chrono::high_resolution_clock::now();
+
   while (!window->shouldClose()) {
     glfwPollEvents();
     bool frame_created = createFrame();
     populateFrame();
     renderFrame();
-    if(frame_created)
-      gst_buffer_unmap(videobuf, &map);
+
+
+    printf("%d\n",bufferNotFree.size());
+
+    if(bufferNotFree.size()>0)
+    {
+      int i=0;
+      while(i < bufferNotFree.size())
+      {
+        if(GST_IS_BUFFER(bufferNotFree.at(i)))
+        {
+          gst_buffer_unmap(bufferNotFree.at(i), &(mapNotFree.at(i)));
+          bufferNotFree.erase(std::next(bufferNotFree.begin(),i));
+          mapNotFree.erase(std::next(mapNotFree.begin(),i));
+        } 
+        else
+        {
+          i++;
+        }
+      }
+    }
+    if (frame_created) {
+      if(GST_IS_BUFFER(videobuf))
+      {
+        gst_buffer_unmap(videobuf, &map);
+      }
+      else
+      {
+         bufferNotFree.push_back(videobuf);
+         mapNotFree.push_back(map);
+      }
+    }
 
   }
 }
@@ -113,22 +138,26 @@ bool Application::createFrame() {
    */
   bool created = false;
   if (videosample) {
+    frameCounter++;
+    printf("%d\n", frameCounter);
+
     videobuf = gst_sample_get_buffer(videosample);
 
     gst_buffer_map(videobuf, &map, GST_MAP_READ);
     gst_sample_unref(videosample);
-    if(map.size == 8294400)
-    {
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0,
-       GL_RGBA, GL_UNSIGNED_BYTE, map.data);
-    }
-    else if(map.size == 2073600)
-    {
-    glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
-                 GL_UNSIGNED_BYTE, map.data);
-    }
 
+
+    if (map.size == 8294400) {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0,
+                   GL_RGBA, GL_UNSIGNED_BYTE, map.data);
+    } else if (map.size == 2073600) {
+      glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
+                   GL_UNSIGNED_BYTE, map.data);
+    }
     created = true;
+          //printf("unbuf %d\n",gst_buffer_is_writable(videobuf));
+
+      //printf("unbuf done %d\n",gst_buffer_is_writable(videobuf));
   }
 
   ImGui_ImplOpenGL3_NewFrame();
@@ -140,25 +169,18 @@ bool Application::createFrame() {
 
 void Application::populateFrame() {
 
-  if (frameCounter == 0) {
-    start = std::chrono::high_resolution_clock::now();
-  }
   end = std::chrono::high_resolution_clock::now();
 
   auto duration =
       std::chrono::duration_cast<std::chrono::microseconds>(end - start);
   if (duration.count() > 1000000) {
-    frameCounter++;
     FPS = frameCounter * 1000000.0 / duration.count();
     frameCounter = 0;
-  } else {
-    frameCounter++;
-  }
-
+    start = std::chrono::high_resolution_clock::now();
+  } 
   createDockSpace();
 
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
 
   if (ImGui::Begin("###DockSpace", nullptr, window_flags)) {
     ImGui::PopStyleVar();
@@ -186,7 +208,7 @@ void Application::populateFrame() {
         frozen = !frozen;
       }
     }
-    ImGui::Text("%d", (int)FPS);
+    ImGui::Text("Framerate Application : %d", (int)FPS);
 
     /**
      *  Keep the video stream aspect ratio when drawing it to the screen
@@ -215,24 +237,14 @@ void Application::populateFrame() {
 
     ImGui::Image((void *)(intptr_t)videotex, streamSize);
 
-
-
-
-
-
     photoTaker->render();
-
-
-
-
-
 
     ImDrawList *drawList = ImGui::GetWindowDrawList();
 
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
                  windowSize, windowPosition, focus_lost);
-    
-    //toolbar->render();
+
+    toolbar->render();
 
     if (autofocus) {
       focus_lost = autofocusControl->render(drawList, streamSize,
@@ -248,7 +260,6 @@ void Application::populateFrame() {
 
     moduleControlConfig->showWindow = true;
     moduleControlConfig->render();
-
 
     if (sharpness) {
       sharpnessControl->render();
