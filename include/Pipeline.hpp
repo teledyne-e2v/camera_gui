@@ -41,6 +41,8 @@ public:
    */
   GstElement *getBarcodeReader();
   GstElement *getSharpness();
+  GstElement *getFpscounter();
+  GstElement *getWhiteBalance();
 
   /**
    * @brief Get the Autoexposure object

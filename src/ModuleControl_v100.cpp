@@ -26,9 +26,8 @@ ModuleCtrl::~ModuleCtrl()
 #endif
 }
 
-/************************************************
- *Init I2C bus
- ************************************************/
+
+
 int ModuleCtrl::ModuleControlInit()
 {
 	/* Open i2c bus */
@@ -71,6 +70,19 @@ int ModuleCtrl::ModuleControlInit()
 	// Enable PDA50 DAC
 	err = enable_VdacPda(devicepda, bus);
 
+
+	
+	memset(&eeprom, 0, sizeof(eeprom));
+	i2c_init_device(&eeprom);
+
+	eeprom.bus = bus;
+
+	eeprom.addr = EEPROM_I2C_ADDR;
+
+	eeprom.page_bytes = 32;
+	/*Address length in bytes*/
+	eeprom.iaddr_bytes = 2;
+
 	/* Init i2c devicetemp */
 
 	memset(&devicetemp, 0, sizeof(devicetemp));
@@ -86,6 +98,7 @@ int ModuleCtrl::ModuleControlInit()
 	return err;
 }
 
+
 /************************************************
  *Close I2C bus
  ************************************************/
@@ -100,6 +113,56 @@ void ModuleCtrl::ModuleControlClose()
 	i2c_close(bus);
 
 	printf("Bus %s closed\n", bus_name);
+}
+
+int ModuleCtrl::readEEProm(int regAddr, int *value)
+{
+	unsigned char buffer[2];
+	ssize_t size = sizeof(buffer);
+	memset(buffer, 0, size);
+	int error = 0;
+
+	eeprom.page_bytes = 32;
+	buffer[0] = 1;
+	buffer[1] = 2;
+	if ((i2c_ioctl_read(&eeprom, regAddr, buffer, size)) != size)
+	{
+		fprintf(stderr, "READ ERROR: eeprom=0x%x register address=0x%x\n", eeprom.addr, regAddr);
+		// i2c_close(bus);
+		error = -3;
+	}
+	else
+	{
+		*value = buffer[0] * 256 + buffer[1];
+	}
+	// printf("error=%d\n",error);
+	return error;
+}
+
+
+/************************************************
+ *Write register
+ ************************************************/
+int ModuleCtrl::writeEEProm(int regAddr, int value)
+{
+	unsigned char buffer[2];
+	ssize_t size = sizeof(buffer);
+	memset(buffer, 0, size);
+	int error = 0;
+
+	*buffer = ((value)&0xff00) >> 8;
+	*(buffer + 1) = ((value)&0x00ff);
+
+	eeprom.page_bytes = 256;
+
+	if ((i2c_ioctl_write(&eeprom, regAddr, buffer, size)) != size)
+	{
+		fprintf(stderr, "WRITE ERROR: eeprom=0x%x register address=0x%x\n", eeprom.addr, regAddr);
+		// i2c_close(bus);
+		error = -3;
+	}
+	// printf("error=%d\n",error);
+	return error;
 }
 
 /************************************************

@@ -1,6 +1,6 @@
 #include "ToolBar.hpp"
 #include "imgui.h"
-
+#include <stdio.h>
 ToolBar::ToolBar(Pipeline *pipeline) 
     :pipeline(pipeline)
 {
@@ -9,6 +9,7 @@ ToolBar::ToolBar(Pipeline *pipeline)
 
 void ToolBar::render()
 {
+
     ImGui::BeginMainMenuBar();
     if(!isColor)
     {
@@ -20,12 +21,12 @@ void ToolBar::render()
     }
     else
     {
-        if(ImGui::Button("Switch to GRAY"))
+        if(ImGui::Button("Switch to monochrome"))
         {
             pipeline->switchToGRAY();
             isColor=false;
         }
     }
     ImGui::EndMainMenuBar();
-
 }
+

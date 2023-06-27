@@ -126,7 +126,11 @@ void Pipeline::setState(GstState state) {
 
 GstElement *Pipeline::getAutofocus() { return autofocus; }
 
+GstElement *Pipeline::getFpscounter() { return fpscounter; }
+
 GstElement *Pipeline::getImageFreeze() { return imageFreeze; }
+
+GstElement *Pipeline::getWhiteBalance() { return whitebalance; }
 
 GstElement *Pipeline::getBarcodeReader() { return barcodereader; }
 
@@ -193,6 +197,10 @@ event_probe_cb_color(GstPad *pad, GstPadProbeInfo *info, gpointer user_data) {
   gst_bin_remove(GST_BIN(pipeline), fpscounter);
 
   /* add, link and start the new effect */
+
+    GST_DEBUG_OBJECT(pipeline, "adding   %" GST_PTR_FORMAT, fpscounter);
+  gst_bin_add(GST_BIN(pipeline), fpscounter);
+
   GST_DEBUG_OBJECT(pipeline, "adding   %" GST_PTR_FORMAT, whitebalance);
   gst_bin_add(GST_BIN(pipeline), whitebalance);
 
@@ -203,11 +211,12 @@ event_probe_cb_color(GstPad *pad, GstPadProbeInfo *info, gpointer user_data) {
   gst_bin_add(GST_BIN(pipeline), bayer2rgb);
 
   GST_DEBUG_OBJECT(pipeline, "linking..");
-  gst_element_link_many(queue1, whitebalance, gray2bayer, NULL);
+  gst_element_link_many(queue1,fpscounter, whitebalance, gray2bayer, NULL);
 
   gst_element_link_filtered(gray2bayer,bayer2rgb,caps);
   gst_element_link(bayer2rgb, appsink);
 
+  gst_element_set_state(fpscounter, GST_STATE_PLAYING);
   gst_element_set_state(whitebalance, GST_STATE_PLAYING);
   gst_element_set_state(gray2bayer, GST_STATE_PLAYING);
   gst_element_set_state(bayer2rgb, GST_STATE_PLAYING);
@@ -269,6 +278,9 @@ event_probe_cb_gray(GstPad *pad, GstPadProbeInfo *info, gpointer user_data) {
     GST_DEBUG_OBJECT(pipeline, "removing %" GST_PTR_FORMAT, bayer2rgb);
   gst_bin_remove(GST_BIN(pipeline), bayer2rgb);
 
+  GST_DEBUG_OBJECT(pipeline, "removing %" GST_PTR_FORMAT, fpscounter);
+  gst_bin_remove(GST_BIN(pipeline), fpscounter);
+  
   /* add, link and start the new effect */
   GST_DEBUG_OBJECT(pipeline, "adding   %" GST_PTR_FORMAT, fpscounter);
   gst_bin_add(GST_BIN(pipeline), fpscounter);

@@ -88,7 +88,10 @@ sources = [
 	'src/Autoexposure.cpp',
 	'src/Multifocus.cpp',
 	'src/Sharpness.cpp',
-     'src/ToolBar.cpp'
+     'src/ToolBar.cpp',
+     'src/WhiteBalance.cpp',
+     'src/Sensor.cpp'
+
 ]
 
 topaz_api_lib = cc.find_library('topaz_api',dirs : ['/usr/local/lib'])

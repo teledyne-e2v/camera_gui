@@ -2,28 +2,35 @@
 #include <chrono>
 #include <fstream>
 #include <unistd.h>
-
+#include <math.h>
 Application::Application(int argc, char **argv) {
   int err = 0;
 
   loadImGuiConfig();
   moduleCtrl = new ModuleCtrl();
 
-#ifndef DEBUG_MODE
   err = moduleCtrl->ModuleControlInit(); // init ic2
-#endif
+
+
+
   window = new Window();
+
+  sensor = new Sensor(*moduleCtrl);
 
   pipeline = new Pipeline(argc, argv);
 
   moduleControlConfig = new ModuleControl(moduleCtrl);
   Roi = new ROI();
   freeze = pipeline->getImageFreeze();
+  fpscounter = pipeline->getFpscounter();
 
   if (err == 0) {
     autofocus = pipeline->getAutofocus();
-  }
+    multifocus = pipeline->getMultifocus();
+    sharpness = pipeline->getSharpness();
 
+  }
+ 
   if (autofocus) {
     autofocusConfig = new Config(autofocus);
     autofocusControl = new AutofocusControl(
@@ -37,15 +44,17 @@ Application::Application(int argc, char **argv) {
     barcodeDisplayer = new BarcodeDisplayer(barcodereader);
   }
 
-  sharpness = pipeline->getSharpness();
 
   if (sharpness) {
     sharpnessControl = new SharpnessControl(sharpness, Roi);
   }
+  whitebalance = pipeline->getWhiteBalance();
 
+  if (whitebalance) {
+    whiteBalanceControl = new WhiteBalanceControl(whitebalance, Roi);
+  }
   photoTaker = new TakePhotos(&map);
 
-  multifocus = pipeline->getMultifocus();
   if (multifocus) {
     multifocusControl = new MultifocusControl(multifocus, Roi);
   }
@@ -97,7 +106,6 @@ void Application::run() {
     renderFrame();
 
 
-    printf("%d\n",bufferNotFree.size());
 
     if(bufferNotFree.size()>0)
     {
@@ -139,8 +147,6 @@ bool Application::createFrame() {
   bool created = false;
   if (videosample) {
     frameCounter++;
-    printf("%d\n", frameCounter);
-
     videobuf = gst_sample_get_buffer(videosample);
 
     gst_buffer_map(videobuf, &map, GST_MAP_READ);
@@ -155,9 +161,6 @@ bool Application::createFrame() {
                    GL_UNSIGNED_BYTE, map.data);
     }
     created = true;
-          //printf("unbuf %d\n",gst_buffer_is_writable(videobuf));
-
-      //printf("unbuf done %d\n",gst_buffer_is_writable(videobuf));
   }
 
   ImGui_ImplOpenGL3_NewFrame();
@@ -178,9 +181,10 @@ void Application::populateFrame() {
     frameCounter = 0;
     start = std::chrono::high_resolution_clock::now();
   } 
+
   createDockSpace();
 
-  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 20.0f));
 
   if (ImGui::Begin("###DockSpace", nullptr, window_flags)) {
     ImGui::PopStyleVar();
@@ -199,6 +203,10 @@ void Application::populateFrame() {
         ImGuiDockNodeFlags_NoDockingOverMe;
 
     ImGui::SetNextWindowClass(&gstWindowClass);
+
+
+        toolbar->render();
+
     ImGui::Begin("Gstreamer stream", nullptr,
                  ImGuiWindowFlags_NoBringToFrontOnFocus |
                      ImGuiWindowFlags_NoMove);
@@ -208,7 +216,52 @@ void Application::populateFrame() {
         frozen = !frozen;
       }
     }
-    ImGui::Text("Framerate Application : %d", (int)FPS);
+    ImGui::Text("Application frame rate : %d", (int)FPS);
+
+
+    if(fpscounter)
+    {
+      int frame_rate_gstreamer;
+      g_object_get(G_OBJECT(fpscounter), "framerate", &frame_rate_gstreamer, NULL);
+
+      ImGui::Text("Gstreamer frame rate  : %d", (int)frame_rate_gstreamer);
+    }
+    int T_line, T_wait; 
+    moduleCtrl->readReg(0x06, &T_line);
+
+    moduleCtrl->readReg(0x08, &T_wait);
+
+    int nb_lines, roi_1_height,roi_2_height, roi_1_subs_v, roi_2_subs_v;
+
+    moduleCtrl->readReg(0x19, &roi_1_height);
+    moduleCtrl->readReg(0x13, &roi_1_subs_v);
+    moduleCtrl->readReg(0x18, &roi_2_height);
+    moduleCtrl->readReg(0x1A, &roi_2_subs_v);
+
+    int reg_dig_config_2;
+    int Clamp_mode, Context, Trigger_margin;
+
+    moduleCtrl->readReg(0x04, &reg_dig_config_2);
+    Clamp_mode = reg_dig_config_2 & 0x1C;
+    Context = reg_dig_config_2 & 0x100;
+    Trigger_margin = reg_dig_config_2 & 0x60;
+
+    nb_lines = roi_1_height / pow(2,roi_1_subs_v) + roi_2_height / pow(2,roi_2_subs_v) + Clamp_mode + Context + Trigger_margin;
+
+    int fb_reg_frame;
+
+    moduleCtrl->readReg(0x56, &fb_reg_frame);
+    int frame_rate_limited_by_exposition = (fb_reg_frame * T_line) / 50;
+    int frame_rate_limited_by_readout = (int ((T_line) / ((float)50))  * nb_lines + T_wait);
+    if(frame_rate_limited_by_readout < frame_rate_limited_by_exposition)
+    {
+      ImGui::Text("Sensor frame rate : %d",(int)pow(10,6) / frame_rate_limited_by_exposition);
+    }
+    else
+    {
+      ImGui::Text("Sensor frame rate : %d",(int)pow(10,6) / frame_rate_limited_by_readout);
+    }
+
 
     /**
      *  Keep the video stream aspect ratio when drawing it to the screen
@@ -244,7 +297,6 @@ void Application::populateFrame() {
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
                  windowSize, windowPosition, focus_lost);
 
-    toolbar->render();
 
     if (autofocus) {
       focus_lost = autofocusControl->render(drawList, streamSize,
@@ -261,13 +313,17 @@ void Application::populateFrame() {
     moduleControlConfig->showWindow = true;
     moduleControlConfig->render();
 
+    if(whitebalance)
+    {
+      whiteBalanceControl->render();
+    }
+
     if (sharpness) {
       sharpnessControl->render();
       if (autofocus) {
 
         if (autofocusControl->isAutofocusDone &&
             autofocusConfig->getStrategy() == 3) {
-
           sharpnessControl->plotAutofocus(autofocusDebug->getLogs());
         }
       }
@@ -286,10 +342,15 @@ void Application::populateFrame() {
       barcodeDisplayer->render();
     }
 
+    sensor->render();
+
     ImGui::End();
   }
 
   ImGui::End();
+
+
+
 }
 
 void Application::renderFrame() {

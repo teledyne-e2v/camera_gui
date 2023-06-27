@@ -79,6 +79,8 @@ void ModuleControl::auto_controls()
     }
 }
 
+
+
 void ModuleControl::update_auto_controls()
 {
     for (auto &ctrl : controls)

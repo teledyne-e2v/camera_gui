@@ -62,6 +62,8 @@ private:
      */
     I2CDevice devicetemp;
 
+    I2CDevice eeprom;
+
 public:
     /**
      * @brief
@@ -126,6 +128,9 @@ public:
      * @return int
      */
     int writeReg(int regAddr, int value);
+
+    int readEEProm(int regAddr, int *value);
+    int writeEEProm(int regAddr, int value);
 
     /**
      * @brief

@@ -18,6 +18,8 @@
 #include "Multifocus.hpp"
 #include "Sharpness.hpp"
 #include "ToolBar.hpp"
+#include "WhiteBalance.hpp"
+#include "Sensor.hpp"
 #include <vector>
 
 #include <chrono>
@@ -48,7 +50,7 @@ private:
     GstBuffer *videobuf;
 
     ModuleCtrl *moduleCtrl;
-
+    Sensor *sensor;
     TakePhotos *photoTaker;
     ModuleControl *moduleControlConfig;
     Config *autofocusConfig;
@@ -60,6 +62,8 @@ private:
     AutoexposureControl *autoexposureControl;
     MultifocusControl *multifocusControl;
     SharpnessControl *sharpnessControl;
+    WhiteBalanceControl *whiteBalanceControl;
+
     ToolBar *toolbar;
 
     GstMapInfo map;
@@ -67,8 +71,12 @@ private:
     
     GstElement *autofocus;
     GstElement *sharpness;
+    GstElement *whitebalance;
+
     GstElement *barcodereader;
     GstElement *freeze;
+    GstElement *fpscounter;
+
     GstElement *multifocus;
     GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
@@ -89,4 +97,8 @@ private:
     std::chrono::_V2::system_clock::time_point start;
     std::chrono::_V2::system_clock::time_point end;
     float FPS=0;
+
+
+    const static bool color_sensor;
+    const static bool multifocus_sensor; 
 };
