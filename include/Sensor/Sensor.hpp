@@ -46,6 +46,8 @@ private:
   std::vector<std::shared_ptr<Register>> registers;
 
 public:
+  bool getColor() {return Sensor_CFA_option->getValue() == 0x1000;};
+  bool getMultifocus() {return Module_option->getValue() == 0x0200;};
   Sensor(ModuleCtrl &moduleCtrl);
   void render();
 };

@@ -1,8 +1,8 @@
 #include "Application.hpp"
 #include <chrono>
 #include <fstream>
-#include <unistd.h>
 #include <math.h>
+#include <unistd.h>
 Application::Application(int argc, char **argv) {
   int err = 0;
 
@@ -11,26 +11,23 @@ Application::Application(int argc, char **argv) {
 
   err = moduleCtrl->ModuleControlInit(); // init ic2
 
-
-
   window = new Window();
 
   sensor = new Sensor(*moduleCtrl);
 
-  pipeline = new Pipeline(argc, argv);
+  pipeline = new Pipeline(argc, argv, sensor->getColor());
 
   moduleControlConfig = new ModuleControl(moduleCtrl);
   Roi = new ROI();
   freeze = pipeline->getImageFreeze();
   fpscounter = pipeline->getFpscounter();
 
-  if (err == 0) {
+  if (err == 0 && sensor->getMultifocus()) {
     autofocus = pipeline->getAutofocus();
     multifocus = pipeline->getMultifocus();
     sharpness = pipeline->getSharpness();
-
   }
- 
+
   if (autofocus) {
     autofocusConfig = new Config(autofocus);
     autofocusControl = new AutofocusControl(
@@ -43,7 +40,6 @@ Application::Application(int argc, char **argv) {
     barcodeReaderConfig = new BarcodeReader(barcodereader);
     barcodeDisplayer = new BarcodeDisplayer(barcodereader);
   }
-
 
   if (sharpness) {
     sharpnessControl = new SharpnessControl(sharpness, Roi);
@@ -64,7 +60,9 @@ Application::Application(int argc, char **argv) {
         new AutoexposureControl(autoexposure, moduleControlConfig, Roi);
   }
 
-  toolbar = new ToolBar(pipeline);
+  if (sensor->getColor() && pipeline->getColorSupport()) {
+    toolbar = new ToolBar(pipeline);
+  }
 
   glGenTextures(1, &videotex);
   glBindTexture(GL_TEXTURE_2D, videotex);
@@ -105,37 +103,26 @@ void Application::run() {
     populateFrame();
     renderFrame();
 
-
-
-    if(bufferNotFree.size()>0)
-    {
-      int i=0;
-      while(i < bufferNotFree.size())
-      {
-        if(GST_IS_BUFFER(bufferNotFree.at(i)))
-        {
+    if (bufferNotFree.size() > 0) {
+      int i = 0;
+      while (i < bufferNotFree.size()) {
+        if (GST_IS_BUFFER(bufferNotFree.at(i))) {
           gst_buffer_unmap(bufferNotFree.at(i), &(mapNotFree.at(i)));
-          bufferNotFree.erase(std::next(bufferNotFree.begin(),i));
-          mapNotFree.erase(std::next(mapNotFree.begin(),i));
-        } 
-        else
-        {
+          bufferNotFree.erase(std::next(bufferNotFree.begin(), i));
+          mapNotFree.erase(std::next(mapNotFree.begin(), i));
+        } else {
           i++;
         }
       }
     }
     if (frame_created) {
-      if(GST_IS_BUFFER(videobuf))
-      {
+      if (GST_IS_BUFFER(videobuf)) {
         gst_buffer_unmap(videobuf, &map);
-      }
-      else
-      {
-         bufferNotFree.push_back(videobuf);
-         mapNotFree.push_back(map);
+      } else {
+        bufferNotFree.push_back(videobuf);
+        mapNotFree.push_back(map);
       }
     }
-
   }
 }
 
@@ -151,7 +138,6 @@ bool Application::createFrame() {
 
     gst_buffer_map(videobuf, &map, GST_MAP_READ);
     gst_sample_unref(videosample);
-
 
     if (map.size == 8294400) {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0,
@@ -180,7 +166,7 @@ void Application::populateFrame() {
     FPS = frameCounter * 1000000.0 / duration.count();
     frameCounter = 0;
     start = std::chrono::high_resolution_clock::now();
-  } 
+  }
 
   createDockSpace();
 
@@ -204,9 +190,9 @@ void Application::populateFrame() {
 
     ImGui::SetNextWindowClass(&gstWindowClass);
 
-
-        toolbar->render();
-
+    if (sensor->getColor() && pipeline->getColorSupport()) {
+      toolbar->render();
+    }
     ImGui::Begin("Gstreamer stream", nullptr,
                  ImGuiWindowFlags_NoBringToFrontOnFocus |
                      ImGuiWindowFlags_NoMove);
@@ -218,20 +204,19 @@ void Application::populateFrame() {
     }
     ImGui::Text("Application frame rate : %d", (int)FPS);
 
-
-    if(fpscounter)
-    {
+    if (fpscounter) {
       int frame_rate_gstreamer;
-      g_object_get(G_OBJECT(fpscounter), "framerate", &frame_rate_gstreamer, NULL);
+      g_object_get(G_OBJECT(fpscounter), "framerate", &frame_rate_gstreamer,
+                   NULL);
 
       ImGui::Text("Gstreamer frame rate  : %d", (int)frame_rate_gstreamer);
     }
-    int T_line, T_wait; 
+    int T_line, T_wait;
     moduleCtrl->readReg(0x06, &T_line);
 
     moduleCtrl->readReg(0x08, &T_wait);
 
-    int nb_lines, roi_1_height,roi_2_height, roi_1_subs_v, roi_2_subs_v;
+    int nb_lines, roi_1_height, roi_2_height, roi_1_subs_v, roi_2_subs_v;
 
     moduleCtrl->readReg(0x19, &roi_1_height);
     moduleCtrl->readReg(0x13, &roi_1_subs_v);
@@ -246,22 +231,23 @@ void Application::populateFrame() {
     Context = reg_dig_config_2 & 0x100;
     Trigger_margin = reg_dig_config_2 & 0x60;
 
-    nb_lines = roi_1_height / pow(2,roi_1_subs_v) + roi_2_height / pow(2,roi_2_subs_v) + Clamp_mode + Context + Trigger_margin;
+    nb_lines = roi_1_height / pow(2, roi_1_subs_v) +
+               roi_2_height / pow(2, roi_2_subs_v) + Clamp_mode + Context +
+               Trigger_margin;
 
     int fb_reg_frame;
 
     moduleCtrl->readReg(0x56, &fb_reg_frame);
     int frame_rate_limited_by_exposition = (fb_reg_frame * T_line) / 50;
-    int frame_rate_limited_by_readout = (int ((T_line) / ((float)50))  * nb_lines + T_wait);
-    if(frame_rate_limited_by_readout < frame_rate_limited_by_exposition)
-    {
-      ImGui::Text("Sensor frame rate : %d",(int)pow(10,6) / frame_rate_limited_by_exposition);
+    int frame_rate_limited_by_readout =
+        (int((T_line) / ((float)50)) * nb_lines + T_wait);
+    if (frame_rate_limited_by_readout < frame_rate_limited_by_exposition) {
+      ImGui::Text("Sensor frame rate : %d",
+                  (int)pow(10, 6) / frame_rate_limited_by_exposition);
+    } else {
+      ImGui::Text("Sensor frame rate : %d",
+                  (int)pow(10, 6) / frame_rate_limited_by_readout);
     }
-    else
-    {
-      ImGui::Text("Sensor frame rate : %d",(int)pow(10,6) / frame_rate_limited_by_readout);
-    }
-
 
     /**
      *  Keep the video stream aspect ratio when drawing it to the screen
@@ -297,7 +283,6 @@ void Application::populateFrame() {
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
                  windowSize, windowPosition, focus_lost);
 
-
     if (autofocus) {
       focus_lost = autofocusControl->render(drawList, streamSize,
                                             windowPosition + streamPosition,
@@ -313,8 +298,7 @@ void Application::populateFrame() {
     moduleControlConfig->showWindow = true;
     moduleControlConfig->render();
 
-    if(whitebalance)
-    {
+    if (whitebalance) {
       whiteBalanceControl->render();
     }
 
@@ -348,9 +332,6 @@ void Application::populateFrame() {
   }
 
   ImGui::End();
-
-
-
 }
 
 void Application::renderFrame() {

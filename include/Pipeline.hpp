@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gst/gst.h>
-
+#include <map>
 /**
  * @brief Class creating and working on the pipeline
  *
@@ -14,8 +14,13 @@ public:
    * @param argc
    * @param argv
    */
-  Pipeline(int argc, char **argv);
+  Pipeline(int argc, char **argv, bool color);
   ~Pipeline();
+
+
+  GstElement *getSharpness();
+
+
   /**
    * @brief Get the Sample object
    *
@@ -40,7 +45,6 @@ public:
    * @return GstElement*
    */
   GstElement *getBarcodeReader();
-  GstElement *getSharpness();
   GstElement *getFpscounter();
   GstElement *getWhiteBalance();
 
@@ -63,25 +67,30 @@ public:
 
   void switchToColor();
   void switchToGRAY();
+  bool getColorSupport() { return this->color_support; }
 
 private:
+  std::map<std::string,GstElement*> GstElements;
+
   /**
    * @brief Create a Elements object
    *
    */
-  void createElements();
+  void createElements(bool color);
   /**
    * @brief link elements togethers
    *
    */
   void linkElementsGRAY();
 
-private:
-  bool color = false;
-  /**
-   * @brief pipeline
-   *
-   */
+  void mapping_Gst_Element(std::string name);
+
+  bool color_support;
+
+
+
+
+
   /**
    * @brief video sources (nvarguscamerasrc in our case)
    *
@@ -98,25 +107,8 @@ private:
    * @brief nvvidconv
    *
    */
-  GstElement *nvvidconv = nullptr;
-  GstElement *barcodereader = nullptr;
-  GstElement *queue2 = nullptr;
-  GstElement *autofocus = nullptr;
-
-  GstElement *autoexposure = nullptr;
-  GstElement *sharpness = nullptr;
-  GstElement *multifocus = nullptr;
-
-
-  GstElement *capsfilter = nullptr;
+  GstElement *pipeline = nullptr;
 
   GstPad *blockpad = nullptr;
-
 };
-static  GstElement *pipeline = nullptr;
- static GstElement *appsink = nullptr;
- static GstElement *whitebalance = nullptr;
- static GstElement *bayer2rgb = nullptr;
- static GstElement *gray2bayer = nullptr;
- static   GstElement *fpscounter = nullptr;  
- static GstElement *queue1 = nullptr;
+

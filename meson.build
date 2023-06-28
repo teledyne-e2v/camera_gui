@@ -51,6 +51,14 @@ inc_dirs = [
      include_directories('external/imgui'),
      include_directories('external/imgui/examples'),
      include_directories('external/imgui/examples/libs/gl3w'),
+     include_directories('include/Plugins/Autofocus'),
+     include_directories('include/Plugins/Autoexposure'),
+     include_directories('include/Plugins/Multifocus'),
+     include_directories('include/Plugins/Barcode'),
+     include_directories('include/Plugins/Sharpness'),
+     include_directories('include/Plugins/WhiteBalance'),
+     
+     include_directories('include/Sensor'),
      include_directories('include/'),
 ]
 
@@ -69,28 +77,36 @@ sources = [
      'external/imgui/examples/libs/gl3w/GL/gl3w.c',
      'external/implot/implot.cpp',
      'external/implot/implot_items.cpp',
-	 'src/main.cpp',
+
+	'src/main.cpp',
 	'src/roi.cpp',
-      'include/roi.hpp',
 	'src/utils.cpp',
-	'src/moduleControl.cpp',
-	'src/ModuleControl_v100.cpp',
-	'src/i2c.cpp',
-	'src/config.cpp',
-     'src/Autofocus.cpp',
-     'src/takePhotos.cpp',
-     'src/Barcode.cpp',
-     'src/debug.cpp',
-     'src/BarcodeDisplayer.cpp',
+
+	'src/Sensor/moduleControl.cpp',
+	'src/Sensor/ModuleControl_v100.cpp',
+	'src/Sensor/i2c.cpp',
+     'src/Sensor/Sensor.cpp',
+
+	'src/Plugins/Autofocus/config.cpp',
+     'src/Plugins/Autofocus/Autofocus.cpp',
+     'src/Plugins/Autofocus/debug.cpp',
+
+     'src/Plugins/Barcode/Barcode.cpp',
+     'src/Plugins/Barcode/BarcodeDisplayer.cpp',
+
+	'src/Plugins/Autoexposure/Autoexposure.cpp',
+
+	'src/Plugins/Multifocus/Multifocus.cpp',
+
+	'src/Plugins/Sharpness/Sharpness.cpp',
+
+     'src/Plugins/WhiteBalance/WhiteBalance.cpp',
+
      'src/Pipeline.cpp',
      'src/Window.cpp',
      'src/Application.cpp',
-	'src/Autoexposure.cpp',
-	'src/Multifocus.cpp',
-	'src/Sharpness.cpp',
-     'src/ToolBar.cpp',
-     'src/WhiteBalance.cpp',
-     'src/Sensor.cpp'
+     'src/takePhotos.cpp',
+     'src/ToolBar.cpp'
 
 ]
 
