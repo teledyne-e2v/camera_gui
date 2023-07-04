@@ -48,9 +48,9 @@ void parseString(char* string, int *tab,int size)
 void MultifocusControl::render()
 {
     ImGui::Begin("Multifocus Control");
-    ImGui::Text("Toggle multifocus");
+    ImGui::Text("Enable multifocus");
     ImGui::SameLine();
-    if (ImGui::Checkbox("##Toggle multifocus", &work))
+    if (ImGui::Checkbox("##Enable multifocus", &work))
     {
         if (toggleOnce == false)
         {
@@ -144,7 +144,7 @@ void MultifocusControl::render()
 	std::string s2 = "##";
 	auto result = s + std::to_string(i);
 	auto result2 = s2 + result;
-    ImGui::Text(result.c_str());
+    ImGui::Text("%s", result.c_str());
     ImGui::SameLine();
     ImGui::InputInt(result2.c_str(), plans+i, 0, 1, ImGuiInputTextFlags_CharsDecimal);
     limit(plans[i], -90, 780);

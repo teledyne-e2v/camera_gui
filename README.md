@@ -1,4 +1,4 @@
-# Version 2.4
+# Version 3.0
 
 # About
 
@@ -26,11 +26,16 @@ https://github.com/teledyne-e2v/topaz-api
 
 	
 The application need the following gstreamer plugin to run properly (it can run without but will be less interesting):
-- gst-autofocus (required version : 1.2)
-- gst-multifocus (required version : 1.0)
+- gst-autofocus (required version : 2.0)
+- gst-multifocus (required version : 2.0)
 - gst-autoexposure (required version : 1.0)
 - gst-barcode-reader (required version : 1.0)
 - gst-freeze (required version : 1.0)
+
+Color plugins :
+- bayer2rgb (can be installed with ```sudo apt install gstreamer1.0-plugins-bad```)
+- gst-gray2bayer (required version 1.0)
+- gst-whitebalance (required version : 1.0)
 
 The installation can be checked with ```gst-inspect-1.0```.
 It is required to setup the following environment variables before check the pulgins installation:
@@ -59,6 +64,18 @@ Barcode Reader:
 Image Freeze:
 	
 	gst-inspect-1.0 freeze
+
+Bayer2rgb:
+	
+	gst-inspect-1.0 bayer2rgb
+
+Gray2Bayer:
+	
+	gst-inspect-1.0 gray2bayer
+
+White balance:
+	
+	gst-inspect-1.0 whitebalance
 
 In the these commands return an error, please install the missing plugin following the dedicated procedure.
 
@@ -138,3 +155,7 @@ The configuration panel allows you to configure the autofocus, please refer to t
 ## Barcode config
 
 The configuration panel allows you to configure the barcodereader, please refer to the barcodereader plugin documentation for more informations.
+
+## White balance 
+
+The configuration panel allows you to configure the whitebalance, please refer to the whitebalance plugin documentation for more informations.

@@ -15,7 +15,7 @@ TakePhotos::TakePhotos(GstMapInfo *map)
     realpath(getenv("HOME"), path);
 }
 
-void TakePhotos::render()
+void TakePhotos::render(bool frame_created)
 {
     float elementOffset = 140;
 
@@ -68,8 +68,8 @@ void TakePhotos::render()
     {
         if (frameCount != 0)
             ImGui::EndDisabled();
-
-        TakePhotosInMemory();
+        if(frame_created)
+            TakePhotosInMemory();
     }
 
     if (showError)

@@ -26,7 +26,6 @@ SharpnessControl::~SharpnessControl()
 
 void SharpnessControl::plotAutofocus(char * logs)
 {
-	char * tmp[100];
 	count=0;
 	
 	while(strncmp(logs,"PDA :",5)!=0)
@@ -56,9 +55,9 @@ void SharpnessControl::render()
 
     ImGui::Begin("Sharpness Control");
 
-    ImGui::Text("Toggle sharpness viewer");
+    ImGui::Text("Enable sharpness viewer");
     ImGui::SameLine();
-    if (ImGui::Checkbox("##Toggle sharpness", &work))
+    if (ImGui::Checkbox("##Enable sharpness", &work))
     {
         if (toggleOnce == false)
         {
@@ -137,7 +136,7 @@ void SharpnessControl::render()
             fclose(file);
         }
     }
-    if (done_once)
+    if (done_once && work)
     {
 
         ImGui::Begin("Plot");

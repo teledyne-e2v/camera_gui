@@ -30,6 +30,9 @@ private:
 	Config *conf = NULL;
     ROI *Roi = NULL;
     bool calibrating = false;
+    bool sharpnessCalculation = false;
+    bool previouSharpnessCalculation = false;
+
     bool calibrationState = false;
     ImVec4 previousRoi;
     void updatePluginROI();

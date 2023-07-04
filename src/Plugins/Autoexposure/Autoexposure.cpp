@@ -29,7 +29,7 @@ void AutoexposureControl::render()
 {
     ImGui::Begin("Autoexposure Control");
 
-    if (ImGui::Checkbox("Toggle autoexposure", &work))
+    if (ImGui::Checkbox("Enable autoexposure", &work))
     {
         if (toggleOnce == false)
         {

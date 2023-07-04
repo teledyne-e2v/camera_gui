@@ -26,18 +26,33 @@ ModuleCtrl::~ModuleCtrl()
 #endif
 }
 
+int ModuleCtrl::ModuleControlInitPDA()
+{
+	/* Init i2c devicepda */
+	int err=0;
+	memset(&devicepda, 0, sizeof(devicepda));
+	i2c_init_device(&devicepda);
 
+	devicepda.bus = bus;
+	/*device address*/
+	devicepda.addr = PDA50_I2C_ADDR;
+	/*Unknown value*/
+	devicepda.page_bytes = 8;
+	/*Address length in bytes*/
+	devicepda.iaddr_bytes = 1;
 
-int ModuleCtrl::ModuleControlInit()
+	// Enable PDA50 DAC
+	err = enable_VdacPda(devicepda, bus);
+	return err;
+}
+
+void ModuleCtrl::ModuleControlInit()
 {
 	/* Open i2c bus */
-	int err=0;
 
 	if ((bus = i2c_open(bus_name)) == -1)
 	{
-
 		fprintf(stderr, "Open i2c bus:%s error!\n", bus_name);
-		return -3;
 	}
 	printf("Bus %s open\n", bus_name);
 
@@ -53,23 +68,6 @@ int ModuleCtrl::ModuleControlInit()
 	device.page_bytes = 256;
 	/*Address length in bytes*/
 	device.iaddr_bytes = 1;
-
-	/* Init i2c devicepda */
-
-	memset(&devicepda, 0, sizeof(devicepda));
-	i2c_init_device(&devicepda);
-
-	devicepda.bus = bus;
-	/*device address*/
-	devicepda.addr = PDA50_I2C_ADDR;
-	/*Unknown value*/
-	devicepda.page_bytes = 8;
-	/*Address length in bytes*/
-	devicepda.iaddr_bytes = 1;
-
-	// Enable PDA50 DAC
-	err = enable_VdacPda(devicepda, bus);
-
 
 	
 	memset(&eeprom, 0, sizeof(eeprom));
@@ -95,7 +93,6 @@ int ModuleCtrl::ModuleControlInit()
 	devicetemp.page_bytes = 8;
 	/*Address length in bytes*/
 	devicetemp.iaddr_bytes = 1;
-	return err;
 }
 
 
