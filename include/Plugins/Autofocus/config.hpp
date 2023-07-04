@@ -120,15 +120,7 @@ private:
 
     int previous_pda_hold_cmd = 0;
 
-    int benchmark_iterations = 50;
-    int previous_benchmark_iterations = 5;
-    int benchmark_expected_sharpness = 1;
-    int previous_benchmark_expected_sharpness = 1; 
-    int benchmark_min_expected_sharpness = 1;
-    int previous_benchmark_min_expected_sharpness = 1; 
-
-
-    static const int nbAlgos = 5;
+    static const int nbAlgos = 4;
 
 public:
     /**

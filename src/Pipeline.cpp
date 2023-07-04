@@ -14,10 +14,10 @@ static const std::string ELEMENTS_MULTIFOCUS[] = {"multifocus", "autofocus",
                                                   "sharpness"};
 static const std::string ELEMENT_SINK = "appsink";
 
-Pipeline::Pipeline(int argc, char **argv, bool color) {
+Pipeline::Pipeline(int argc, char **argv, bool color, bool multifocus) {
   gst_init(&argc, &argv);
 
-  createElements(color);
+  createElements(color, multifocus);
   linkElementsGRAY();
 }
 
@@ -31,7 +31,7 @@ void Pipeline::mapping_Gst_Element(std::string element_name) {
       element_name.c_str(), (element_name + std::string("0")).c_str());
 }
 
-void Pipeline::createElements(bool color) {
+void Pipeline::createElements(bool color, bool multifocus) {
 
   pipeline = gst_pipeline_new("pipeline");
 
@@ -39,11 +39,14 @@ void Pipeline::createElements(bool color) {
        i++) {
     mapping_Gst_Element(ELEMENTS_GRAY[i]);
   }
-
-  for (unsigned int i = 0;
-       i < sizeof(ELEMENTS_MULTIFOCUS) / sizeof(ELEMENTS_MULTIFOCUS[0]); i++) {
-    mapping_Gst_Element(ELEMENTS_MULTIFOCUS[i]);
+  if (multifocus) {
+    for (unsigned int i = 0;
+         i < sizeof(ELEMENTS_MULTIFOCUS) / sizeof(ELEMENTS_MULTIFOCUS[0]);
+         i++) {
+      mapping_Gst_Element(ELEMENTS_MULTIFOCUS[i]);
+    }
   }
+
   for (unsigned int i = 0;
        i < sizeof(ELEMENTS_QUEUE) / sizeof(ELEMENTS_QUEUE[0]); i++) {
     mapping_Gst_Element(ELEMENTS_QUEUE[i]);
@@ -166,7 +169,7 @@ GstElement *Pipeline::getAutofocus() { return GstElements["autofocus"]; }
 
 GstElement *Pipeline::getFpscounter() { return GstElements["fpscounter"]; }
 
-GstElement *Pipeline::getImageFreeze() { return GstElements["imageFreeze"]; }
+GstElement *Pipeline::getImageFreeze() { return GstElements["freeze"]; }
 
 GstElement *Pipeline::getWhiteBalance() { return GstElements["whitebalance"]; }
 
@@ -181,7 +184,7 @@ GstElement *Pipeline::getAutoexposure() { return GstElements["autoexposure"]; }
 GstElement *Pipeline::getMultifocus() { return GstElements["multifocus"]; }
 
 void Pipeline::freezeStream(bool freeze) {
-  g_object_set(G_OBJECT(GstElements["imageFreeze"]), "freeze", freeze, NULL);
+  g_object_set(G_OBJECT(GstElements["freeze"]), "freeze", freeze, NULL);
 }
 
 void Pipeline::getVideoSize(int *width, int *height) {

@@ -53,16 +53,7 @@ void Config::apply()
         g_object_set(G_OBJECT(autofocus), "pda_hold_cmd", pda_hold_cmd, NULL);
     if (previousStrategy != strategy)
         g_object_set(G_OBJECT(autofocus), "strategy", strategy, NULL);
-    if (previous_benchmark_expected_sharpness != benchmark_expected_sharpness)
-        g_object_set(G_OBJECT(autofocus), "benchmark_expected_sharpness", benchmark_expected_sharpness, NULL);
-    if (previous_benchmark_min_expected_sharpness != benchmark_min_expected_sharpness)
-        g_object_set(G_OBJECT(autofocus), "benchmark_min_expected_sharpness", benchmark_min_expected_sharpness, NULL);
-    if (previous_benchmark_iterations != benchmark_iterations)
-        g_object_set(G_OBJECT(autofocus), "benchmark_iterations", benchmark_iterations, NULL);
 #endif
-    previous_benchmark_expected_sharpness = benchmark_expected_sharpness;
-    previous_benchmark_min_expected_sharpness = benchmark_min_expected_sharpness;
-    previous_benchmark_iterations = benchmark_iterations;
     previousOffset = offset;
     previous_continuous_timeout = continuous_timeout;
     previous_continuous_update_interval = continuous_update_interval;
@@ -104,7 +95,6 @@ void Config::render()
         items[1] = "Optimized autofocus";
 	items[2] = "Weighted mean autofocus";
 	items[3] = "Gaussian prediction autofocus";
-	items[4] = "Benchmark";
         ImGui::PushItemWidth(-1);
         if (ImGui::BeginCombo("##Strategies", items[strategy]))
         {
@@ -119,19 +109,6 @@ void Config::render()
         }
 
         ImGui::NewLine();
-
-	ImGui::Text("benchmark iterations:");
-        ImGui::SameLine(elementOffset);
-        ImGui::InputInt("##benchmark_iterations", &benchmark_iterations, 1, 10, ImGuiInputTextFlags_CharsDecimal);
-
-   
-        ImGui::Text("benchmark expected sharpness:");
-        ImGui::SameLine(elementOffset);
-        ImGui::InputInt("##benchmark_expected_sharpness", &benchmark_expected_sharpness, 1, 10, ImGuiInputTextFlags_CharsDecimal);
-
-        ImGui::Text("benchmark minimum expected sharpness:");
-        ImGui::SameLine(elementOffset);
-        ImGui::InputInt("##benchmark_min_expected_sharpness", &benchmark_min_expected_sharpness, 1, 10, ImGuiInputTextFlags_CharsDecimal);
 
 
 

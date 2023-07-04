@@ -87,7 +87,7 @@ private:
 
     void formatHex(char *value);
     void apply();
-
+    bool multifocus;
     void auto_controls();
     void auto_controls_render();
     std::vector<Ext_Control *> controls;
@@ -108,5 +108,5 @@ public:
     void update_auto_controls();
     void setPDA(int PDA);
 
-    ModuleControl(ModuleCtrl *moduleCtrl);
+    ModuleControl(ModuleCtrl *moduleCtrl, bool multifocus);
 };

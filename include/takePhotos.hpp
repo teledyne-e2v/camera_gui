@@ -24,7 +24,7 @@ public:
      * @brief render the window
      *
      */
-    void render();
+    void render(bool frame_created);
 
     /**
      * @brief Construct a new Take Photos object

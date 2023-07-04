@@ -20,6 +20,7 @@
 #include "ToolBar.hpp"
 #include "WhiteBalance.hpp"
 #include "Sensor.hpp"
+#include "Histogram.hpp"
 #include <vector>
 
 #include <chrono>
@@ -63,7 +64,8 @@ private:
     MultifocusControl *multifocusControl;
     SharpnessControl *sharpnessControl;
     WhiteBalanceControl *whiteBalanceControl;
-
+    Histogram *histogram;
+    bool frame_created;
     ToolBar *toolbar;
 
     GstMapInfo map;
@@ -98,6 +100,7 @@ private:
     std::chrono::_V2::system_clock::time_point end;
     float FPS=0;
 
+    void framerateRender();
 
     const static bool color_sensor;
     const static bool multifocus_sensor; 

@@ -101,7 +101,9 @@ sources = [
 	'src/Plugins/Sharpness/Sharpness.cpp',
 
      'src/Plugins/WhiteBalance/WhiteBalance.cpp',
+     'src/Histogram.cpp',
 
+     'src/Histogram.cpp',
      'src/Pipeline.cpp',
      'src/Window.cpp',
      'src/Application.cpp',

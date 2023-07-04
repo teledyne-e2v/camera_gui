@@ -69,7 +69,8 @@ public:
      * @brief
      * Initialise IC2 connection
      */
-    int ModuleControlInit();
+    void ModuleControlInit();
+    int ModuleControlInitPDA();
 
     ~ModuleCtrl();
 

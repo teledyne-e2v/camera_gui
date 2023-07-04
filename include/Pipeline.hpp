@@ -14,7 +14,7 @@ public:
    * @param argc
    * @param argv
    */
-  Pipeline(int argc, char **argv, bool color);
+  Pipeline(int argc, char **argv, bool color, bool multifocus);
   ~Pipeline();
 
 
@@ -76,7 +76,7 @@ private:
    * @brief Create a Elements object
    *
    */
-  void createElements(bool color);
+  void createElements(bool color, bool multifocus);
   /**
    * @brief link elements togethers
    *

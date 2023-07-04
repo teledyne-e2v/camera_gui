@@ -4,7 +4,8 @@
 ToolBar::ToolBar(Pipeline *pipeline) 
     :pipeline(pipeline)
 {
-
+    pipeline->switchToColor();
+    isColor=true;
 }
 
 void ToolBar::render()
