@@ -144,7 +144,6 @@ bool Application::createFrame() {
     gst_sample_unref(videosample);
 
     if (map.size == 8294400) {
-
       ImVec4 roi = Roi->getROI();
       roi.x = roi.x - ((int)roi.x % 2);
       roi.y = roi.y - ((int)roi.y % 2);

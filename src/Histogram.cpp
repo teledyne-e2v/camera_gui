@@ -25,7 +25,6 @@ void Histogram::calculate_histogram_gray(guint8 *image) {
 }
 
 void Histogram::calculate_histogram_gray_RGBA(guint8 *image) {
-  printf("ici\n");
   ImVec4 roi = Roi->getROI();
   roi.x = roi.x - ((int)roi.x % 2);
   roi.y = roi.y - ((int)roi.y % 2);
@@ -50,7 +49,6 @@ void Histogram::calculate_histogram_color(guint8 *image) {
   roi.y = roi.y - ((int)roi.y % 2);
   roi.z = roi.z - ((int)roi.z % 2);
   roi.w = roi.w - ((int)roi.w % 2);
-  printf("Roi : %f %f %f %f \n", roi.x, roi.y, roi.z, roi.w);
   for (int i = 0; i < DEPTH; i++) {
     histogram_red[i] = 0;
     histogram_green[i] = 0;
@@ -69,7 +67,6 @@ void Histogram::calculate_histogram_color(guint8 *image) {
 }
 
 void Histogram::calculate_histogram_color_RGBA(guint8 *image) {
-  printf("ici\n");
   ImVec4 roi = Roi->getROI();
   roi.x = roi.x - ((int)roi.x % 2);
   roi.y = roi.y - ((int)roi.y % 2);
@@ -132,9 +129,9 @@ int histogram_infos(int *histogram, int size, int *min, int *max,
 
 void Histogram::render(guint8 *image, bool RGBA, bool frame_created) {
 
-  ImGui::Begin("Histogram");
+  ImGui::Begin("Histograms");
 
-  if (ImGui::Button("Histogram calcul")) {
+  if (ImGui::Button("Mono histogram calcul")) {
     waiting_histogram = true;
   }
   if (waiting_histogram && frame_created) {

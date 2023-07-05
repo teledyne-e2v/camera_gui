@@ -74,7 +74,7 @@ void Config::render()
     {
         float elementOffset = 180;
 
-        ImGui::Begin("Configuration");
+        ImGui::Begin("Autofocus Config");
         /**
          * Autofocus
          **/

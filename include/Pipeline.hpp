@@ -2,6 +2,12 @@
 
 #include <gst/gst.h>
 #include <map>
+
+struct Data{
+  std::map<std::string,GstElement*> *GstElements;
+  char pixels[5];
+};
+
 /**
  * @brief Class creating and working on the pipeline
  *
@@ -65,12 +71,13 @@ public:
 
   void getVideoSize(int *width, int *height);
 
-  void switchToColor();
+  void switchToColor(const char * pixels);
   void switchToGRAY();
   bool getColorSupport() { return this->color_support; }
 
 private:
   std::map<std::string,GstElement*> GstElements;
+  struct Data data;
 
   /**
    * @brief Create a Elements object
@@ -97,11 +104,6 @@ private:
    */
   GstElement *videosrc = nullptr;
 
-  /**
-   * @brief image freeze plugin
-   *
-   */
-  GstElement *imageFreeze = nullptr;
 
   /**
    * @brief nvvidconv
