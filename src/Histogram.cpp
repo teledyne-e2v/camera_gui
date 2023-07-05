@@ -183,8 +183,7 @@ void Histogram::render(guint8 *image, bool RGBA, bool frame_created) {
   }
 
   if (display_histogram) {
-    if (ImPlot::BeginPlot("Histogram")) {
-
+    if (ImPlot::BeginPlot("Mono Histogram",ImVec2(-1,0),ImPlotAxisFlags_AutoFit)) {
       ImPlot::PlotLine("Histogram", X, histogram, DEPTH);
       ImPlot::EndPlot();
     }
@@ -204,7 +203,7 @@ void Histogram::render(guint8 *image, bool RGBA, bool frame_created) {
   }
 
   if (display_histogram_color) {
-    if (ImPlot::BeginPlot("COLOR histogram")) {
+    if (ImPlot::BeginPlot("COLOR histogram",ImVec2(-1,0),ImPlotAxisFlags_AutoFit)) {
 
       ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(1.0, 0.5, 0.5, 1.0));
       ImPlot::PlotLine("RED histogram", X, histogram_red, DEPTH);

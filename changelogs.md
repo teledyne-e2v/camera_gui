@@ -6,11 +6,15 @@
 ## Color support
 
 - Support the color sensor using v4l2 gray2bayer plugin + bayer2rgb plugin
-- application can display RGBA images 
+- Application can display RGBA images 
 
 ### Auto white balance  (version >= 1.0)
 
 - Support all parameters of the plugin
+
+### Debayer
+
+- Configuration of the debayerisation
 
 ## Sensor informations 
 
@@ -39,6 +43,6 @@
 - Update using new plugin
 - Number of plans parameters support
 
-## Framerat informations 
+## Framerate informations 
 
 - Display the framerate of the differents elements (Gstreamer, sensor, application)
