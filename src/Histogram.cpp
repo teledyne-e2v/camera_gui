@@ -108,7 +108,8 @@ float histogram_std(int *histogram, int size, int mid_point) {
   sum = sum / (std::accumulate(histogram, histogram + size, 0));
   return sqrt(sum);
 }
-int histogram_infos(int *histogram, int size, int *min, int *max,
+
+void histogram_infos(int *histogram, int size, int *min, int *max,
                     int *low_satured, int *high_satured) {
   for (int i = 0; i < size; i++) {
     if (histogram[i] > 0) {

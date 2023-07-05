@@ -15,7 +15,9 @@ Library dependencies are:
 - libglfw3-dev
 - libglfw3
 
-Install tem with: 
+
+
+Install them with: 
 
 	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3 meson
 	
@@ -24,60 +26,22 @@ Install tem with:
 Take a look at this github: 
 https://github.com/teledyne-e2v/topaz-api
 
-	
+## Plugins install
+
 The application need the following gstreamer plugin to run properly (it can run without but will be less interesting):
-- gst-autofocus (required version : 2.0)
+- [gst-autofocus](https://github.com/teledyne-e2v/gst-autofocus) (required version : 1.3)
 - gst-multifocus (required version : 2.0)
 - gst-autoexposure (required version : 1.0)
 - gst-barcode-reader (required version : 1.0)
 - gst-freeze (required version : 1.0)
+- gst-sharpness (required version : 1.0)
 
 Color plugins :
 - bayer2rgb (can be installed with ```sudo apt install gstreamer1.0-plugins-bad```)
-- gst-gray2bayer (required version 1.0)
-- gst-whitebalance (required version : 1.0)
+- [gst-gray2bayer](https://github.com/teledyne-e2v/gst-gray2bayer) (required version 1.0)
+- [gst-whitebalance](https://github.com/teledyne-e2v/gst-whitebalance) (required version : 1.0)
 
-The installation can be checked with ```gst-inspect-1.0```.
-It is required to setup the following environment variables before check the pulgins installation:
-
-	export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
-	export LD_LIBRARY_PATH=/usr/local/lib/
-
-Then the plugins can be checked one by one.
-
-Autofocus:
-
-	gst-inspect-1.0 autofocus
-
-Multifocus:
-
-	gst-inspect-1.0 multifocus
-
-Autoexposure:
-
-	gst-inspect-1.0 autoexposure
-
-Barcode Reader:
-	
-	gst-inspect-1.0 barcodereader
-
-Image Freeze:
-	
-	gst-inspect-1.0 freeze
-
-Bayer2rgb:
-	
-	gst-inspect-1.0 bayer2rgb
-
-Gray2Bayer:
-	
-	gst-inspect-1.0 gray2bayer
-
-White balance:
-	
-	gst-inspect-1.0 whitebalance
-
-In the these commands return an error, please install the missing plugin following the dedicated procedure.
+Plese refer to their git for a complete installation procedure
 
 # Compilation
 First you must make sure that your device's clock is correctly setup on the Jetson Nano.
@@ -159,3 +123,7 @@ The configuration panel allows you to configure the barcodereader, please refer 
 ## White balance 
 
 The configuration panel allows you to configure the whitebalance, please refer to the whitebalance plugin documentation for more informations.
+
+## Histograms 
+
+This window can enable the display and calcultation of mono and color histograms 

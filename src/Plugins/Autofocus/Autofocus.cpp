@@ -80,7 +80,7 @@ bool AutofocusControl::render(ImDrawList *drawList, ImVec2 streamSize,
   ImGui::Checkbox("Sharpness calculation", &sharpnessCalculation);
   if(previouSharpnessCalculation != sharpnessCalculation)
   {
-    g_object_set(G_OBJECT(autofocus), "sharpnessCalculation", sharpnessCalculation, NULL);
+    g_object_set(G_OBJECT(autofocus), "sharpness_calculation", sharpnessCalculation, NULL);
     previouSharpnessCalculation = sharpnessCalculation;
   }
   if (calibrating) {

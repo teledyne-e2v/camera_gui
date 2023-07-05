@@ -64,8 +64,8 @@ private:
      * More information in the plugin documentation.
      * Default value is defined by the plugin.
      */
-    int offset = 3;
-    int previousOffset = 3;
+    int offset = 4;
+    int previousOffset = 4;
 
     /**
      * @brief

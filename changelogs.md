@@ -1,6 +1,3 @@
-# v2.4.1 
-- FIX take photo crashes
-
 # v3.0
 
 ## Color support
@@ -46,3 +43,7 @@
 ## Framerate informations 
 
 - Display the framerate of the differents elements (Gstreamer, sensor, application)
+
+
+# v2.4.1 
+- FIX take photo crashes
