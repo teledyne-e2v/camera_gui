@@ -126,6 +126,7 @@ void Application::run() {
         bufferNotFree.push_back(videobuf);
         mapNotFree.push_back(map);
       }
+
     }
   }
 }
@@ -161,6 +162,7 @@ bool Application::createFrame() {
       }
     
 
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, map.data);
 
@@ -171,11 +173,13 @@ bool Application::createFrame() {
   created = true;
 }
 
+
 ImGui_ImplOpenGL3_NewFrame();
 ImGui_ImplGlfw_NewFrame();
 
 ImGui::NewFrame();
 return created;
+
 }
 
 void Application::framerateRender() {
@@ -305,6 +309,7 @@ void Application::populateFrame() {
 
     photoTaker->render(frame_created);
 
+
     ImDrawList *drawList = ImGui::GetWindowDrawList();
 
     Roi->render2(drawList, streamSize, windowPosition + streamPosition,
@@ -314,6 +319,7 @@ void Application::populateFrame() {
       focus_lost = autofocusControl->render(drawList, streamSize,
                                             windowPosition + streamPosition,
                                             windowSize, windowPosition);
+
 
       autofocusConfig->showWindow = true;
 

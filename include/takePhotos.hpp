@@ -38,6 +38,7 @@ public:
 private:
     int imageWidth = 1920;
     int imageHeight = 1080;
+    bool disabled = false;
 
     /**
      * @brief true when its already taking photos

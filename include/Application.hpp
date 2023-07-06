@@ -52,6 +52,7 @@ private:
 
     ModuleCtrl *moduleCtrl;
     Sensor *sensor;
+
     TakePhotos *photoTaker;
     ModuleControl *moduleControlConfig;
     Config *autofocusConfig;
@@ -83,7 +84,7 @@ private:
     GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
-    
+
     int display_w = 0;
     int display_h = 0;
     std::vector<GstBuffer *> bufferNotFree;
