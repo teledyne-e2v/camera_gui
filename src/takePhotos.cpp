@@ -57,7 +57,7 @@ void TakePhotos::render(bool frame_created)
     ImGui::PushStyleColor(ImGuiCol(0.9), ImVec4(1.0f, 0.25f, 0.0f, 1.0f));
     ImGui::Text("Error: Unable save at least one photo");
     ImGui::PopStyleColor();
-  }
+  
 
     if (takingPhotos)
         ImGui::BeginDisabled();
