@@ -14,72 +14,78 @@ TakePhotos::TakePhotos(GstMapInfo *map) {
   realpath(getenv("HOME"), path);
 }
 
-void TakePhotos::render(bool frame_created) {
-  float elementOffset = 140;
+void TakePhotos::render(bool frame_created)
+{
+    float elementOffset = 140;
 
-  ImGui::Begin("Take Photo");
+    ImGui::Begin("Take Photo");
 
-  ImGui::PushItemWidth(-1);
-  ImGui::Text("Number of photos:");
-  ImGui::SameLine(elementOffset);
-  ImGui::InputInt("##Number of Photos", &numberOfPhotos, 1, 10,
-                  ImGuiInputTextFlags_CharsDecimal);
+    ImGui::PushItemWidth(-1);
+    ImGui::Text("Number of photos:");
+    ImGui::SameLine(elementOffset);
+    ImGui::InputInt("##Number of Photos", &numberOfPhotos, 1, 10, ImGuiInputTextFlags_CharsDecimal);
 
-  limit(numberOfPhotos, 1, 100);
+    limit(numberOfPhotos, 1, 100);
 
-  ImGui::Text("Delay:");
-  ImGui::SameLine();
-  ImGui::Button("i");
-  if (ImGui::IsItemHovered()) {
-    ImGui::BeginTooltip();
-    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-    ImGui::TextUnformatted("Delay in frame between each photo");
-    ImGui::PopTextWrapPos();
-    ImGui::EndTooltip();
-  }
-  ImGui::SameLine(elementOffset);
-  ImGui::InputInt("##delay", &frameOffset, 1, 100,
-                  ImGuiInputTextFlags_CharsDecimal);
+    ImGui::Text("Delay:");
+    ImGui::SameLine();
+    ImGui::Button("i");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted("Delay in frame between each photo");
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine(elementOffset);
+    ImGui::InputInt("##delay", &frameOffset, 1, 100, ImGuiInputTextFlags_CharsDecimal);
 
-  limit(frameOffset, 1, 1000);
+    limit(frameOffset, 1, 1000);
 
-  ImGui::Text("Path:");
-  ImGui::SameLine(elementOffset);
-  ImGui::InputText("##Photo path", path, 512);
+    ImGui::Text("Path:");
+    ImGui::SameLine(elementOffset);
+    ImGui::InputText("##Photo path", path, 512);
 
-  ImGui::Text("Name:");
-  ImGui::SameLine(elementOffset);
-  ImGui::InputText("##Photo name", photoName, 20);
-  ImGui::PopItemWidth();
+    ImGui::Text("Name:");
+    ImGui::SameLine(elementOffset);
+    ImGui::InputText("##Photo name", photoName, 20);
+    ImGui::PopItemWidth();
 
-  ImGui::NewLine();
 
-  if (takingPhotos) {
-    ImGui::BeginDisabled();
-    disabled = true;
-  }
-
-  if (ImGui::Button("Take photos")) {
-    takingPhotos = true;
-    frameCount = 0;
-    disabled = false;
-  }
-
-  if (takingPhotos) {
-    if (disabled)
-      ImGui::EndDisabled();
-    if (frame_created)
-      TakePhotosInMemory();
-  }
-
-  if (showError) {
     ImGui::NewLine();
     ImGui::PushStyleColor(ImGuiCol(0.9), ImVec4(1.0f, 0.25f, 0.0f, 1.0f));
     ImGui::Text("Error: Unable save at least one photo");
     ImGui::PopStyleColor();
   }
 
-  ImGui::End();
+    if (takingPhotos)
+        ImGui::BeginDisabled();
+
+    if (ImGui::Button("Take photos"))
+    {
+        takingPhotos = true;
+        frameCount = 0;
+    }
+
+    if (takingPhotos)
+    {
+        if (frameCount != 0)
+            ImGui::EndDisabled();
+        if(frame_created)
+            TakePhotosInMemory();
+    }
+
+    if (showError)
+    {
+        ImGui::NewLine();
+        ImGui::PushStyleColor(ImGuiCol(0.9), ImVec4(1.0f, 0.25f, 0.0f, 1.0f));
+        ImGui::Text("Error: Unable save at least one photo");
+        ImGui::PopStyleColor();
+    }
+
+    ImGui::End();
+
 }
 
 unsigned char *TakePhotos::TakePhotoInMemory() {

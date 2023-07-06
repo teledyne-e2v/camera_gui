@@ -62,12 +62,15 @@ private:
      */
     I2CDevice devicetemp;
 
+    I2CDevice eeprom;
+
 public:
     /**
      * @brief
      * Initialise IC2 connection
      */
     void ModuleControlInit();
+    int ModuleControlInitPDA();
 
     ~ModuleCtrl();
 
@@ -126,6 +129,9 @@ public:
      * @return int
      */
     int writeReg(int regAddr, int value);
+
+    int readEEProm(int regAddr, int *value);
+    int writeEEProm(int regAddr, int value);
 
     /**
      * @brief

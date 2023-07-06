@@ -1,4 +1,4 @@
-# Version 2.4
+# Version 3.0
 
 # About
 
@@ -15,65 +15,38 @@ Library dependencies are:
 - libglfw3-dev
 - libglfw3
 
-Install tem with: 
-
-	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3
 
 
+Install them with: 
+
+	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3 meson
 	
+	
+## Topaz api install
+Take a look at this github: 
+https://github.com/teledyne-e2v/topaz-api
+
+## Plugins install
+
 The application need the following gstreamer plugin to run properly (it can run without but will be less interesting):
-- gst-autofocus (required version : 1.2)
-- gst-multifocus (required version : 1.0)
-- gst-autoexposure (required version : 1.0)
-- gst-barcode-reader (required version : 1.0)
-- gst-freeze (required version : 1.0)
+- [gst-autofocus](https://github.com/teledyne-e2v/gst-autofocus) (required version : 1.3)
+- [gst-multifocus](https://github.com/teledyne-e2v/gst-multifocus) (required version : 2.0)
+- [gst-autoexposure](https://github.com/teledyne-e2v/gst-autoexposure) (required version : 1.0)
+- [gst-barcode-reader](https://github.com/teledyne-e2v/gst-barcode-reader) (required version : 1.3)
+- [gst-freeze](https://github.com/teledyne-e2v/gst-freeze) (required version : 1.0)
+- [gst-sharpness](https://github.com/teledyne-e2v/gst-sharpness) (required version : 1.0)
 
-The installation can be checked with ```gst-inspect-1.0```.
-It is required to setup the following environment variables before check the pulgins installation:
+Color plugins :
+- [gst-fpscounter](required version 1.0)
+- bayer2rgb (can be installed with ```sudo apt install gstreamer1.0-plugins-bad```)
+- [gst-gray2bayer](https://github.com/teledyne-e2v/gst-gray2bayer) (required version 1.0)
+- [gst-whitebalance](https://github.com/teledyne-e2v/gst-whitebalance) (required version : 1.0)
 
-	export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
-	export LD_LIBRARY_PATH=/usr/local/lib/
+Plese refer to their git for a complete installation procedure
 
-Then the plugins can be checked one by one.
-
-Autofocus:
-
-	gst-inspect-1.0 autofocus
-
-Multifocus:
-
-	gst-inspect-1.0 multifocus
-
-Autoexposure:
-
-	gst-inspect-1.0 autoexposure
-
-Barcode Reader:
-	
-	gst-inspect-1.0 barcodereader
-
-Image Freeze:
-	
-	gst-inspect-1.0 freeze
-
-In the these commands return an error, please install the missing plugin following the dedicated procedure.
-
-# Installation
+# Compilation
 First you must make sure that your device's clock is correctly setup on the Jetson Nano.
 Otherwise the compilation will fail.
-
-Following tools are required for build and compilation:
-- meson
-- ninja
-
-Check installation with:
-
-	ninja --version
-	meson --version
-	
-Ninja should be preinstalled but meson may need to be installes:
-
-	sudo apt install meson
 
 Move to the **camera_gui** directory using the command cd
 
@@ -91,7 +64,7 @@ Note: if some dependencies are missing, meson will signal it.
 
 Execute the following srcipt to start the application:
 
-	start.sh
+	bash start.sh
 
 You should see the interface with the video stream.
 
@@ -147,3 +120,11 @@ The configuration panel allows you to configure the autofocus, please refer to t
 ## Barcode config
 
 The configuration panel allows you to configure the barcodereader, please refer to the barcodereader plugin documentation for more informations.
+
+## White balance 
+
+The configuration panel allows you to configure the whitebalance, please refer to the whitebalance plugin documentation for more informations.
+
+## Histograms 
+
+This window can enable the display and calcultation of mono and color histograms 

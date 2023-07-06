@@ -54,7 +54,6 @@ void Config::apply()
     if (previousStrategy != strategy)
         g_object_set(G_OBJECT(autofocus), "strategy", strategy, NULL);
 #endif
-
     previousOffset = offset;
     previous_continuous_timeout = continuous_timeout;
     previous_continuous_update_interval = continuous_update_interval;
@@ -73,9 +72,9 @@ void Config::render()
 {
     if (showWindow)
     {
-        float elementOffset = 140;
+        float elementOffset = 180;
 
-        ImGui::Begin("Configuration");
+        ImGui::Begin("Autofocus Config");
         /**
          * Autofocus
          **/
@@ -94,6 +93,8 @@ void Config::render()
         const char *items[nbAlgos];
         items[0] = "Naïve autofocus (more precise but slow)";
         items[1] = "Optimized autofocus";
+	items[2] = "Weighted mean autofocus";
+	items[3] = "Gaussian prediction autofocus";
         ImGui::PushItemWidth(-1);
         if (ImGui::BeginCombo("##Strategies", items[strategy]))
         {
@@ -109,9 +110,12 @@ void Config::render()
 
         ImGui::NewLine();
 
+
+
         /**
          * Small Step and Big Step
          **/
+
         ImGui::Text("Small Step:");
         ImGui::SameLine(elementOffset);
         ImGui::InputInt("##smallStep", &smallStep, 1, 10, ImGuiInputTextFlags_CharsDecimal);
@@ -126,6 +130,7 @@ void Config::render()
 
         if (strategy == 0)
             ImGui::EndDisabled();
+
         /**
          * PDA min
          **/
@@ -226,6 +231,10 @@ void Config::render()
         ImGui::SameLine(elementOffset);
         ImGui::InputInt("##continuous_timeout", &continuous_timeout, 1, 10, ImGuiInputTextFlags_CharsDecimal);
 
+
+
+
+
         if (!cont)
             ImGui::EndDisabled();
 
@@ -237,9 +246,15 @@ void Config::render()
     }
 }
 
+
+int Config::getStrategy()
+{
+	return strategy;
+}
+
 void Config::security() // refer to the limit documentation of the autofocus plugin
 {
-    limit(strategy, 0, 1);
+    limit(strategy, 0, nbAlgos);
     limit(smallStep, 1, bigStep);
     limit(bigStep, smallStep, 700);
     limit(pdaMin, -90, pdaMax);

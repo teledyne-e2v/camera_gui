@@ -12,6 +12,7 @@ AutoexposureControl::~AutoexposureControl()
 void AutoexposureControl::apply_ROI()
 {
     ImVec4 roi = Roi->getROI();
+
     if(roi.w != previousRoi.w || roi.x != previousRoi.x || roi.y != previousRoi.y || roi.z != previousRoi.z)
     {
         previousRoi = roi;
@@ -28,7 +29,7 @@ void AutoexposureControl::render()
 {
     ImGui::Begin("Autoexposure Control");
 
-    if (ImGui::Checkbox("Toggle autoexposure", &work))
+    if (ImGui::Checkbox("Enable autoexposure", &work))
     {
         if (toggleOnce == false)
         {

@@ -30,6 +30,11 @@ void Debug::render(bool autofocusTrigger)
     ImGui::End();
 }
 
+char* Debug::getLogs()
+{
+	return logs;
+}
+
 void Debug::updateLogs()
 {
 #ifndef DEBUG_MODE

@@ -15,4 +15,6 @@ private:
 public:
     void render(bool autofocusTrigger);
     Debug(GstElement *autofocus);
+
+    char *getLogs();
 };

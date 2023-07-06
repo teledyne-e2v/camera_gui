@@ -1,8 +1,14 @@
 #include "Multifocus.hpp"
 #include "utils.hpp"
+#include <string>
+#include <gst/gst.h>
 MultifocusControl::MultifocusControl(GstElement *multifocus, ROI *Roi)
     : multifocus(multifocus), Roi(Roi)
 {
+	for(int i=0;i<50;i++)
+	{
+		plans[i]=0;
+	}	
 }
 
 void MultifocusControl::apply_ROI()
@@ -20,12 +26,31 @@ void MultifocusControl::apply_ROI()
 MultifocusControl::~MultifocusControl()
 {
 }
+
+
+void parseString(char* string, int *tab,int size)
+{
+	for(int i=0;i<size;i++)
+	{
+		int size_of_number;
+		char tmp[10];
+		size_of_number = sscanf(string,"%d;",&(tab[i]));
+		if(size_of_number<0)
+			return;
+
+		snprintf(tmp,10,"%d",tab[i]);
+		string+=strlen(tmp)+1;
+
+
+	}
+}
+
 void MultifocusControl::render()
 {
     ImGui::Begin("Multifocus Control");
-    ImGui::Text("Toggle multifocus");
+    ImGui::Text("Enable multifocus");
     ImGui::SameLine();
-    if (ImGui::Checkbox("##Toggle multifocus", &work))
+    if (ImGui::Checkbox("##Enable multifocus", &work))
     {
         if (toggleOnce == false)
         {
@@ -64,6 +89,8 @@ void MultifocusControl::render()
     if (ImGui::Button("Reset multifocus plans"))
     {
         apply_ROI();
+	reset = true;
+	previous_reset=true;
         g_object_set(G_OBJECT(multifocus), "reset", true, NULL);
     }
 
@@ -84,7 +111,7 @@ void MultifocusControl::render()
         g_object_set(G_OBJECT(multifocus), "number_of_plans", number_of_plans, NULL);
         previous_number_of_plans = number_of_plans;
     }
-
+    limit(number_of_plans, 1, 50);
     ImGui::Text("Number of frames between switches");
     ImGui::SameLine();
     ImGui::InputInt("##space_between_switch multifocus", &space_between_switch, 0, 1, ImGuiInputTextFlags_CharsDecimal);
@@ -94,45 +121,52 @@ void MultifocusControl::render()
         previous_space_between_switch = space_between_switch;
     }
 
-    if (ImGui::Button("Refresh"))
+    g_object_get(G_OBJECT(multifocus), "reset", &reset, NULL);
+    if (reset != previous_reset)
     {
-        g_object_get(G_OBJECT(multifocus), "plan1", &plan1, NULL);
-        previous_plan1 = plan1;
-        g_object_get(G_OBJECT(multifocus), "plan2", &plan2, NULL);
-        previous_plan2 = plan2;
-        g_object_get(G_OBJECT(multifocus), "plan3", &plan3, NULL);
-        previous_plan3 = plan3;
+	char * tmpchar;
+	g_object_get(G_OBJECT(multifocus), "plans", &tmpchar, NULL);
+	g_object_get(G_OBJECT(multifocus), "number_of_plans", &number_of_plans, NULL);
+	previous_number_of_plans = number_of_plans;
+	previous_reset=reset;
+
+	parseString(tmpchar, plans,number_of_plans);
+
+
     }
 
-    ImGui::Text("plan1");
-    ImGui::SameLine();
-    ImGui::InputInt("##plan1", &plan1, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(plan1, -90, 780);
-    if (plan1 != previous_plan1)
-    {
-        g_object_set(G_OBJECT(multifocus), "plan1", plan1, NULL);
-        previous_plan1 = plan1;
-    }
 
-    ImGui::Text("plan2");
-    ImGui::SameLine();
-    ImGui::InputInt("##plan2", &plan2, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(plan2, -90, 780);
-    if (plan2 != previous_plan2)
-    {
-        g_object_set(G_OBJECT(multifocus), "plan2", plan2, NULL);
-        previous_plan2 = plan2;
-    }
 
-    ImGui::Text("plan3");
+    for(int i=0;i<number_of_plans;i++)
+{
+
+	std::string s = "plan";
+	std::string s2 = "##";
+	auto result = s + std::to_string(i);
+	auto result2 = s2 + result;
+    ImGui::Text("%s", result.c_str());
     ImGui::SameLine();
-    ImGui::InputInt("##plan3", &plan3, 0, 1, ImGuiInputTextFlags_CharsDecimal);
-    limit(plan3, -90, 780);
-    if (plan3 != previous_plan3)
-    {
-        g_object_set(G_OBJECT(multifocus), "plan3", plan3, NULL);
-        previous_plan3 = plan3;
-    }
+    ImGui::InputInt(result2.c_str(), plans+i, 0, 1, ImGuiInputTextFlags_CharsDecimal);
+    limit(plans[i], -90, 780);
+	if(plans[i]!=previous_plans[i])
+	{
+		previous_plans[i]=plans[i];
+		rewrite=true;
+	}
+    
+   }
+if(rewrite)
+{
+tmp="";
+rewrite = false;
+for(int i=0;i<number_of_plans;i++)
+{
+	tmp=tmp + std::to_string(plans[i]) + ";";
+
+}
+    	g_object_set(G_OBJECT(multifocus), "plans", tmp.c_str(), NULL);
+}
+
 
     ImGui::End();
 }

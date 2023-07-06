@@ -16,6 +16,13 @@
 #include "BarcodeDisplayer.hpp"
 #include "Autoexposure.hpp"
 #include "Multifocus.hpp"
+#include "Sharpness.hpp"
+#include "ToolBar.hpp"
+#include "WhiteBalance.hpp"
+#include "Sensor.hpp"
+#include "Histogram.hpp"
+#include <vector>
+
 #include <chrono>
 #include <gst/gst.h>
 class Application
@@ -40,8 +47,12 @@ private:
     Window *window;
     Pipeline *pipeline;
 
+
+    GstBuffer *videobuf;
+
     ModuleCtrl *moduleCtrl;
-    bool created;
+    Sensor *sensor;
+
     TakePhotos *photoTaker;
     ModuleControl *moduleControlConfig;
     Config *autofocusConfig;
@@ -52,30 +63,46 @@ private:
     BarcodeDisplayer *barcodeDisplayer;
     AutoexposureControl *autoexposureControl;
     MultifocusControl *multifocusControl;
+    SharpnessControl *sharpnessControl;
+    WhiteBalanceControl *whiteBalanceControl;
+    Histogram *histogram;
+    bool frame_created;
+    ToolBar *toolbar;
+
     GstMapInfo map;
     GLuint videotex;
+    
     GstElement *autofocus;
+    GstElement *sharpness;
+    GstElement *whitebalance;
+
     GstElement *barcodereader;
     GstElement *freeze;
+    GstElement *fpscounter;
+
     GstElement *multifocus;
     GstElement *autoexposure;
     ImGuiDockNodeFlags dockspace_flags;
     ImGuiWindowFlags window_flags;
 
-
-    GstBuffer *videobuf;
-
-
     int display_w = 0;
     int display_h = 0;
+    std::vector<GstBuffer *> bufferNotFree;
+    std::vector<GstMapInfo> mapNotFree;
 
     int videoWidth = 0;
     int videoHeight = 0;
     bool focus_lost=false;
     bool frozen = false;
+    bool isBufferFree = 1;
 
     int frameCounter=0;
     std::chrono::_V2::system_clock::time_point start;
     std::chrono::_V2::system_clock::time_point end;
     float FPS=0;
+
+    void framerateRender();
+
+    const static bool color_sensor;
+    const static bool multifocus_sensor; 
 };
