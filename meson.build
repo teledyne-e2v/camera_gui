@@ -1,4 +1,4 @@
-project('gst-imgui', 'c', 'cpp', version : '0.1', license : 'BSD')
+project('gst-imgui', 'c', 'cpp', version : '3.0', license : 'MIT')
 
 add_global_arguments('-DLOAD_DRIVER', language : 'cpp')
 
