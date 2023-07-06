@@ -75,7 +75,12 @@ void Pipeline::createElements(bool color, bool multifocus)
     }
   }
   color_support = color;
-  if (color)
+  if(!GstElements["fpscounter"])
+  {
+    color_support = false;
+  }
+
+  if (color_support)
   {
     for (unsigned int i = 0;
          i < sizeof(ELEMENTS_COLOR) / sizeof(ELEMENTS_COLOR[0]); i++)
