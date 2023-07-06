@@ -30,11 +30,11 @@ https://github.com/teledyne-e2v/topaz-api
 
 The application need the following gstreamer plugin to run properly (it can run without but will be less interesting):
 - [gst-autofocus](https://github.com/teledyne-e2v/gst-autofocus) (required version : 1.3)
-- gst-multifocus (required version : 2.0)
-- gst-autoexposure (required version : 1.0)
-- gst-barcode-reader (required version : 1.0)
-- gst-freeze (required version : 1.0)
-- gst-sharpness (required version : 1.0)
+- [gst-multifocus](https://github.com/teledyne-e2v/gst-multifocus) (required version : 2.0)
+- [gst-autoexposure](https://github.com/teledyne-e2v/gst-autoexposure) (required version : 1.0)
+- [gst-barcode-reader](https://github.com/teledyne-e2v/gst-barcode-reader) (required version : 1.3)
+- [gst-freeze](https://github.com/teledyne-e2v/gst-freeze) (required version : 1.0)
+- [gst-sharpness](https://github.com/teledyne-e2v/gst-sharpness) (required version : 1.0)
 
 Color plugins :
 - bayer2rgb (can be installed with ```sudo apt install gstreamer1.0-plugins-bad```)
