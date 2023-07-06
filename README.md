@@ -37,6 +37,7 @@ The application need the following gstreamer plugin to run properly (it can run 
 - [gst-sharpness](https://github.com/teledyne-e2v/gst-sharpness) (required version : 1.0)
 
 Color plugins :
+- [gst-fpscounter](required version 1.0)
 - bayer2rgb (can be installed with ```sudo apt install gstreamer1.0-plugins-bad```)
 - [gst-gray2bayer](https://github.com/teledyne-e2v/gst-gray2bayer) (required version 1.0)
 - [gst-whitebalance](https://github.com/teledyne-e2v/gst-whitebalance) (required version : 1.0)
