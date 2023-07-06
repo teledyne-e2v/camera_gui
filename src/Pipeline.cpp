@@ -315,7 +315,6 @@ static GstPadProbeReturn pad_probe_cb_color(GstPad *pad, GstPadProbeInfo *info,
   GstElement *fpscounter =
       ((*((std::map<std::string, GstElement *> *)((struct Data *)user_data)->GstElements))["fpscounter"]);
   GST_DEBUG_OBJECT(pad, "pad is blocked now");
-    printf("CC\n");
 
   GstPad *srcpad, *sinkpad;
 
