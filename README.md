@@ -128,3 +128,7 @@ The configuration panel allows you to configure the whitebalance, please refer t
 ## Histograms 
 
 This window can enable the display and calcultation of mono and color histograms 
+
+## Sharpness
+
+This window can be used to plot a graph describing the sharpness in function of the DAC
