@@ -19,7 +19,7 @@ Library dependencies are:
 
 Install them with: 
 
-	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3 meson
+	sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libglfw3-dev libglfw3 meson g++
 	
 	
 ## Topaz api install
