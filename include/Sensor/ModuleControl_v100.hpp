@@ -42,7 +42,7 @@ private:
      * Name of the ic2 bus
      *
      */
-    char bus_name[32] = "/dev/i2c-6"; //<--bus 6
+    char bus_name[32] = "/dev/i2c-2"; //<--bus 6
 
     /**
      * @brief

@@ -36,8 +36,8 @@ public:
     void setImageSize(int width, int height);
 
 private:
-    int imageWidth = 1920;
-    int imageHeight = 1080;
+    int imageWidth = 0;
+    int imageHeight = 0;
     bool disabled = false;
 
     /**

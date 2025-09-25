@@ -166,7 +166,8 @@ bool Application::createFrame() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoWidth, videoHeight, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, map.data);
 
-  } else if (map.size == 2073600) {
+  //} else if (map.size == 2073600) {
+  } else  { 
     glTexImage2D(GL_TEXTURE_2D, 0, 0x1909, videoWidth, videoHeight, 0, 0x1909,
                  GL_UNSIGNED_BYTE, map.data);
   }
@@ -184,7 +185,8 @@ return created;
 
 void Application::framerateRender() {
   ImGui::Text("Application frame rate : %d", (int)FPS);
-
+  ImGui::Text("Image size : %d x %d", (int)videoWidth, (int)videoHeight);
+  
   if (fpscounter) {
     int frame_rate_gstreamer;
     g_object_get(G_OBJECT(fpscounter), "framerate", &frame_rate_gstreamer,
@@ -192,7 +194,7 @@ void Application::framerateRender() {
 
     ImGui::Text("Gstreamer frame rate  : %d", (int)frame_rate_gstreamer);
   }
-  int T_line, T_wait;
+  /*int T_line, T_wait;
   moduleCtrl->readReg(0x06, &T_line);
 
   moduleCtrl->readReg(0x08, &T_wait);
@@ -228,7 +230,7 @@ void Application::framerateRender() {
   } else {
     ImGui::Text("Sensor frame rate : %d",
                 (int)pow(10, 6) / frame_rate_limited_by_readout);
-  }
+  }*/
 }
 
 void Application::populateFrame() {

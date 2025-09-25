@@ -25,7 +25,7 @@ private:
     bool work=false;
     bool toggleOnce=true;
     bool toggleOnce3=true;
-    bool useExpTime=false;
+    bool useExpTime=true;
     bool useDigitalGain=true;
     bool debug=false;
     int min_digital_gain=256;
@@ -40,7 +40,7 @@ private:
     int previous_latency=4;
     int max_exp=20000;
     int previous_max_exp=20000;
-    int target=60;
+    int target=90;
     int previous_target=60;
     bool loadAndSaveConf=true;
 bool toggleOnce4=true;
