@@ -64,6 +64,8 @@ private:
 
     I2CDevice eeprom;
 
+    I2CDevice deviceliquid;
+
 public:
     /**
      * @brief
@@ -148,6 +150,10 @@ public:
     int read_Temp(double *LocalTempValue, double *RemoteTempValue, int TempMode);
     int get_TempMode(int *tempMode);
     int set_TempMode(int tempMode);
+
+    int write_liquid_focus(int dacValue);
+    int read_liquid_focus(int *dacValue, double *voltageValue);
+
 };
 
 struct solution

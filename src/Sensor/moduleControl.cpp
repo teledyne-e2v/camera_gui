@@ -18,6 +18,9 @@ void ModuleControl::apply() {
   if (PDAVariation != PDA && multifocus)
     moduleCtrl->write_VdacPda(PDA);
 
+  if (FOCUSVariation != FOCUS)
+    moduleCtrl->write_liquid_focus(FOCUS);
+
   for (auto &ctrl : controls) {
     if (ctrl->previous_value != ctrl->value) {
       set_control_by_code(ctrl->control->id, ctrl->value);
@@ -38,6 +41,7 @@ void ModuleControl::render() {
     if (multifocus) {
       PDAConf();
     }
+    FOCUSConf();
     auto_controls_render();
     readRegister();
     writeRegister();
@@ -51,6 +55,7 @@ void ModuleControl::render() {
     ImGui::End();
 
     PDAVariation = PDA;
+    FOCUSVariation = FOCUS;
   }
 }
 
@@ -118,6 +123,16 @@ void ModuleControl::PDAConf() {
     PDA = 750;
   else if (PDA < -91)
     PDA = -91;
+}
+
+void ModuleControl::FOCUSConf() {
+  ImGui::Text("DAC (0 to 1450):");
+  ImGui::SameLine(elementOffset);
+  ImGui::InputInt("##focus", &FOCUS, 1, 100, ImGuiInputTextFlags_CharsDecimal);
+  if (FOCUS > 1450)
+    FOCUS = 1450;
+  else if (FOCUS < 0)
+    FOCUS = 0;
 }
 
 void ModuleControl::readRegister() {

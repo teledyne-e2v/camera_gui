@@ -4,6 +4,7 @@
 #define PDA50_I2C_ADDR 0x0C
 #define TEMP_I2C_ADDR 0x4C
 #define EEPROM_I2C_ADDR 0x50
+#define LIQUID_I2C_ADDR 0x18
 #define REG_FB_STATE 0x53
 #define REG_LINE_LENGTH 0x06
 #define REG_TINT_LL 0x0B
@@ -93,6 +94,18 @@ void ModuleCtrl::ModuleControlInit()
 	devicetemp.page_bytes = 8;
 	/*Address length in bytes*/
 	devicetemp.iaddr_bytes = 1;
+
+	/* Init i2c deviceliquid */
+	memset(&deviceliquid, 0, sizeof(deviceliquid));
+	i2c_init_device(&deviceliquid);
+	deviceliquid.bus = bus;
+	/*device address*/
+	deviceliquid.addr = LIQUID_I2C_ADDR;
+	/*Unknown value*/
+	deviceliquid.page_bytes = 8;
+	/*Address length in bytes*/
+	deviceliquid.iaddr_bytes = 2;
+
 }
 
 
@@ -666,5 +679,77 @@ int ModuleCtrl::set_TempMode(int tempMode)
 		error = -3;
 	}
 
+	return error;
+}
+
+int ModuleCtrl::write_liquid_focus(int dacValue)
+{
+	int regAddr, regValue;
+	unsigned char buffer[4];
+	ssize_t size = sizeof(buffer);
+	memset(buffer, 0, size);
+	int error=0,ret;
+	int DAC_LSB=44; //LSB in mV
+	int minVal=0x0000;
+	int maxVal=0xB3B0; //1045 in DAC value
+
+	regValue=dacValue*DAC_LSB;
+
+	// SET DAC VALUE
+	printf("DACValue=%d  RegValue=%x\n", dacValue, regValue);
+	if (regValue > maxVal)
+	{
+		regValue = maxVal;
+	}
+	else if (regValue < minVal)
+	{
+		regValue = minVal;
+	}
+
+	deviceliquid.page_bytes = 8; //??
+
+
+	regAddr = 0x00;
+	ret=i2c_ioctl_write(&deviceliquid, regAddr, &regValue, size);
+
+	if (ret != size)
+	{
+		fprintf(stderr, "Can't write in 0x%x reg!\n", regAddr);
+		error=-3;
+	}
+
+	return error;
+}
+
+int ModuleCtrl::read_liquid_focus(int *dacValue, double *voltageValue)
+{
+
+	int regAddr, regVal;
+	unsigned char buffer[4];
+	ssize_t size = sizeof(buffer);
+	memset(buffer, 0, size);
+	int error=0, ret;
+	int DAC_LSB=44; //LSB in mV
+
+	deviceliquid.page_bytes = 1;
+
+	// READ MSB
+	regAddr = 0x00;
+
+	ret=i2c_ioctl_read(&deviceliquid, regAddr, &regVal, size);
+
+	if (ret != size)
+	{
+		fprintf(stderr, "Can't read 0x%x reg!\n", regAddr);
+		error=-3;
+	}
+	else
+	{
+		printf("regVal=0x%x (%d)\n", regVal, regVal);
+
+	}
+
+	*dacValue = regVal/DAC_LSB;
+	*voltageValue = *dacValue * DAC_LSB * (double)(0.001)+24;
 	return error;
 }

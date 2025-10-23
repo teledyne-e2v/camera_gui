@@ -22,7 +22,7 @@ struct Ext_Control
 class ModuleControl
 {
 private:
-    int PDAVariation;
+    int PDAVariation, FOCUSVariation;
     ModuleCtrl *moduleCtrl;
 
     /**
@@ -30,6 +30,12 @@ private:
      *
      */
     int PDA = 300;
+
+    /**
+     * @brief FOCUS value
+     *
+     */
+    int FOCUS = 600;
 
     /**
      * @brief Register to write
@@ -69,6 +75,13 @@ private:
      *
      */
     void PDAConf();
+
+    /**
+     * @brief
+     * Create the FOCUS Input int
+     *
+     */
+    void FOCUSConf();
 
     /**
      * @brief

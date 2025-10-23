@@ -7,8 +7,8 @@
 int main(int argc, char **argv)
 {
     char video[]="/dev/video0";
-    initialization(video,2); //TOPAZ 
-	// initialization(video,3); //EMERALD
+    // initialization(video,2); //TOPAZ 
+	initialization(video,3); //EMERALD
     try
     {
         Application *app = new Application(argc, argv);
